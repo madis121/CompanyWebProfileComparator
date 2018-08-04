@@ -1,0 +1,19 @@
+#header {
+	padding-bottom: 200px;
+}
+
+.margin-1 {
+	margin: 1rem;
+}
+
+.form-control {
+	display: inline-block;
+}
+
+.modal-header {
+	border-bottom: none;
+}
+
+.modal-footer {
+	border-top: none;
+}
