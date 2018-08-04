@@ -42,6 +42,7 @@
 	    	setTimeout(function() {
 	    		$("#processingModalBody").html("<h2>Mine munni</h2>");
 	    	}, 3000);
+	    	
 	    </c:if>
 	});
 
