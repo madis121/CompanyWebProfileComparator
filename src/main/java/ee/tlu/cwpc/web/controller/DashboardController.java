@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class DashboardController {
 
 	@RequestMapping(value = "/", method = RequestMethod.GET)
-	public String hello(HttpSession session, Model model) {
+	public String openDashboard(HttpSession session, Model model) {
 		List<String> websites = (List<String>) session.getAttribute("websites");
 		model.addAttribute("processedWebsites", websites);
 		return "dashboard";

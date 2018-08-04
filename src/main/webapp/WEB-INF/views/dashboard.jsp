@@ -27,8 +27,8 @@
 						<span aria-hidden="true">&times;</span>
 					</button>
 				</div>
-				<div class="modal-body text-center">
-					 <h5>Mine munni</h5>
+				<div id="processingModalBody" class="modal-body text-center">
+					<i class="fas fa-spinner fa-spin fa-5x"></i>
 				</div>
 				<div class="modal-footer"></div>
 			</div>
@@ -38,8 +38,10 @@
 <script>
 	$(document).ready(function() {
 	    <c:if test="${not empty processedWebsites}">
-	    	console.log("not empty");
 	    	$("#processingModal").modal('show');
+	    	setTimeout(function() {
+	    		$("#processingModalBody").html("<h2>Mine munni</h2>");
+	    	}, 3000);
 	    </c:if>
 	});
 
