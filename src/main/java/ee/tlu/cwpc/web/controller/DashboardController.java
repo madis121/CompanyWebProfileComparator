@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RequestMapping("/")
 public class DashboardController {
 
+	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public String openDashboard(HttpSession session, Model model) {
 		List<String> websites = (List<String>) session.getAttribute("websites");

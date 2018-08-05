@@ -1,5 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+<%@ taglib prefix="custom" tagdir="/WEB-INF/tags" %>
 
 <!DOCTYPE html>
 <html>
@@ -17,11 +18,15 @@
 	<script defer src="https://use.fontawesome.com/releases/v5.2.0/js/all.js" integrity="sha384-4oV5EgaV02iISL2ban6c/RmotsABqE4yZxZLcYMAdG7FAPsyHYAPpywE9PJo+Khy" crossorigin="anonymous"></script>
 </head>
 <body>
-	<div id="header">
-	</div>
-	
-	<div id="content">
-		<jsp:doBody />
+	<div class="wrapper">
+		<div id="header">
+		</div>
+		
+		<custom:sidebar></custom:sidebar>
+		
+		<div id="content">
+			<jsp:doBody />
+		</div>
 	</div>
 </body>
 </html>
