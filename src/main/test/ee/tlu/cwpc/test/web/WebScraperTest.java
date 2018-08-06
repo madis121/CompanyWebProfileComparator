@@ -10,7 +10,7 @@ class WebScraperTest {
 	
 	@Test
 	void test() {
-		webScraper.search("http://www.premia.ee/");
+		System.out.println(webScraper.urlContainsHashtag("http://www.premia.ee/kontakt/"));
 	}
 
 }

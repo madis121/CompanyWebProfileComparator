@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import ee.tlu.cwpc.dto.PageData;
 import ee.tlu.cwpc.web.WebScraper;
 
 @Controller
@@ -33,7 +34,7 @@ public class DashboardController {
 	@RequestMapping(value = "/scrape", method = RequestMethod.GET)
 	public String scrape(HttpSession session) {
 		WebScraper webScraper = new WebScraper();
-		webScraper.search("http://www.premia.ee/");
+		List<PageData> data = webScraper.search("http://www.premia.ee/");
 		return "redirect:/";
 	}
 
