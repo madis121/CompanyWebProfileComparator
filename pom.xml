@@ -5,7 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>CompanyWebProfileComparator</groupId>
 	<artifactId>CompanyWebProfileComparator</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0</version>
 	<packaging>war</packaging>
 
 	<properties>
@@ -64,9 +64,7 @@
 			<plugin>
 				<artifactId>maven-war-plugin</artifactId>
 				<version>3.2.1</version>
-				<configuration>
-					<!-- <warSourceDirectory></warSourceDirectory> -->
-				</configuration>
+				<configuration></configuration>
 			</plugin>
 		</plugins>
 	</build>

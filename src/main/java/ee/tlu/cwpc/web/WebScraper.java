@@ -1,8 +1,9 @@
 package ee.tlu.cwpc.web;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -19,13 +20,17 @@ public class WebScraper {
 
 	private static final int MAX_PAGES_TO_SEARCH = 10;
 
+	private List<String> pagesToVisit = new ArrayList<>();
+	
 	private Set<String> pagesVisited = new HashSet<>();
-
-	private List<String> pagesToVisit = new LinkedList<>();
 
 	private String nextUrl() {
 		String nextUrl;
 
+		for (String page : pagesToVisit) {
+			nextUrl = pagesToVisit.remove(0);
+		}
+		
 		do {
 			nextUrl = pagesToVisit.remove(0);
 		} while (pagesToVisit.contains(nextUrl));
@@ -35,35 +40,39 @@ public class WebScraper {
 	}
 
 	public void search(String url, String searchWord) {
-		while (pagesVisited.size() < MAX_PAGES_TO_SEARCH) {
-			String currentUrl;
-			Scraper scraper = new Scraper();
-
-			if (pagesToVisit.isEmpty()) {
-				currentUrl = url;
-				pagesVisited.add(url);
-			} else {
-				currentUrl = this.nextUrl();
-			}
-
-			System.out.println("currentUrl: " + currentUrl);
-			scraper.crawl(currentUrl);
-//		boolean success = scraper.searchForWord(searchWord);
-//			
-//		if (success) {
-//			System.out.println(String.format("SUCCESS: Word %s found at %s", searchWord, currentUrl));
-//			break;
+//		while (pagesVisited.size() < MAX_PAGES_TO_SEARCH) {
+//			String currentUrl;
+//			Scraper scraper = new Scraper();
+//
+//			if (pagesToVisit.isEmpty()) {
+//				currentUrl = url;
+//				pagesVisited.add(url);
+//			} else {
+//				currentUrl = this.nextUrl();
+//			}
+//
+//			System.out.println("currentUrl: " + currentUrl);
+//			scraper.crawl(currentUrl);
+//			boolean success = scraper.searchForWord(searchWord);
+//
+//			if (success) {
+//				System.out.println(String.format("SUCCESS: Word %s found at %s", searchWord, currentUrl));
+//				break;
+//			}
+//
+//			pagesToVisit.addAll(scraper.getLinks());
 //		}
-
-			pagesToVisit.addAll(scraper.getLinks());
-		}
-
-		System.out.println(String.format("DONE: Visited %s web page(s)", pagesVisited.size()));
+//
+//		System.out.println(String.format("DONE: Visited %s web page(s)", pagesVisited.size()));
+		WebCrawler webCrawler = new WebCrawler();
+		webCrawler.crawl(url);
+		List<String> links = webCrawler.getLinks();
+		System.out.println(Arrays.toString(links.toArray()));
 	}
 
-	private class Scraper {
+	private class WebCrawler {
 
-		private List<String> links = new LinkedList<>();
+		private List<String> links = new ArrayList<>();
 
 		private Document htmlDocument;
 
@@ -79,7 +88,11 @@ public class WebScraper {
 				System.out.println("Found (" + linksOnPage.size() + ") links");
 
 				for (Element link : linksOnPage) {
-					links.add(link.absUrl("href"));
+					String absUrl = link.absUrl("href");
+					
+					if (absUrl.contains(url)) {
+						links.add(absUrl);
+					}
 				}
 			} catch (IOException e) {
 				e.printStackTrace();

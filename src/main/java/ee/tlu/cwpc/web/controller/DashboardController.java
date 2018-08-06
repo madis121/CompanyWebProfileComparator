@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import ee.tlu.cwpc.web.WebScraper;
+
 @Controller
 @RequestMapping("/")
 public class DashboardController {
@@ -25,6 +27,13 @@ public class DashboardController {
 	@RequestMapping(value = "/process", method = RequestMethod.POST)
 	public String websitesToProcess(@RequestParam(name = "website") List<String> websites, HttpSession session) {
 		session.setAttribute("websites", websites);
+		return "redirect:/";
+	}
+	
+	@RequestMapping(value = "/scrape", method = RequestMethod.GET)
+	public String scrape(HttpSession session) {
+		WebScraper webScraper = new WebScraper();
+		webScraper.search("http://www.premia.ee/", null);
 		return "redirect:/";
 	}
 
