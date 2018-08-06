@@ -33,7 +33,7 @@ public class DashboardController {
 	@RequestMapping(value = "/scrape", method = RequestMethod.GET)
 	public String scrape(HttpSession session) {
 		WebScraper webScraper = new WebScraper();
-		webScraper.search("http://www.premia.ee/", null);
+		webScraper.search("http://www.premia.ee/");
 		return "redirect:/";
 	}
 

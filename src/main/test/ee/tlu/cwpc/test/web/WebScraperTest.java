@@ -10,7 +10,7 @@ class WebScraperTest {
 	
 	@Test
 	void test() {
-		webScraper.search("http://www.premia.ee/", "Kontakt");
+		webScraper.search("http://www.premia.ee/");
 	}
 
 }
