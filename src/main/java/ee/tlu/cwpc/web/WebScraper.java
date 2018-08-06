@@ -14,7 +14,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 /**
- * http://www.netinstructions.com/how-to-make-a-simple-web-crawler-in-java/ 
+ * http://www.netinstructions.com/how-to-make-a-simple-web-crawler-in-java/
  */
 public class WebScraper {
 

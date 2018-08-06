@@ -64,7 +64,9 @@
 			<plugin>
 				<artifactId>maven-war-plugin</artifactId>
 				<version>3.2.1</version>
-				<configuration></configuration>
+				<configuration>
+					<warName>ROOT</warName>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>
