@@ -18,9 +18,14 @@
 	<script defer src="https://use.fontawesome.com/releases/v5.2.0/js/all.js" integrity="sha384-4oV5EgaV02iISL2ban6c/RmotsABqE4yZxZLcYMAdG7FAPsyHYAPpywE9PJo+Khy" crossorigin="anonymous"></script>
 </head>
 <body>
+	<script>
+		function initializeTooltips() {
+			$("[data-toggle=tooltip").tooltip();
+		}
+	</script>
+	
 	<div class="wrapper">
-		<div id="header">
-		</div>
+		<div id="header"></div>
 		
 		<custom:sidebar></custom:sidebar>
 		

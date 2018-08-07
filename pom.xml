@@ -11,6 +11,8 @@
 	<properties>
 		<java.version>1.8</java.version>
 		<spring-webmvc.version>5.0.8.RELEASE</spring-webmvc.version>
+		<jackson-mapper.version>1.9.13</jackson-mapper.version>
+		<jackson.version>2.9.6</jackson.version>
 		<servlet-api.version>2.5</servlet-api.version>
 		<jsp-api.version>2.3.1</jsp-api.version>
 		<jstl.version>1.2</jstl.version>
@@ -24,6 +26,22 @@
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-webmvc</artifactId>
 			<version>${spring-webmvc.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.codehaus.jackson</groupId>
+			<artifactId>jackson-mapper-asl</artifactId>
+			<version>${jackson-mapper.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-core</artifactId>
+			<version>${jackson.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>${jackson.version}</version>
 		</dependency>
 
 		<dependency>

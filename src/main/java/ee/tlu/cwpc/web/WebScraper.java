@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -17,8 +18,7 @@ import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import ee.tlu.cwpc.dto.PageData;
-import ee.tlu.cwpc.dto.PageElement;
+import ee.tlu.cwpc.utils.Utils;
 
 /**
  * http://www.netinstructions.com/how-to-make-a-simple-web-crawler-in-java/
@@ -29,22 +29,20 @@ public class WebScraper {
 
 	private Set<String> pagesVisited = new HashSet<>();
 
-	private List<PageData> collectedData = new ArrayList<>();
+	private Map<String, Integer> collectedWords = new HashMap<>();
 
-	private Map<String, Integer> words = new HashMap<>();
-
-	public List<PageData> search(String url) {
+	public void search(String url, Integer maxPagesToSearch) {
 		List<String> links = getLinksFoundAtUrl(url);
 		LOGGER.debug("Found " + links.size() + " links at " + url);
-		collectedData.add(getDataFoundAtUrl(url));
+		getDataFoundAtUrl(url);
+
+		maxPagesToSearch = maxPagesToSearch != null ? maxPagesToSearch : links.size();
 
 		for (String link : links) {
-			if (!pagesVisited.contains(link) && !urlContainsHashtag(link)) {
-				search(link);
+			if (!pagesVisited.contains(link) && !Utils.urlContainsHashtag(link)) {
+				search(link, maxPagesToSearch);
 			}
 		}
-
-		return collectedData;
 	}
 
 	private List<String> getLinksFoundAtUrl(String url) {
@@ -71,45 +69,38 @@ public class WebScraper {
 		return links;
 	}
 
-	private PageData getDataFoundAtUrl(String url) {
-		List<PageElement> pageElements = new ArrayList<>();
-
+	private void getDataFoundAtUrl(String url) {
 		try {
 			Connection connection = Jsoup.connect(url);
 			Document htmlDocument = connection.get();
 
 			for (Element element : htmlDocument.getAllElements()) {
-				if (element.hasText() && !ignoredElement(element.tagName())) {
-					pageElements.add(new PageElement(element.tagName(), element.text()));
+				if (element.children().isEmpty() && element.hasText() && !ignoredElement(element.tagName())) {
+					String[] wordsInElement = element.text().split(" ");
+
+					for (String word : wordsInElement) {
+						word = Utils.removeNonWordCharacters(word).toLowerCase();
+
+						if (!StringUtils.isBlank(word)) {
+							collectedWords.put(word, collectedWords.getOrDefault(word, 0) + 1);
+						}
+					}
 				}
 			}
 		} catch (IOException e) {
 			LOGGER.error("Encountered an error while collecting data: ", e);
 		}
-
-		return new PageData(url, pageElements);
-	}
-
-	public boolean urlContainsHashtag(String url) {
-		if (url.contains("?")) {
-			url = url.substring(0, url.indexOf("?"));
-		}
-
-		if (url.contains("#")) {
-			return true;
-		}
-		return false;
 	}
 
 	private boolean ignoredElement(String tagName) {
 		Set<String> set = new HashSet<>();
-		String[] ignoredElementTags = { "html", "head", "title", "body", "a", "button" };
+		String[] ignoredElementTags = { "html", "head", "title", "body", "a", "button", "iframe" };
 		Collections.addAll(set, ignoredElementTags);
 		return set.contains(tagName);
 	}
 
-	public Map<String, Integer> getWords() {
-		return words;
+	public Map<String, Integer> getCollectedWords() {
+		return collectedWords;
 	}
 
 }

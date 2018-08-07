@@ -16,7 +16,7 @@
 		<div class="modal-dialog modal-lg" role="document">
 			<div class="modal-content">
 				<div class="modal-header">
-					<h5 class="modal-title" id="new-profile-label">Koosta profiil</h5>
+					<h5 class="modal-title" id="new-profile-label">Koosta uus profiil</h5>
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 						<span aria-hidden="true"><i class="fas fa-times fa-1x"></i></span>
 					</button>
@@ -27,7 +27,7 @@
 							<div class="form-group">
 								<form id="websites" action="process" method="post">
 									<input type="text" name="website" class="form-control col-md-10 margin-1" index="0"><a href="javascript:void(0)" onclick="appendInput();"><i class="fas fa-plus fa-2x"></i></a>
-									<a href="javascript:void(0)" id="submit" class="btn btn-dark btn-block col-md-10 margin-1" onclick="submitForm();">Submit</a>
+									<a href="javascript:void(0)" id="submit" class="btn btn-dark btn-block col-md-10 margin-1" onclick="validateAndSubmit();">Submit</a>
 								</form>
 							</div>
 						</div>
@@ -46,10 +46,6 @@
 	</div>
 	
 <script>
-	$(document).ready(function() {
-		
-	});
-	
 	function openNewProfileModal() {
 		$('#new-profile-modal').modal('show');
 	}
@@ -66,19 +62,35 @@
 		$($('[index]')[index]).remove();
 	}
 	
+	function validateAndSubmit() {
+		var regexp = new RegExp("^(http|https)://", "i");
+		
+		$.each($('#websites [name="website"]'), function(i, obj) {
+			if (!regexp.test($(this).val())) {
+				$(this).attr({
+					'data-toggle': 'tooltip',
+					'title': 'URL peab sisaldama kas "http://" või "https://"'
+				});
+				$(this).addClass('contains-errors');
+				initializeTooltips();
+			} else {
+				$(this).removeAttr('data-toggle title');
+				$(this).removeClass('contains-errors');
+			}
+		});
+	} 
+	
 	function submitForm() {
+		$('#new-profile-content').hide();
+    	$('#new-profile-spinner').show();
+    	
 		$.ajax({
-			method : 'POST',
-			url : 'process',
+			method : 'GET',
+			url : 'collect-data',
 			data :  $('#websites').serialize(),
 			success : function(response) {
-				$('#new-profile-content').hide();
-		    	$('#new-profile-spinner').show();
-		    	
-		    	setTimeout(function() {
-		    		$('#new-profile-spinner').hide();
-		    		$('#new-profile-result').show();
-		    	}, 3000);
+	    		$('#new-profile-spinner').hide();
+	    		$('#new-profile-result').show();
 			}
 		});
 	}

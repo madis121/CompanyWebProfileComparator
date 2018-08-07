@@ -10,7 +10,10 @@ class WebScraperTest {
 	
 	@Test
 	void test() {
-		System.out.println(webScraper.urlContainsHashtag("http://www.premia.ee/kontakt/"));
+		//System.out.println(webScraper.urlContainsHashtag("http://www.premia.ee/kontakt/"));
+		
+		String word = "teenus, testimiseks";
+		word = word.replaceAll("\\W+", "");
 	}
 
 }
