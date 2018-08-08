@@ -39,7 +39,7 @@ public class DashboardController {
 			WebScraper webScraper = new WebScraper();
 			webScraper.search(website, maxPagesToSearch);
 			Map<String, Integer> collectedWords = webScraper.getCollectedWords();
-			data.add(new WebsiteData(website, collectedWords));
+			data.add(new WebsiteData(website, new ArrayList<>(collectedWords.keySet())));
 		}
 		
 		return data;

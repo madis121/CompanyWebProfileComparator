@@ -1,19 +1,19 @@
 package ee.tlu.cwpc.dto;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 public class WebsiteData {
 
 	private String url;
 
-	private Map<String, Integer> words = new HashMap<>();
+	private List<String> words = new ArrayList<>();
 
 	public WebsiteData() {
 
 	}
 
-	public WebsiteData(String url, Map<String, Integer> words) {
+	public WebsiteData(String url, List<String> words) {
 		this.url = url;
 		this.words = words;
 	}
@@ -26,11 +26,11 @@ public class WebsiteData {
 		this.url = url;
 	}
 
-	public Map<String, Integer> getWords() {
+	public List<String> getWords() {
 		return words;
 	}
 
-	public void setWords(Map<String, Integer> words) {
+	public void setWords(List<String> words) {
 		this.words = words;
 	}
 

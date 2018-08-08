@@ -36,7 +36,7 @@
 					<div class="text-center">
 						<i id="new-profile-spinner" class="fas fa-spinner fa-spin fa-5x" style="display:none;"></i>
 						<div id="new-profile-result" style="display:none;">
-							<h2>Mine munni</h2>
+							
 						</div>
 					</div>
 				</div>
@@ -63,19 +63,21 @@
 	}
 	
 	function validateAndSubmit() {
-		var regexp = new RegExp("^(http|https)://", "i");
+		var expression = '^(?!mailto:)(?:(?:http|https|ftp)://)(?:\\S+(?::\\S*)?@)?(?:(?:(?:[1-9]\\d?|1\\d\\d|2[01]\\d|22[0-3])(?:\\.(?:1?\\d{1,2}|2[0-4]\\d|25[0-5])){2}(?:\\.(?:[0-9]\\d?|1\\d\\d|2[0-4]\\d|25[0-4]))|(?:(?:[a-z\\u00a1-\\uffff0-9]+-?)*[a-z\\u00a1-\\uffff0-9]+)(?:\\.(?:[a-z\\u00a1-\\uffff0-9]+-?)*[a-z\\u00a1-\\uffff0-9]+)*(?:\\.(?:[a-z\\u00a1-\\uffff]{2,})))|localhost)(?::\\d{2,5})?(?:(/|\\?|#)[^\\s]*)?$';
+		var regex = new RegExp(expression, "i");
 		
 		$.each($('#websites [name="website"]'), function(i, obj) {
-			if (!regexp.test($(this).val())) {
+			if (!regex.test($(this).val())) {
 				$(this).attr({
 					'data-toggle': 'tooltip',
-					'title': 'URL peab sisaldama kas "http://" või "https://"'
+					'title': 'Sisestatud URL on vigane (http/https puudu?)'
 				});
 				$(this).addClass('contains-errors');
 				initializeTooltips();
 			} else {
 				$(this).removeAttr('data-toggle title');
 				$(this).removeClass('contains-errors');
+				submitForm();
 			}
 		});
 	} 
@@ -88,11 +90,25 @@
 			method : 'GET',
 			url : 'collect-data',
 			data :  $('#websites').serialize(),
-			success : function(response) {
+			success : function(websites) {
+				console.log(websites);
+				console.log(websites[0].words);
+
+				$.each(websites, function(i, website) {
+					$.each(website.words, function(j, word) {
+			    		var html = '<span class="badge badge-dark profile-badge">' + word + ' <a href="javascript:void(0)" onclick="removeBadge(this);">&times;</a></span>';
+			    		$(html).appendTo($('#new-profile-result'));
+					});
+				});
+					
 	    		$('#new-profile-spinner').hide();
 	    		$('#new-profile-result').show();
 			}
 		});
+	}
+	
+	function removeBadge(badge) {
+		$(badge).parent().remove();
 	}
 </script>
 	

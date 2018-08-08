@@ -102,8 +102,13 @@ button.fixed-bottom-right {
 	right: 50px;	
 }
 
-.contains-errors {
+input.contains-errors {
 	border-color: red;
+}
+
+span.profile-badge {
+	font-size: 14px;
+	margin-right: 5px;
 }
 
 
