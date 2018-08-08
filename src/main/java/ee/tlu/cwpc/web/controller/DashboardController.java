@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import ee.tlu.cwpc.dto.WebsiteData;
+import ee.tlu.cwpc.dto.WebsiteKeyword;
 import ee.tlu.cwpc.web.WebScraper;
 
 @Controller
@@ -38,8 +39,8 @@ public class DashboardController {
 		for (String website : websites) {
 			WebScraper webScraper = new WebScraper();
 			webScraper.search(website, maxPagesToSearch);
-			Map<String, Integer> collectedWords = webScraper.getCollectedWords();
-			data.add(new WebsiteData(website, new ArrayList<>(collectedWords.keySet())));
+			Map<String, WebsiteKeyword> keywords = webScraper.getKeywords();
+			data.add(new WebsiteData(website, new ArrayList<>(keywords.values())));
 		}
 		
 		return data;

@@ -80,8 +80,12 @@ ul ul a {
 	left: 100px;
 }
 
-.margin-1 {
+#new-profile-content input, #new-profile-content a  {
 	margin: 10px;
+}
+
+#clear-profile {
+	margin-top: 25px;
 }
 
 .form-control {
@@ -90,6 +94,7 @@ ul ul a {
 
 .modal-header {
 	border-bottom: none;
+	margin-bottom: 5rem;
 }
 
 .modal-footer {
@@ -110,5 +115,4 @@ span.profile-badge {
 	font-size: 14px;
 	margin-right: 5px;
 }
-
 

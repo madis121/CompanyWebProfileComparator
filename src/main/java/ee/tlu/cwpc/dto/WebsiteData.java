@@ -1,21 +1,20 @@
 package ee.tlu.cwpc.dto;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class WebsiteData {
 
 	private String url;
 
-	private List<String> words = new ArrayList<>();
+	private List<WebsiteKeyword> keywords;
 
 	public WebsiteData() {
 
 	}
 
-	public WebsiteData(String url, List<String> words) {
+	public WebsiteData(String url, List<WebsiteKeyword> keywords) {
 		this.url = url;
-		this.words = words;
+		this.keywords = keywords;
 	}
 
 	public String getUrl() {
@@ -26,12 +25,12 @@ public class WebsiteData {
 		this.url = url;
 	}
 
-	public List<String> getWords() {
-		return words;
+	public List<WebsiteKeyword> getKeywords() {
+		return keywords;
 	}
 
-	public void setWords(List<String> words) {
-		this.words = words;
+	public void setKeywords(List<WebsiteKeyword> keywords) {
+		this.keywords = keywords;
 	}
 
 }

@@ -18,6 +18,7 @@ import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import ee.tlu.cwpc.dto.WebsiteKeyword;
 import ee.tlu.cwpc.utils.Utils;
 
 /**
@@ -29,7 +30,7 @@ public class WebScraper {
 
 	private Set<String> pagesVisited = new HashSet<>();
 
-	private Map<String, Integer> collectedWords = new HashMap<>();
+	private Map<String, WebsiteKeyword> keywords = new HashMap<>();
 
 	public void search(String url, Integer maxPagesToSearch) {
 		List<String> links = getLinksFoundAtUrl(url);
@@ -63,7 +64,7 @@ public class WebScraper {
 
 			pagesVisited.add(url);
 		} catch (IOException e) {
-			LOGGER.error("Encountered an error while collecting links: ", e);
+			LOGGER.error("Encountered an error while collecting links: ", e.getMessage());
 		}
 
 		return links;
@@ -82,13 +83,15 @@ public class WebScraper {
 						word = Utils.removeNonWordCharacters(word).toLowerCase();
 
 						if (!StringUtils.isBlank(word)) {
-							collectedWords.put(word, collectedWords.getOrDefault(word, 0) + 1);
+							WebsiteKeyword keyword = keywords.getOrDefault(word, new WebsiteKeyword(word, 0));
+							keyword.setCount(keyword.getCount() + 1);
+							keywords.put(word, keyword);
 						}
 					}
 				}
 			}
 		} catch (IOException e) {
-			LOGGER.error("Encountered an error while collecting data: ", e);
+			LOGGER.error("Encountered an error while collecting data: ", e.getMessage());
 		}
 	}
 
@@ -99,8 +102,8 @@ public class WebScraper {
 		return set.contains(tagName);
 	}
 
-	public Map<String, Integer> getCollectedWords() {
-		return collectedWords;
+	public Map<String, WebsiteKeyword> getKeywords() {
+		return keywords;
 	}
 
 }
