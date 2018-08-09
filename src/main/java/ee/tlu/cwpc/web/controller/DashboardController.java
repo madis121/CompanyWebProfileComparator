@@ -2,6 +2,7 @@ package ee.tlu.cwpc.web.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.http.HttpSession;
@@ -27,7 +28,8 @@ public class DashboardController {
 	private Integer maxPagesToSearch;
 
 	@RequestMapping(value = "/", method = RequestMethod.GET)
-	public String openDashboard(HttpSession session, Model model) {
+	public String openDashboard(HttpSession session, Locale locale, Model model) {
+		System.out.println(locale.toString());
 		return "dashboard";
 	}
 

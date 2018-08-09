@@ -94,7 +94,6 @@ ul ul a {
 
 .modal-header {
 	border-bottom: none;
-	margin-bottom: 5rem;
 }
 
 .modal-footer {
@@ -116,3 +115,6 @@ span.profile-badge {
 	margin-right: 5px;
 }
 
+.website-data {
+	margin-top: 5rem;
+}

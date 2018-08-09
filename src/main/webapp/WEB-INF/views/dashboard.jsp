@@ -25,9 +25,9 @@
 					<div class="row">
 						<div id="new-profile-content" class="col-md-12">
 							<div class="form-group">
-								<form id="websites" action="process" method="post">
+								<form id="websites" action="process" method="post" autocomplete="on">
 									<input type="text" name="website" class="form-control col-md-10 margin-10" index="0"><a href="javascript:void(0)" onclick="appendInput();"><i class="fas fa-plus fa-2x"></i></a>
-									<a href="javascript:void(0)" id="submit" class="btn btn-dark btn-block col-md-10 margin-10" onclick="validateAndSubmit();">Submit</a>
+									<a href="javascript:void(0)" id="submit" class="btn btn-dark btn-block col-md-10 margin-10" onclick="validateAndSubmit();">Loo profiil</a>
 								</form>
 							</div>
 						</div>
@@ -96,7 +96,7 @@
 
 				$.each(websites, function(i, website) {
 					var id = 'website-' + i;
-					var div = '<div id="' + id + '"></div>';
+					var div = '<div id="' + id + '" class="website-data"></div>';
 					$(div).appendTo($('#new-profile-result'));
 					
 					var title = '<h5>' + website.url + '</h5><hr>';
