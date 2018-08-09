@@ -10,13 +10,13 @@
 		</div>
 	</div>
 	
-	<button class="btn btn-dark btn-lg fixed-bottom-right" onclick="openNewProfileModal();">Loo profiil</button>
+	<button class="btn btn-dark btn-lg fixed-bottom-right" onclick="openNewProfileModal();"><spring:message code="new.profile.modal.create" /></button>
 
 	<div class="modal fade" id="new-profile-modal" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="new-profile-label" aria-hidden="true">
 		<div class="modal-dialog modal-lg" role="document">
 			<div class="modal-content">
 				<div class="modal-header">
-					<h3 class="modal-title col-11 text-center" id="new-profile-label">Uue profiili loomine</h3>
+					<h3 class="modal-title col-11 text-center" id="new-profile-label"><spring:message code="new.profile.modal.title" /></h3>
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 						<span aria-hidden="true"><i class="fas fa-times fa-1x"></i></span>
 					</button>
@@ -27,7 +27,7 @@
 							<div class="form-group">
 								<form id="websites" action="process" method="post" autocomplete="on">
 									<input type="text" name="website" class="form-control col-md-10 margin-10" index="0"><a href="javascript:void(0)" onclick="appendInput();"><i class="fas fa-plus fa-2x"></i></a>
-									<a href="javascript:void(0)" id="submit" class="btn btn-dark btn-block col-md-10 margin-10" onclick="validateAndSubmit();">Loo profiil</a>
+									<a href="javascript:void(0)" id="submit" class="btn btn-dark btn-block col-md-10 margin-10" onclick="validateAndSubmit();"><spring:message code="new.profile.modal.create" /></a>
 								</form>
 							</div>
 						</div>
@@ -67,7 +67,7 @@
 			if (!regex.test($(this).val())) {
 				$(this).attr({
 					'data-toggle': 'tooltip',
-					'title': 'Sisestatud URL on vigane (http/https puudu?)'
+					'title': '<spring:message code="new.profile.modal.url.validation.error" />'
 				});
 				$(this).addClass('contains-errors');
 				initializeTooltips();
@@ -108,7 +108,7 @@
 					});
 				});
 				
-				var clearProfileButton = '<button id="clear-profile" class="btn btn-dark btn-lg btn-block" onclick="clearProfile();">Puhasta profiil</button>';
+				var clearProfileButton = '<button id="clear-profile" class="btn btn-dark btn-lg btn-block" onclick="clearProfile();"><spring:message code="new.profile.modal.clear" /></button>';
 				$(clearProfileButton).appendTo($('#new-profile-result'));
 				
 	    		$('#new-profile-spinner').hide();

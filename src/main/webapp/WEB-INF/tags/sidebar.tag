@@ -1,3 +1,5 @@
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+
 <!-- https://bootstrapious.com/p/bootstrap-sidebar -->
 <div id="sidebar">
 	<div class="sidebar-header">
@@ -6,7 +8,7 @@
 
 	<ul class="list-unstyled components">
 		<li>
-			<a href="${pagecontext.request.contextpath}">Profiilid</a>
+			<a href="${pagecontext.request.contextpath}"><spring:message code="sidebar.profiles" /></a>
 		</li>
 	</ul>
 	

@@ -29,7 +29,6 @@ public class DashboardController {
 
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public String openDashboard(HttpSession session, Locale locale, Model model) {
-		System.out.println(locale.toString());
 		return "dashboard";
 	}
 
