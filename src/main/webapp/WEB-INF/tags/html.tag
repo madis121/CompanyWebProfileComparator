@@ -25,8 +25,8 @@
 	</script>
 	
 	<div class="wrapper">
-		<div id="header"></div>
-		
+		<custom:header></custom:header>
+	
 		<custom:sidebar></custom:sidebar>
 		
 		<div id="content">

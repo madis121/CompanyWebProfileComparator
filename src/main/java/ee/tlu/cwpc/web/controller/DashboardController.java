@@ -2,10 +2,7 @@ package ee.tlu.cwpc.web.controller;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
-
-import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
@@ -22,19 +19,20 @@ import ee.tlu.cwpc.web.WebScraper;
 
 @Controller
 @RequestMapping("/")
-public class DashboardController {
+public class DashboardController extends BaseController {
 	
 	@Value("${max.pages.to.search:#{null}}")
 	private Integer maxPagesToSearch;
 
 	@RequestMapping(value = "/", method = RequestMethod.GET)
-	public String openDashboard(HttpSession session, Locale locale, Model model) {
+	public String openDashboard(Model model) {
+		addPageAttributesToModel(model);
 		return "dashboard";
 	}
 
 	@RequestMapping(value = "/collect-data", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	public List<WebsiteData> collectDataFromWebsites(@RequestParam(name = "website") List<String> websites, HttpSession session) {
+	public List<WebsiteData> collectDataFromWebsites(@RequestParam(name = "website") List<String> websites) {
 		List<WebsiteData> data = new ArrayList<>();
 		
 		for (String website : websites) {
