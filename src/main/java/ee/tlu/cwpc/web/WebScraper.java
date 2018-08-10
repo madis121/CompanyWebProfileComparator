@@ -27,21 +27,36 @@ import ee.tlu.cwpc.utils.Utils;
 public class WebScraper {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(WebScraper.class);
+	
+	private Integer maxPagesToSearch;
+	
+	private Integer ignoreWordsWithLength;
 
 	private Set<String> pagesVisited = new HashSet<>();
 
 	private Map<String, WebsiteKeyword> keywords = new HashMap<>();
 
-	public void search(String url, Integer maxPagesToSearch) {
-		List<String> links = getLinksFoundAtUrl(url);
-		LOGGER.debug("Found " + links.size() + " links at " + url);
-		getDataFoundAtUrl(url);
+	public WebScraper(Integer maxPagesToSearch, Integer ignoreWordsWithLength) {
+		this.maxPagesToSearch = maxPagesToSearch;
+		this.ignoreWordsWithLength = ignoreWordsWithLength == null ? 0 : ignoreWordsWithLength;
+	}
 
-		maxPagesToSearch = maxPagesToSearch != null ? maxPagesToSearch : links.size();
+	public void search(String url) {
+		List<String> links = new ArrayList<>();
+		url = Utils.cleanUrl(url);
+		url = Utils.removeParametersFromUrl(url);
+		
+		if (!pagesVisited.contains(url) && !Utils.urlContainsHashtag(url)) {
+			links = getLinksFoundAtUrl(url);
+			LOGGER.debug("Found " + links.size() + " links at " + url);
+			getDataFoundAtUrl(url);
+		}
+		
+		//maxPagesToSearch = maxPagesToSearch != null ? maxPagesToSearch : links.size();
 
 		for (String link : links) {
 			if (!pagesVisited.contains(link) && !Utils.urlContainsHashtag(link)) {
-				search(link, maxPagesToSearch);
+				search(link);
 			}
 		}
 	}
@@ -82,7 +97,7 @@ public class WebScraper {
 					for (String word : wordsInElement) {
 						word = Utils.removeNonWordCharacters(word).toLowerCase();
 
-						if (!StringUtils.isBlank(word)) {
+						if (!StringUtils.isBlank(word) && word.length() > ignoreWordsWithLength) {
 							WebsiteKeyword keyword = keywords.getOrDefault(word, new WebsiteKeyword(word, 0));
 							keyword.setCount(keyword.getCount() + 1);
 							keywords.put(word, keyword);

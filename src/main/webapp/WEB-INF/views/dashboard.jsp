@@ -25,7 +25,7 @@
 					<div class="row">
 						<div id="new-profile-content" class="col-md-12">
 							<div class="form-group">
-								<form id="websites" action="process" method="post" autocomplete="on">
+								<form id="websites" autocomplete="on">
 									<input type="text" name="website" class="form-control col-md-10 margin-10" index="0"><a href="javascript:void(0)" onclick="appendInput();"><i class="fas fa-plus fa-2x"></i></a>
 									<a href="javascript:void(0)" id="submit" class="btn btn-dark btn-block col-md-10 margin-10" onclick="validateAndSubmit();"><spring:message code="new.profile.modal.create" /></a>
 								</form>

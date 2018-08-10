@@ -1,9 +1,11 @@
 package ee.tlu.cwpc.web.controller;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -15,11 +17,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import ee.tlu.cwpc.dto.WebsiteData;
 import ee.tlu.cwpc.dto.WebsiteKeyword;
+import ee.tlu.cwpc.utils.Utils;
 import ee.tlu.cwpc.web.WebScraper;
 
 @Controller
 @RequestMapping("/")
 public class DashboardController extends BaseController {
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(DashboardController.class);
 	
 	@Value("${max.pages.to.search:#{null}}")
 	private Integer maxPagesToSearch;
@@ -36,10 +41,12 @@ public class DashboardController extends BaseController {
 		List<WebsiteData> data = new ArrayList<>();
 		
 		for (String website : websites) {
-			WebScraper webScraper = new WebScraper();
-			webScraper.search(website, maxPagesToSearch);
-			Map<String, WebsiteKeyword> keywords = webScraper.getKeywords();
-			data.add(new WebsiteData(website, new ArrayList<>(keywords.values())));
+			WebScraper webScraper = new WebScraper(null, 2);
+			webScraper.search(website);
+			List<WebsiteKeyword> keywords = new ArrayList<>(webScraper.getKeywords().values());
+			Collections.sort(keywords);
+			data.add(new WebsiteData(website, keywords.subList(0, 50)));
+			LOGGER.debug("Finished scraping data from " + website);
 		}
 		
 		return data;

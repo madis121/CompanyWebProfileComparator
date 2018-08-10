@@ -1,6 +1,6 @@
 package ee.tlu.cwpc.dto;
 
-public class WebsiteKeyword {
+public class WebsiteKeyword implements Comparable<WebsiteKeyword> {
 
 	private String word;
 
@@ -34,6 +34,11 @@ public class WebsiteKeyword {
 	@Override
 	public String toString() {
 		return "WebsiteKeyword [word=" + word + ", count=" + count + "]";
+	}
+
+	@Override
+	public int compareTo(WebsiteKeyword comparable) {
+		return comparable.getCount() - this.count;
 	}
 
 }
