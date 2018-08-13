@@ -8,13 +8,6 @@
 	
 	<div class="container">
 		<div class="row">
-			<c:if test="${action eq 'save'}">
-				<div class="alert alert-success alert-dismissible fade show col-12 text-center">
-				  <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-				  <strong><spring:message code="dashboard.create.new.profile.success" /></strong>
-				</div>
-			</c:if>
-			
 			<table class="table table-striped table-bordered">
 				<thead>
 					<tr>
@@ -72,8 +65,14 @@
 	<div class="modal fade" id="profile-edit-modal" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="profile-edit-label" aria-hidden="true"></div>
 
 <script>
+	var ACTION_SAVE = "save";
+
 	$(document).ready(function() {
 		$.ajaxSetup({ async: false });
+		
+		if ("${action}" == ACTION_SAVE) {
+			$.notify("<spring:message code="dashboard.create.new.profile.success" />");
+		}
 	});
 
 	function openNewProfileModal() {
