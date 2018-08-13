@@ -6,9 +6,9 @@
 		<h3>&nbsp;</h3>
 	</div>
 
-	<ul class="list-unstyled components">
-		<li>
-			<a href="${pagecontext.request.contextpath}"><spring:message code="sidebar.profiles" /></a>
+	<ul class="components">
+		<li class="sidebar-item">
+			<a href="${pageContext.request.contextPath}"><i class="fas fa-address-card"></i>&nbsp;<span><spring:message code="sidebar.profiles" /></span></a>
 		</li>
 	</ul>
 	
@@ -19,15 +19,24 @@
 
 <script>
 	$(document).ready(function() {
-		/*
-		$("#sidebar-collapse").click(function() {
-			console.log("click");
-			if (!$("#sidebar").hasClass("active")) {
-				$("#sidebar").addClass("active");
+		$('#sidebar-collapse').click(function() {
+			if (!$('#sidebar').hasClass('active')) {
+				$('#sidebar').addClass('active');
+				$('#sidebar-collapse').addClass('active');
+				$('#header').addClass('active');
+				
+				$.each($('#sidebar .sidebar-item'), function(i, obj) {
+					$(this).addClass('active');
+				});
 			} else {
-				$("#sidebar").removeClass("active");
+				$('#sidebar').removeClass('active');
+				$('#sidebar-collapse').removeClass('active');
+				$('#header').removeClass('active');
+				
+				$.each($('#sidebar .sidebar-item'), function(i, obj) {
+					$(this).removeClass('active');
+				});
 			}
 		});
-		*/
 	});
 </script>

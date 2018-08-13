@@ -8,7 +8,7 @@
 					<a class="nav-link dropdown-toggle" href="javascript:void(0)" id="languages" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">${currentLanguage} </a>
 					<div class="dropdown-menu" aria-labelledby="languages">
 						<c:forEach var="language" items="${supportedLanguages}">
-							<a class="dropdown-item language" href="${pagecontext.request.contextpath}?language=${language}">${language}</a>
+							<a class="dropdown-item language" href="${pageContext.request.contextPath}?language=${language}">${language}</a>
 						</c:forEach>
 					</div>
 				</li>

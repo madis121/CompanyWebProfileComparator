@@ -19,7 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import ee.tlu.cwpc.dto.WebsiteKeyword;
-import ee.tlu.cwpc.utils.Utils;
+import ee.tlu.cwpc.helper.URLHelper;
 
 /**
  * http://www.netinstructions.com/how-to-make-a-simple-web-crawler-in-java/
@@ -43,10 +43,10 @@ public class WebScraper {
 
 	public void search(String url) {
 		List<String> links = new ArrayList<>();
-		url = Utils.cleanUrl(url);
-		url = Utils.removeParametersFromUrl(url);
+		url = URLHelper.clean(url);
+		url = URLHelper.removeParameters(url);
 		
-		if (!pagesVisited.contains(url) && !Utils.urlContainsHashtag(url)) {
+		if (!pagesVisited.contains(url) && !URLHelper.containsHashtag(url)) {
 			links = getLinksFoundAtUrl(url);
 			LOGGER.debug("Found " + links.size() + " links at " + url);
 			getDataFoundAtUrl(url);
@@ -55,7 +55,7 @@ public class WebScraper {
 		//maxPagesToSearch = maxPagesToSearch != null ? maxPagesToSearch : links.size();
 
 		for (String link : links) {
-			if (!pagesVisited.contains(link) && !Utils.urlContainsHashtag(link)) {
+			if (!pagesVisited.contains(link) && !URLHelper.containsHashtag(link)) {
 				search(link);
 			}
 		}
@@ -95,7 +95,7 @@ public class WebScraper {
 					String[] wordsInElement = element.text().split(" ");
 
 					for (String word : wordsInElement) {
-						word = Utils.removeNonWordCharacters(word).toLowerCase();
+						word = URLHelper.removeNonWordCharacters(word).toLowerCase();
 
 						if (!StringUtils.isBlank(word) && word.length() > ignoreWordsWithLength) {
 							WebsiteKeyword keyword = keywords.getOrDefault(word, new WebsiteKeyword(word, 0));

@@ -1,11 +1,11 @@
-package ee.tlu.cwpc.utils;
+package ee.tlu.cwpc.helper;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Utils {
+public class URLHelper {
 
-	public static String cleanUrl(String url) {
+	public static String clean(String url) {
 		int lastSlash = url.lastIndexOf("/");
 		int urlLength = url.length();
 		
@@ -23,14 +23,14 @@ public class Utils {
 		return url;
 	}
 	
-	public static String removeParametersFromUrl(String url) {
+	public static String removeParameters(String url) {
 		if (url.contains("?")) {
 			url = url.substring(0, url.indexOf("?"));
 		}
 		return url;
 	}
 	
-	public static boolean urlContainsHashtag(String url) {
+	public static boolean containsHashtag(String url) {
 		if (url.contains("#")) {
 			return true;
 		}

@@ -11,14 +11,21 @@
 	<properties>
 		<java.version>1.8</java.version>
 		<spring-webmvc.version>5.0.8.RELEASE</spring-webmvc.version>
+		<spring-orm.version>5.0.8.RELEASE</spring-orm.version>
 		<jackson-mapper.version>1.9.13</jackson-mapper.version>
 		<jackson.version>2.9.6</jackson.version>
 		<servlet-api.version>2.5</servlet-api.version>
 		<jsp-api.version>2.3.1</jsp-api.version>
 		<jstl.version>1.2</jstl.version>
+		<hibernate.version>5.3.4.Final</hibernate.version>
+		<postgresql.version>9.4.1212</postgresql.version>
+		<tomcat-dbcp.version>9.0.10</tomcat-dbcp.version>
 		<jsoup.version>1.11.3</jsoup.version>
 		<logback.version>1.2.3</logback.version>
 		<apache-commons-lang3.version>3.7</apache-commons-lang3.version>
+		<joda-time.version>2.10</joda-time.version>
+		<joda-time-jsptags.version>1.1.1</joda-time-jsptags.version>
+		<usertype.version>7.0.0.CR1</usertype.version>
 	</properties>
 
 	<dependencies>
@@ -27,7 +34,11 @@
 			<artifactId>spring-webmvc</artifactId>
 			<version>${spring-webmvc.version}</version>
 		</dependency>
-
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-orm</artifactId>
+			<version>${spring-orm.version}</version>
+		</dependency>
 		<dependency>
 			<groupId>org.codehaus.jackson</groupId>
 			<artifactId>jackson-mapper-asl</artifactId>
@@ -65,6 +76,22 @@
 		</dependency>
 
 		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-core</artifactId>
+			<version>${hibernate.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>${postgresql.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.tomcat</groupId>
+			<artifactId>tomcat-dbcp</artifactId>
+			<version>${tomcat-dbcp.version}</version>
+		</dependency>
+
+		<dependency>
 			<groupId>org.jsoup</groupId>
 			<artifactId>jsoup</artifactId>
 			<version>${jsoup.version}</version>
@@ -80,6 +107,22 @@
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
 			<version>${apache-commons-lang3.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>joda-time</groupId>
+			<artifactId>joda-time</artifactId>
+			<version>${joda-time.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>joda-time</groupId>
+			<artifactId>joda-time-jsptags</artifactId>
+			<version>${joda-time-jsptags.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.jadira.usertype</groupId>
+			<artifactId>usertype.core</artifactId>
+			<version>${usertype.version}</version>
 		</dependency>
 	</dependencies>
 

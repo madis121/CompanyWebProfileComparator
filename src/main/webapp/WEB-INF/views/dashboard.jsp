@@ -1,12 +1,40 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
+<%@ taglib prefix="joda" uri="http://www.joda.org/joda/time/tags"%>
 <%@ taglib prefix="custom" tagdir="/WEB-INF/tags" %>
 
 <custom:html>
 	
 	<div class="container">
 		<div class="row">
+			<c:if test="${action eq 'save'}">
+				<div class="alert alert-success alert-dismissible fade show col-12 text-center">
+				  <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+				  <strong><spring:message code="dashboard.create.new.profile.success" /></strong>
+				</div>
+			</c:if>
+			
+			<table class="table table-striped table-bordered">
+				<thead>
+					<tr>
+						<th scope="col">#</th>
+						<th scope="col"><spring:message code="dashboard.profiles.table.name" /></th>
+						<th scope="col"><spring:message code="dashboard.profiles.table.lastUpdated" /></th>
+						<th scope="col">&nbsp;</th>
+					</tr>
+				</thead>
+				<tbody>
+					<c:forEach items="${profiles}" var="profile" varStatus="loop">
+						<tr>
+							<td scope="col">${loop.index}</td>
+							<td>${profile.name}</td>
+							<td><joda:format value="${profile.updated}" pattern="dd-MM-yyyy HH:mm:ss" /></td>
+							<td><a href="javascript:void(0)" onclick="showProfileEditModal('${profile.id}');"><i class="fas fa-edit"></i></a></td>
+						</tr>
+					</c:forEach>
+				</tbody>
+			</table>
 		</div>
 	</div>
 	
@@ -40,6 +68,29 @@
 			</div>
 		</div>
 	</div>
+	
+	<div class="modal fade" id="test-modal" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="test-modal-label" aria-hidden="true">
+		<div class="modal-dialog modal-lg" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h3 class="modal-title col-11 text-center" id="test-modal-label">Test</h3>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true"><i class="fas fa-times fa-1x"></i></span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<div class="row">
+						<div class="col-md-12">
+
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer"></div>
+			</div>
+		</div>
+	</div>
+	
+	<div class="modal fade" id="profile-edit-modal" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="profile-edit-label" aria-hidden="true"></div>
 	
 <script>
 	function openNewProfileModal() {
@@ -103,13 +154,16 @@
 					$(title).appendTo($('#' + id));
 					
 					$.each(website.keywords, function(j, object) {
-			    		var badge = '<span class="badge badge-dark profile-badge">' + object.word + ' <a href="javascript:void(0)" onclick="removeBadge(this);">&times;</a></span>';
+			    		var badge = '<span class="badge badge-dark keyword" keyword="' + object.word + '">' + object.word + ' <a href="javascript:void(0)" onclick="removeBadge(this);">&times;</a></span>';
 			    		$(badge).appendTo($('#' + id));
 					});
 				});
 				
-				var clearProfileButton = '<button id="clear-profile" class="btn btn-dark btn-lg btn-block" onclick="clearProfile();"><spring:message code="new.profile.modal.clear" /></button>';
+				var clearProfileButton = '<a class="btn btn-dark btn-lg profile-btn float-left" onclick="clearProfile();"><spring:message code="new.profile.modal.clear" /></a>';
 				$(clearProfileButton).appendTo($('#new-profile-result'));
+				
+				var saveProfileButton = '<a class="btn btn-dark btn-lg profile-btn float-right" onclick="saveProfile();"><spring:message code="new.profile.modal.save" /></a>';
+				$(saveProfileButton).appendTo($('#new-profile-result'));
 				
 	    		$('#new-profile-spinner').hide();
 	    		$('#new-profile-result').show();
@@ -133,6 +187,35 @@
 				$(this).val('');
 			}
 		});
+	}
+	
+	function saveProfile() {
+		var $form = $('<form />', { action: 'save-profile', method: 'POST' });
+		var name = $('<input />', { name: 'name', type: 'hidden', value: 'saved-profile' });
+		$form.append(name);
+		
+		$.each($('#new-profile-result h5'), function(i, obj) {
+			var url = $('<input />', { name: 'url', type: 'hidden', value: $(this).html() });
+			$form.append(url);
+		});
+		
+		$.each($('#new-profile-result [keyword]'), function(i, obj) {
+			var keyword = $('<input />', { name: 'keyword', type: 'hidden', value: $(this).attr('keyword') });
+			$form.append(keyword);
+		});
+		
+		$form.appendTo($('#new-profile-result'));
+		$form.submit();
+	}
+	
+	function showProfileEditModal(profileId) {
+	    $('#profile-edit-modal').empty();
+	    $('#profile-edit-modal').load('${pageContext.request.contextPath}/edit-profile?id=' + profileId);
+	    $('#profile-edit-modal').modal('show');
+	}
+	
+	function saveProfileChanges() {
+		console.log('saveProfileChanges');
 	}
 </script>
 	
