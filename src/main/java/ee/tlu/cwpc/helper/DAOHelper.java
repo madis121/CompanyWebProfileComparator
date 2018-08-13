@@ -22,7 +22,9 @@ public class DAOHelper {
 			profile.addKeyword(keyword);
 		}
 		
-		profile.setCreated(DateTime.now());
+		DateTime date = DateTime.now();
+		profile.setCreated(date);
+		profile.setUpdated(date);
 		return profile;
 	}
 
