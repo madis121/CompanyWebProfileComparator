@@ -11,18 +11,18 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import ee.tlu.cwpc.dao.ProfileDAO;
 import ee.tlu.cwpc.dto.WebsiteData;
 import ee.tlu.cwpc.dto.WebsiteKeyword;
-import ee.tlu.cwpc.helper.DAOHelper;
 import ee.tlu.cwpc.model.Keyword;
 import ee.tlu.cwpc.model.Profile;
 import ee.tlu.cwpc.model.Url;
+import ee.tlu.cwpc.service.ProfileService;
 import ee.tlu.cwpc.web.WebScraper;
 
 @Controller
@@ -32,17 +32,18 @@ public class DashboardController extends BaseController {
 	private static final Logger LOGGER = LoggerFactory.getLogger(DashboardController.class);
 
 	@Autowired
-	private ProfileDAO profileDAO;
+	private ProfileService profileService;
 
 	@Value("${max.pages.to.search:#{null}}")
 	private Integer maxPagesToSearch;
-
+	
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public String openDashboard(@RequestParam(name = "action", required = false, defaultValue = "") String action,
-			Model model) {
-		List<Profile> profiles = profileDAO.findAll();
+			@RequestParam(name = "hasErrors", required = false, defaultValue = "false") boolean hasErrors, Model model) {
+		List<Profile> profiles = profileService.getProfiles();
 		model.addAttribute("profiles", profiles);
 		model.addAttribute("action", action);
+		model.addAttribute("hasErrors", hasErrors);
 		addPageAttributesToModel(model);
 		return "dashboard";
 	}
@@ -64,20 +65,36 @@ public class DashboardController extends BaseController {
 		return data;
 	}
 
-	@RequestMapping(value = "/save-profile", method = RequestMethod.POST)
-	public String saveProfile(@RequestParam(name = "name") String name, @RequestParam(name = "url") List<Url> urls,
+	@RequestMapping(value = "/create-profile", method = RequestMethod.POST)
+	public String createProfile(@RequestParam(name = "name") String name, @RequestParam(name = "url") List<Url> urls,
 			@RequestParam(name = "keyword") List<Keyword> keywords) {
-		Profile profile = DAOHelper.createProfile(name, urls, keywords);
-		profileDAO.save(profile);
-		LOGGER.debug("Created new profile with id: " + profile.getId() + ", name: " + profile.getName());
-		return "redirect:/?action=save";
+		profileService.createProfile(name, urls, keywords);
+		return "redirect:/?action=profileSaved";
 	}
-	
-	@RequestMapping(value = "/edit-profile", method = RequestMethod.GET)
-	public String editProfile(@RequestParam(name = "id") long id, Model model) {
-		Profile profile = profileDAO.findOne(id);
+
+	@RequestMapping(value = "/open-profile", method = RequestMethod.GET)
+	public String openProfile(@RequestParam(name = "id") long id, Model model) {
+		Profile profile = profileService.getProfile(id);
 		model.addAttribute("profile", profile);
-		return "profileEditModal";
+		return "profileModal";
+	}
+
+	@RequestMapping(value = "/update-profile", method = RequestMethod.POST)
+	public String updateProfile(@ModelAttribute(name = "profile") Profile profile) {
+		return "redirect:/?action=profileUpdated";
+	}
+
+	@RequestMapping(value = "/delete-profile-alert", method = RequestMethod.GET)
+	public String deleteProfileAlert(@RequestParam(name = "id") long id, Model model) {
+		Profile profile = profileService.getProfile(id);
+		model.addAttribute("profile", profile);
+		return "deleteProfileAlert";
+	}
+
+	@RequestMapping(value = "/delete-profile", method = RequestMethod.POST)
+	public String deleteProfile(@RequestParam(name = "id") long id) {
+		profileService.deleteProfile(id);
+		return "redirect:/?action=profileDeleted";
 	}
 
 }

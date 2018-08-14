@@ -9,13 +9,11 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import ee.tlu.cwpc.dao.ProfileDAO;
 import ee.tlu.cwpc.model.Profile;
 
 @Repository("profileDAO")
-@Transactional
 public class BasicProfileDAO implements ProfileDAO {
 
 	@Autowired

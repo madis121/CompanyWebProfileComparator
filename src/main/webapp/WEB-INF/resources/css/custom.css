@@ -107,20 +107,18 @@ ul ul a {
 	margin: 10px;
 }
 
-.profile-btn {
-	margin-top: 5rem;
-}
-
 .form-control {
 	display: inline-block;
 }
 
 .modal-header {
 	border-bottom: none;
+	margin-bottom: 3rem;
 }
 
 .modal-footer {
 	border-top: none;
+	margin-top: 3rem;
 }
 
 button.fixed-bottom-right {
@@ -139,9 +137,13 @@ input.contains-errors {
 }
 
 .website-data {
-	margin-top: 5rem;
+	margin-top: 3rem;
 }
 
 a.btn-dark {
 	color: #fff !important;
+}
+
+th.narrow {
+	width: 50px;
 }

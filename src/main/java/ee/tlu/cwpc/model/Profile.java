@@ -12,6 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.joda.time.DateTime;
@@ -93,6 +94,20 @@ public class Profile {
 		keywords.remove(keyword);
 		keyword.setProfile(null);
 	}
+	
+	public String getCommaSeperatedKeywords() {
+		if (CollectionUtils.isNotEmpty(keywords)) {
+			StringBuffer buffer = new StringBuffer();
+			
+			for (Keyword keyword : keywords) {
+				buffer.append(keyword.getWord()).append(",");
+			}
+			
+			buffer.deleteCharAt(buffer.lastIndexOf(","));
+			return buffer.toString();
+		}
+		return null;
+	}
 
 	public DateTime getCreated() {
 		return created;
@@ -112,7 +127,7 @@ public class Profile {
 
 	@Override
 	public String toString() {
-		return "Profile [id=" + id + ", name=" + name + ", urlsUsed=" + urls + ", keywords=" + keywords + ", created="
+		return "Profile [id=" + id + ", name=" + name + ", urls=" + urls + ", keywords=" + keywords + ", created="
 				+ created + ", updated=" + updated + "]";
 	}
 

@@ -11,10 +11,11 @@
 			<table class="table table-striped table-bordered">
 				<thead>
 					<tr>
-						<th scope="col">#</th>
+						<th scope="col" class="narrow">#</th>
 						<th scope="col"><spring:message code="dashboard.profiles.table.name" /></th>
 						<th scope="col"><spring:message code="dashboard.profiles.table.lastUpdated" /></th>
-						<th scope="col">&nbsp;</th>
+						<th scope="col" class="narrow">&nbsp;</th>
+						<th scope="col" class="narrow">&nbsp;</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -23,7 +24,8 @@
 							<td scope="col">${loop.index}</td>
 							<td>${profile.name}</td>
 							<td><joda:format value="${profile.updated}" pattern="dd-MM-yyyy HH:mm:ss" /></td>
-							<td><a href="javascript:void(0)" onclick="showProfileEditModal('${profile.id}');"><i class="fas fa-edit"></i></a></td>
+							<td><a href="javascript:void(0)" onclick="openProfileModal('${profile.id}');"><i class="fas fa-edit"></i></a></td>
+							<td><a href="javascript:void(0)" onclick="deleteProfileAlert('${profile.id}');"><i class="fas fa-trash"></i></a>
 						</tr>
 					</c:forEach>
 				</tbody>
@@ -33,7 +35,7 @@
 	
 	<button class="btn btn-dark btn-lg fixed-bottom-right" onclick="openNewProfileModal();"><spring:message code="new.profile.modal.create" /></button>
 
-	<div class="modal hide fade" id="new-profile-modal" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="new-profile-label" aria-hidden="true">
+	<div class="modal fade" id="new-profile-modal" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="new-profile-label" aria-hidden="true">
 		<div class="modal-dialog modal-lg" role="document">
 			<div class="modal-content">
 				<div class="modal-header">
@@ -54,26 +56,56 @@
 						</div>
 						
 						<i id="new-profile-spinner" class="fas fa-spinner fa-spin fa-5x col-md-11 text-center" style="display:none;"></i>
-						<div id="new-profile-result" class="col-md-12" style="display:none;"></div>
+						<div id="new-profile-result" class="col-md-12" style="display:none;">
+							<form id="create-profile" action="create-profile" method="post">
+								<div class="form-group row col-md-12">
+									<label class="col-form-label col-md-2"><spring:message code="new.profile.modal.name" /></label>
+									<input name="name" type="text" class="form-control col-md-10">
+								</div>
+							</form>
+						</div>
 					</div>
 				</div>
-				<div class="modal-footer"></div>
+				<div class="modal-footer">
+					<div id="new-profile-buttons" class="col-md-12" style="display:none;">
+						<a class="btn btn-dark btn-lg float-left" onclick="clearProfile();"><spring:message code="new.profile.modal.clear" /></a>
+						<a class="btn btn-dark btn-lg float-right" onclick="saveProfile();"><spring:message code="new.profile.modal.save" /></a>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>
 	
+	<form id="delete-profile" action="delete-profile" method="post">
+		<input name="id" type="hidden">
+	</form>
+	
 	<div class="modal fade" id="profile-edit-modal" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="profile-edit-label" aria-hidden="true"></div>
-
+	<div class="modal fade" id="profile-delete-modal" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="profile-delete-label" aria-hidden="true"></div>
 <script>
-	var ACTION_SAVE = "save";
+	var PROFILE_SAVED = "profileSaved";
+	var PROFILE_UPDATED = "profileUpdated";
+	var PROFILE_DELETED = "profileDeleted";
 
 	$(document).ready(function() {
 		$.ajaxSetup({ async: false });
-		
-		if ("${action}" == ACTION_SAVE) {
-			$.notify("<spring:message code="dashboard.create.new.profile.success" />");
-		}
+		displayNotifications();
 	});
+	
+	function displayNotifications() {
+		if ('${action}' == PROFILE_SAVED && '${not hasErrors}') {
+			$.notify('<i class="fas fa-check"></i> <spring:message code="notification.profile.saved" />');
+		}
+		if ('${action}' == PROFILE_UPDATED && '${not hasErrors}') {
+			$.notify('<i class="fas fa-check"></i> <spring:message code="notification.profile.updated" />');
+		}
+		if ('${action}' == PROFILE_DELETED && '${not hasErrors}') {
+			$.notify('<i class="fas fa-check"></i> <spring:message code="notification.profile.deleted" />');
+		}
+		if ('${hasErrors}' == 'true') {
+			$.notify({ message: '<i class="fas fa-exclamation-triangle"></i> <spring:message code="notification.common.error" />' }, { type: 'danger' });
+		}
+	}
 
 	function openNewProfileModal() {
 		$('#new-profile-modal').modal('show');
@@ -130,7 +162,7 @@
 
 				$.each(websites, function(i, website) {
 					var id = 'website-' + i;
-					var div = '<div id="' + id + '" class="website-data"></div>';
+					var div = '<div id="' + id + '" class="website-data col-md-12"></div>';
 					$(div).appendTo($('#new-profile-result'));
 					
 					var title = '<h5>' + website.url + '</h5><hr>';
@@ -142,13 +174,8 @@
 					});
 				});
 				
-				var clearProfileButton = '<a class="btn btn-dark btn-lg profile-btn float-left" onclick="clearProfile();"><spring:message code="new.profile.modal.clear" /></a>';
-				$(clearProfileButton).appendTo($('#new-profile-result'));
-				
-				var saveProfileButton = '<a class="btn btn-dark btn-lg profile-btn float-right" onclick="saveProfile();"><spring:message code="new.profile.modal.save" /></a>';
-				$(saveProfileButton).appendTo($('#new-profile-result'));
-				
 	    		$('#new-profile-spinner').hide();
+				$('#new-profile-buttons').show();
 	    		$('#new-profile-result').show();
 			}
 		});
@@ -159,6 +186,7 @@
 	}
 	
 	function clearProfile() {
+		$('#new-profile-buttons').hide();
 		$('#new-profile-result').html('');
 		$('#new-profile-content').show();
 		
@@ -172,33 +200,40 @@
 		});
 	}
 	
-	function saveProfile() {
-		var $form = $('<form />', { action: 'save-profile', method: 'POST' });
-		var name = $('<input />', { name: 'name', type: 'hidden', value: 'saved-profile' });
-		$form.append(name);
-		
+	function saveProfile() {	
 		$.each($('#new-profile-result h5'), function(i, obj) {
 			var url = $('<input />', { name: 'url', type: 'hidden', value: $(this).html() });
-			$form.append(url);
+			$('#create-profile').append(url);
 		});
 		
 		$.each($('#new-profile-result [keyword]'), function(i, obj) {
 			var keyword = $('<input />', { name: 'keyword', type: 'hidden', value: $(this).attr('keyword') });
-			$form.append(keyword);
+			$('#create-profile').append(keyword);
 		});
 		
-		$form.appendTo($('#new-profile-result'));
-		$form.submit();
+		$('#create-profile').submit();
 	}
 	
-	function showProfileEditModal(profileId) {
+	function openProfileModal(profileId) {
 	    $('#profile-edit-modal').empty();
-	    $('#profile-edit-modal').load('${pageContext.request.contextPath}/edit-profile?id=' + profileId);
+	    $('#profile-edit-modal').load('${pageContext.request.contextPath}/open-profile?id=' + profileId);
+	    initializeInputTags();
 	    $('#profile-edit-modal').modal('show');
 	}
 	
 	function saveProfileChanges() {
-		console.log('saveProfileChanges');
+		$('#update-profile').submit();
+	}
+	
+	function deleteProfileAlert(profileId) {
+	    $('#profile-edit-modal').empty();
+	    $('#profile-edit-modal').load('${pageContext.request.contextPath}/delete-profile-alert?id=' + profileId);
+	    $('#profile-edit-modal').modal('show');
+	}
+	
+	function deleteProfile(profileId) {
+		$('#delete-profile [name="id"]').val(profileId);
+		$('#delete-profile').submit();
 	}
 </script>
 	

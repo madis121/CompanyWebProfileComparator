@@ -22,7 +22,8 @@
 		<tomcat-dbcp.version>9.0.10</tomcat-dbcp.version>
 		<jsoup.version>1.11.3</jsoup.version>
 		<logback.version>1.2.3</logback.version>
-		<apache-commons-lang3.version>3.7</apache-commons-lang3.version>
+		<commons-lang3.version>3.7</commons-lang3.version>
+		<commons-collections4.version>4.2</commons-collections4.version>
 		<joda-time.version>2.10</joda-time.version>
 		<joda-time-jsptags.version>1.1.1</joda-time-jsptags.version>
 		<usertype.version>7.0.0.CR1</usertype.version>
@@ -106,7 +107,12 @@
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
-			<version>${apache-commons-lang3.version}</version>
+			<version>${commons-lang3.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-collections4</artifactId>
+			<version>${commons-collections4.version}</version>
 		</dependency>
 
 		<dependency>

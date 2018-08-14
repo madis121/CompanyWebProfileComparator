@@ -11,7 +11,7 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.ui.Model;
 
 public class BaseController {
-
+	
 	@Autowired
 	protected MessageSource messageSource;
 	
