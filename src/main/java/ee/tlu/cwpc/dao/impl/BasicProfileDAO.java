@@ -2,11 +2,9 @@ package ee.tlu.cwpc.dao.impl;
 
 import java.util.List;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -27,12 +25,11 @@ public class BasicProfileDAO implements ProfileDAO {
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
 	public List<Profile> findAll() {
 		Session session = sessionFactory.getCurrentSession();
-		CriteriaBuilder builder = session.getCriteriaBuilder();
-		CriteriaQuery<Profile> query = builder.createQuery(Profile.class);
-		query.from(Profile.class);
-		List<Profile> profiles = session.createQuery(query).getResultList();
+		Query<Profile> query = session.createQuery("FROM Profile ORDER BY id");
+		List<Profile> profiles = query.list();
 		return profiles;
 	}
 

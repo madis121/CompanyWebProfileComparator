@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +12,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -36,7 +36,7 @@ public class DashboardController extends BaseController {
 
 	@Value("${max.pages.to.search:#{null}}")
 	private Integer maxPagesToSearch;
-	
+
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public String openDashboard(@RequestParam(name = "action", required = false, defaultValue = "") String action,
 			@RequestParam(name = "hasErrors", required = false, defaultValue = "false") boolean hasErrors, Model model) {
@@ -66,8 +66,8 @@ public class DashboardController extends BaseController {
 	}
 
 	@RequestMapping(value = "/create-profile", method = RequestMethod.POST)
-	public String createProfile(@RequestParam(name = "name") String name, @RequestParam(name = "url") List<Url> urls,
-			@RequestParam(name = "keyword") List<Keyword> keywords) {
+	public String createProfile(@RequestParam(name = "name") String name, @RequestParam(name = "urls") List<Url> urls,
+			@RequestParam(name = "keywords") List<Keyword> keywords) {
 		profileService.createProfile(name, urls, keywords);
 		return "redirect:/?action=profileSaved";
 	}
@@ -75,12 +75,16 @@ public class DashboardController extends BaseController {
 	@RequestMapping(value = "/open-profile", method = RequestMethod.GET)
 	public String openProfile(@RequestParam(name = "id") long id, Model model) {
 		Profile profile = profileService.getProfile(id);
+		List<String> keywords = profileService.getProfileKeywords(id);
 		model.addAttribute("profile", profile);
+		model.addAttribute("keywordListString", StringUtils.join(keywords, ","));
 		return "profileModal";
 	}
 
 	@RequestMapping(value = "/update-profile", method = RequestMethod.POST)
-	public String updateProfile(@ModelAttribute(name = "profile") Profile profile) {
+	public String updateProfile(@RequestParam(name = "id") long id, @RequestParam(name = "name") String name,
+			@RequestParam(name = "keywords") List<Keyword> keywords) {
+		profileService.updateProfile(id, name, keywords);
 		return "redirect:/?action=profileUpdated";
 	}
 

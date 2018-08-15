@@ -47,20 +47,26 @@
 				<div class="modal-body">
 					<div class="row">
 						<div id="new-profile-content" class="col-md-12">
-							<div class="form-group">
-								<form id="websites" autocomplete="on">
+							<form id="websites" autocomplete="on">
+								<div class="form-group">
 									<input type="text" name="website" class="form-control col-md-10 margin-10" index="0"><a href="javascript:void(0)" onclick="appendInput();"><i class="fas fa-plus fa-2x"></i></a>
 									<a href="javascript:void(0)" id="submit" class="btn btn-dark btn-block col-md-10 margin-10" onclick="validateAndSubmit();"><spring:message code="new.profile.modal.create" /></a>
-								</form>
-							</div>
+								</div>
+							</form>
 						</div>
 						
 						<i id="new-profile-spinner" class="fas fa-spinner fa-spin fa-5x col-md-11 text-center" style="display:none;"></i>
+						
 						<div id="new-profile-result" class="col-md-12" style="display:none;">
 							<form id="create-profile" action="create-profile" method="post">
+								<input name="urls" type="hidden">
 								<div class="form-group row col-md-12">
 									<label class="col-form-label col-md-2"><spring:message code="new.profile.modal.name" /></label>
-									<input name="name" type="text" class="form-control col-md-10">
+									<input class="form-control col-md-10" name="name" type="text">
+								</div>
+								<div class="form-group row col-md-12">
+									<label class="col-form-label col-md-2"><spring:message code="new.profile.modal.keywords" /></label>
+									<input class="form control col-md-10" name="keywords" data-role="tagsinput">
 								</div>
 							</form>
 						</div>
@@ -82,6 +88,7 @@
 	
 	<div class="modal fade" id="profile-edit-modal" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="profile-edit-label" aria-hidden="true"></div>
 	<div class="modal fade" id="profile-delete-modal" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="profile-delete-label" aria-hidden="true"></div>
+
 <script>
 	var PROFILE_SAVED = "profileSaved";
 	var PROFILE_UPDATED = "profileUpdated";
@@ -159,21 +166,18 @@
 			async : true,
 			success : function(websites) {
 				console.log(websites);
+				var urls = [];
 
 				$.each(websites, function(i, website) {
-					var id = 'website-' + i;
-					var div = '<div id="' + id + '" class="website-data col-md-12"></div>';
-					$(div).appendTo($('#new-profile-result'));
-					
-					var title = '<h5>' + website.url + '</h5><hr>';
-					$(title).appendTo($('#' + id));
+					urls.push(website.url);
 					
 					$.each(website.keywords, function(j, object) {
-			    		var badge = '<span class="badge badge-dark keyword" keyword="' + object.word + '">' + object.word + ' <a href="javascript:void(0)" onclick="removeBadge(this);">&times;</a></span>';
-			    		$(badge).appendTo($('#' + id));
+			    		$('#create-profile [name="keywords"]').tagsinput('add', object.word);
 					});
 				});
 				
+				$('#create-profile [name="urls"]').val(urls.toString());
+				$('.bootstrap-tagsinput').addClass('col-md-10');
 	    		$('#new-profile-spinner').hide();
 				$('#new-profile-buttons').show();
 	    		$('#new-profile-result').show();
@@ -186,8 +190,11 @@
 	}
 	
 	function clearProfile() {
+		$('#create-profile [name="name"]').val('');
+		$('#create-profile [name="keywords"]').tagsinput('removeAll');
+		$('#create-profile [name="urls"]').val('');
 		$('#new-profile-buttons').hide();
-		$('#new-profile-result').html('');
+		$('#new-profile-result').hide();
 		$('#new-profile-content').show();
 		
 		$.each($('[name="website"]'), function(i, obj) {
@@ -201,23 +208,12 @@
 	}
 	
 	function saveProfile() {	
-		$.each($('#new-profile-result h5'), function(i, obj) {
-			var url = $('<input />', { name: 'url', type: 'hidden', value: $(this).html() });
-			$('#create-profile').append(url);
-		});
-		
-		$.each($('#new-profile-result [keyword]'), function(i, obj) {
-			var keyword = $('<input />', { name: 'keyword', type: 'hidden', value: $(this).attr('keyword') });
-			$('#create-profile').append(keyword);
-		});
-		
 		$('#create-profile').submit();
 	}
 	
 	function openProfileModal(profileId) {
 	    $('#profile-edit-modal').empty();
 	    $('#profile-edit-modal').load('${pageContext.request.contextPath}/open-profile?id=' + profileId);
-	    initializeInputTags();
 	    $('#profile-edit-modal').modal('show');
 	}
 	

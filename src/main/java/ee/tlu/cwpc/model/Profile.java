@@ -12,7 +12,6 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import org.apache.commons.collections4.CollectionUtils;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.joda.time.DateTime;
@@ -27,11 +26,11 @@ public class Profile {
 
 	private String name;
 
-	@OneToMany(mappedBy = "profile", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@OneToMany(mappedBy = "profile", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
 	@Fetch(value = FetchMode.SUBSELECT)
 	private List<Url> urls = new ArrayList<>();
 
-	@OneToMany(mappedBy = "profile", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@OneToMany(mappedBy = "profile", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
 	@Fetch(value = FetchMode.SUBSELECT)
 	private List<Keyword> keywords = new ArrayList<>();
 
@@ -93,20 +92,6 @@ public class Profile {
 	public void removeComment(Keyword keyword) {
 		keywords.remove(keyword);
 		keyword.setProfile(null);
-	}
-	
-	public String getCommaSeperatedKeywords() {
-		if (CollectionUtils.isNotEmpty(keywords)) {
-			StringBuffer buffer = new StringBuffer();
-			
-			for (Keyword keyword : keywords) {
-				buffer.append(keyword.getWord()).append(",");
-			}
-			
-			buffer.deleteCharAt(buffer.lastIndexOf(","));
-			return buffer.toString();
-		}
-		return null;
 	}
 
 	public DateTime getCreated() {

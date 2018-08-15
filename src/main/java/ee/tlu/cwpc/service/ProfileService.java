@@ -14,8 +14,10 @@ public interface ProfileService {
 	
 	void createProfile(String name, List<Url> urls, List<Keyword> keywords);
 	
-	void updateProfile(Profile profile);
+	void updateProfile(long id, String name, List<Keyword> keywords);
 	
 	void deleteProfile(long id);
+	
+	List<String> getProfileKeywords(long id);
 	
 }
