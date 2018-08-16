@@ -28,7 +28,7 @@
 
 #content {
 	width: 100%;
-	padding: 200px 25px 25px 25px;
+	padding: 100px 25px 25px 25px;
 	min-height: 100vh;
 }
 
@@ -103,6 +103,10 @@ ul ul a {
 	text-align: center;
 }
 
+div.heading {
+	margin-bottom: 5rem;
+}
+
 #new-profile-content input, #new-profile-content a  {
 	margin: 10px;
 }
@@ -146,4 +150,8 @@ a.btn-dark {
 
 th.narrow {
 	width: 50px;
+}
+
+button.inline {
+	margin-left: 1rem;
 }

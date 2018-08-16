@@ -7,7 +7,6 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -22,22 +21,18 @@ import ee.tlu.cwpc.dto.WebsiteKeyword;
 import ee.tlu.cwpc.model.Keyword;
 import ee.tlu.cwpc.model.Profile;
 import ee.tlu.cwpc.model.Url;
-import ee.tlu.cwpc.service.ProfileService;
 import ee.tlu.cwpc.web.WebScraper;
 
 @Controller
-@RequestMapping("/")
+@RequestMapping
 public class DashboardController extends BaseController {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(DashboardController.class);
 
-	@Autowired
-	private ProfileService profileService;
-
 	@Value("${max.pages.to.search:#{null}}")
 	private Integer maxPagesToSearch;
 
-	@RequestMapping(value = "/", method = RequestMethod.GET)
+	@RequestMapping(value = "", method = RequestMethod.GET)
 	public String openDashboard(@RequestParam(name = "action", required = false, defaultValue = "") String action,
 			@RequestParam(name = "hasErrors", required = false, defaultValue = "false") boolean hasErrors, Model model) {
 		List<Profile> profiles = profileService.getProfiles();
@@ -77,7 +72,7 @@ public class DashboardController extends BaseController {
 		Profile profile = profileService.getProfile(id);
 		List<String> keywords = profileService.getProfileKeywords(id);
 		model.addAttribute("profile", profile);
-		model.addAttribute("keywordListString", StringUtils.join(keywords, ","));
+		model.addAttribute("commaSeperatedKeywords", StringUtils.join(keywords, ","));
 		return "profileModal";
 	}
 
