@@ -27,8 +27,8 @@
 			</div>
 			<div class="modal-footer">
 				<div class="col-md-12">
-					<a class="btn btn-dark btn-lg float-left" role="button" data-dismiss="modal"><spring:message code="common.back" /></a>
-					<a class="btn btn-dark btn-lg float-right" role="button" onclick="saveProfileChanges();"><spring:message code="common.save" /></a>
+					<button class="btn btn-dark btn-lg float-left" data-dismiss="modal"><spring:message code="common.back" /></button>
+					<button class="btn btn-dark btn-lg float-right" onclick="saveProfileChanges();"><spring:message code="common.save" /></button>
 				</div>
 			</div>
 		</form>
@@ -38,6 +38,6 @@
 <script>
 	$(document).ready(function() {
 		initializeInputTags();
-		$('.bootstrap-tagsinput').addClass('col-md-10');
+		inputTagsWithLabel();
 	});
 </script>

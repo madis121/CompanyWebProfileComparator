@@ -107,7 +107,7 @@ div.heading {
 	margin-bottom: 5rem;
 }
 
-#new-profile-content input, #new-profile-content a  {
+#new-profile-content input, #new-profile-content a, #new-profile-content button  {
 	margin: 10px;
 }
 

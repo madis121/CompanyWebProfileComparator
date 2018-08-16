@@ -16,6 +16,7 @@ public class CompanySearchController extends BaseController {
 
 	@RequestMapping(value = "", method = RequestMethod.GET)
 	public String openCompanySearch(Model model) {
+		System.out.println(getCurrentURLWithoutLanguageParameter());
 		List<Profile> profiles = profileService.getProfiles();
 		model.addAttribute("profiles", profiles);
 		addPageAttributesToModel(model);

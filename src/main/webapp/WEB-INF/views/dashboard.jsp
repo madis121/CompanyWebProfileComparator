@@ -57,9 +57,9 @@
 						<form id="websites" autocomplete="on">
 							<div class="form-group">
 								<input type="text" name="website" class="form-control col-md-10 margin-10" index="0"><a href="javascript:void(0)" onclick="appendInput();"><i class="fas fa-plus fa-2x"></i></a>
-								<a href="javascript:void(0)" id="submit" class="btn btn-dark btn-block col-md-10 margin-10" onclick="validateAndSubmit();"><spring:message code="new.profile.modal.create" /></a>
 							</div>
 						</form>
+						<button id="collect-data" class="btn btn-dark btn-block col-md-10 margin-10" onclick="validateAndSubmit();"><spring:message code="new.profile.modal.create" /></button>
 					</div>
 					
 					<i id="new-profile-spinner" class="fas fa-spinner fa-spin fa-5x col-md-11 text-center" style="display:none;"></i>
@@ -81,8 +81,8 @@
 			</div>
 			<div class="modal-footer">
 				<div id="new-profile-buttons" class="col-md-12" style="display:none;">
-					<a class="btn btn-dark btn-lg float-left" onclick="clearProfile();"><spring:message code="new.profile.modal.clear" /></a>
-					<a class="btn btn-dark btn-lg float-right" onclick="saveProfile();"><spring:message code="new.profile.modal.save" /></a>
+					<button class="btn btn-dark btn-lg float-left" onclick="clearProfile();"><spring:message code="new.profile.modal.clear" /></button>
+					<button class="btn btn-dark btn-lg float-right" onclick="saveProfile();"><spring:message code="new.profile.modal.save" /></button>
 				</div>
 			</div>
 		</div>
@@ -102,7 +102,6 @@
 	var PROFILE_DELETED = "profileDeleted";
 
 	$(document).ready(function() {
-		$.ajaxSetup({ async: false });
 		displayNotifications();
 	});
 	
@@ -129,7 +128,7 @@
 		var length = $('[index]').length;
 		var html = '<input type="text" name="website" class="form-control col-md-10 margin-10" index="' + length + '">' +
 			'<a href="javascript:void(0)" onclick="removeInput(' + length + ');"><i class="fas fa-minus fa-2x"></i></a>';
-		$('#submit').before(html);
+		$('#collect-data').before(html);
 	}
 	
 	function removeInput(index) {
@@ -184,7 +183,7 @@
 				});
 				
 				$('#create-profile [name="urls"]').val(urls.toString());
-				$('.bootstrap-tagsinput').addClass('col-md-10');
+				inputTagsWithLabel();
 	    		$('#new-profile-spinner').hide();
 				$('#new-profile-buttons').show();
 	    		$('#new-profile-result').show();

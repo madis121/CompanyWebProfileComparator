@@ -23,12 +23,20 @@
 </head>
 <body>
 	<script>
+		$(document).ready(function() {
+			$.ajaxSetup({ async: false });
+		});
+	
 		function initializeTooltips() {
 			$("[data-toggle=tooltip").tooltip();
 		}
 		
 		function initializeInputTags() {
 			$('input[data-role="tagsinput"]').tagsinput('items');
+		}
+		
+		function inputTagsWithLabel() {
+			$('.bootstrap-tagsinput').addClass('col-md-10');
 		}
 	</script>
 	

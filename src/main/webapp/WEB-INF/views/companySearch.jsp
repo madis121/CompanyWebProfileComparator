@@ -31,8 +31,7 @@
 
 <script>
 	$(document).ready(function() {
-		$.ajaxSetup({ async: false });
-		
+		console.log('${pageContext.request.contextPath}');
 		$('#select-profile').on('change', function() {
 			isOptionSelected();
 		});
@@ -54,4 +53,5 @@
 	    $('#company-search-details-modal').modal('show');
 	}
 </script>
+
 </custom:html>
