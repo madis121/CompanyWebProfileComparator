@@ -31,7 +31,6 @@
 
 <script>
 	$(document).ready(function() {
-		console.log('${pageContext.request.contextPath}');
 		$('#select-profile').on('change', function() {
 			isOptionSelected();
 		});

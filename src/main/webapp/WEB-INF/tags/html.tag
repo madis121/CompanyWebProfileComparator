@@ -34,10 +34,6 @@
 		function initializeInputTags() {
 			$('input[data-role="tagsinput"]').tagsinput('items');
 		}
-		
-		function inputTagsWithLabel() {
-			$('.bootstrap-tagsinput').addClass('col-md-10');
-		}
 	</script>
 	
 	<div class="wrapper">

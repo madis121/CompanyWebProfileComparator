@@ -38,6 +38,6 @@
 <script>
 	$(document).ready(function() {
 		initializeInputTags();
-		inputTagsWithLabel();
+		$('.bootstrap-tagsinput').addClass('col-md-10');;
 	});
 </script>

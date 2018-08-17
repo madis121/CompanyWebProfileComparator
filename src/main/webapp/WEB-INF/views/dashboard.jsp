@@ -183,7 +183,7 @@
 				});
 				
 				$('#create-profile [name="urls"]').val(urls.toString());
-				inputTagsWithLabel();
+				$('.bootstrap-tagsinput').addClass('col-md-10');;
 	    		$('#new-profile-spinner').hide();
 				$('#new-profile-buttons').show();
 	    		$('#new-profile-result').show();

@@ -8,7 +8,7 @@
 					<a class="nav-link dropdown-toggle" href="javascript:void(0)" id="languages" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">${currentLanguage} </a>
 					<div class="dropdown-menu" aria-labelledby="languages">
 						<c:forEach var="language" items="${supportedLanguages}">
-							<a class="dropdown-item language" href="${pageContext.request.contextPath}?language=${language}">${language}</a>
+							<a class="dropdown-item language" href="javascript:void(0)" onclick="changeLanguage('${language}');">${language}</a>
 						</c:forEach>
 					</div>
 				</li>
@@ -17,10 +17,19 @@
 	</nav>
 </div>
 
+<form id="changeLanguage" action="changeLanguage" method="post">
+	<input name="languageCode" type="hidden">
+</form>
+
 <script>
 	$.each($('a.language'), function(i, obj) {
 		if ($(this).html() == '${currentLanguage}') {
 			$(this).remove();
 		}
 	});
+	
+	function changeLanguage(languageCode) {
+		$('#changeLanguage [name="languageCode"]').val(languageCode);
+		$('#changeLanguage').submit();
+	}
 </script>

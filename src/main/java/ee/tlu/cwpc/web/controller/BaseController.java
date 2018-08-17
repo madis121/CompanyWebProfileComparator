@@ -6,14 +6,15 @@ import java.util.List;
 import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
+import org.springframework.web.servlet.LocaleResolver;
 
-import ee.tlu.cwpc.helper.URLHelper;
 import ee.tlu.cwpc.service.ProfileService;
 
 public class BaseController {
@@ -22,16 +23,21 @@ public class BaseController {
 	protected ProfileService profileService;
 
 	@Autowired
+	protected LocaleResolver localeResolver;
+	
+	@Autowired
 	protected MessageSource messageSource;
 
 	@Autowired
-	private HttpServletRequest request;
+	protected HttpServletRequest request;
+	
+	@Autowired
+	protected HttpServletResponse response;
 
 	public Model addPageAttributesToModel(Model model) {
 		model.addAttribute("supportedLanguages", getSupportedLanguages());
 		model.addAttribute("currentLanguage", getCurrentLanguage());
 		model.addAttribute("title", messageSource.getMessage("common.title", null, getLocale()));
-		model.addAttribute("currentURL", getCurrentURLWithoutLanguageParameter());
 		return model;
 	}
 
@@ -49,17 +55,9 @@ public class BaseController {
 		return LocaleContextHolder.getLocale();
 	}
 
-	public String getCurrentURL() {
-		String requestURI = request.getRequestURI();
-		String queryString = request.getQueryString();
-		if (StringUtils.isNotBlank(queryString)) {
-			return requestURI.concat("?").concat(queryString);
-		}
-		return requestURI;
-	}
-
-	public String getCurrentURLWithoutLanguageParameter() {
-		return URLHelper.removeQueryParameter(getCurrentURL(), "language");
-	}
+  protected void changeLocale(String languageCode) {
+    Locale locale = StringUtils.parseLocaleString(languageCode);
+    localeResolver.setLocale(request, response, locale);
+  }
 
 }
