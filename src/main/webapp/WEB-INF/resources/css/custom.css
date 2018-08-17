@@ -131,7 +131,7 @@ button.fixed-bottom-right {
 	right: 50px;	
 }
 
-input.contains-errors {
+.contains-errors {
 	border-color: red;
 }
 

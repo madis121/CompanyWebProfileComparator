@@ -24,7 +24,6 @@ import ee.tlu.cwpc.model.Url;
 import ee.tlu.cwpc.web.WebScraper;
 
 @Controller
-@RequestMapping
 public class DashboardController extends BaseController {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(DashboardController.class);

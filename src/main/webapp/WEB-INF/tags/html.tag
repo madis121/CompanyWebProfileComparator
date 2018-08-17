@@ -34,6 +34,20 @@
 		function initializeInputTags() {
 			$('input[data-role="tagsinput"]').tagsinput('items');
 		}
+		
+		function addValidationErrorMessage(element, text) {
+			element.attr({
+				'data-toggle': 'tooltip',
+				'title': text
+			});
+			element.addClass('contains-errors');
+			initializeTooltips();
+		}
+		
+		function removeValidationErrorMessage(element) {
+			element.removeAttr('data-toggle title');
+			element.removeClass('contains-errors');
+		}
 	</script>
 	
 	<div class="wrapper">

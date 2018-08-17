@@ -143,16 +143,10 @@
 		
 		$.each($('#websites [name="website"]'), function(i, obj) {
 			if (!regex.test($(this).val())) {
-				$(this).attr({
-					'data-toggle': 'tooltip',
-					'title': '<spring:message code="new.profile.modal.url.validation.error" />'
-				});
-				$(this).addClass('contains-errors');
-				initializeTooltips();
+				addValidationErrorMessage($(this), '<spring:message code="new.profile.modal.url.validation.error" />');
 				validationError = true;
 			} else {
-				$(this).removeAttr('data-toggle title');
-				$(this).removeClass('contains-errors');
+				removeValidationErrorMessage($(this));
 			}
 		});
 		

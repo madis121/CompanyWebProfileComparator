@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
-@RequestMapping
 public class InformationChangeController extends BaseController {
 
 	@RequestMapping(value = "/changeLanguage", method = RequestMethod.POST)

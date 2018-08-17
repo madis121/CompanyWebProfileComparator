@@ -43,7 +43,7 @@
 		<div class="modal-footer">
 			<div class="col-md-12">
 				<button class="btn btn-dark btn-lg float-left" data-dismiss="modal"><spring:message code="common.back" /></button>
-				<button class="btn btn-dark btn-lg float-right" onclick="submitForm();"><spring:message code="common.search" /></button>
+				<button class="btn btn-dark btn-lg float-right" onclick="validateAndSubmit();"><spring:message code="common.search" /></button>
 			</div>
 		</div>
 	</div>
@@ -55,6 +55,40 @@
 		initializeInputTags();
 		$('.bootstrap-tagsinput').addClass('col-md-9');
 	});
+	
+	function validateAndSubmit() {
+		var keywords = $('#find-similar-companies [name="keywords"]');
+		var country = $('#find-similar-companies [name="country"]');
+		var contacts = $('#find-similar-companies [name="contacts"]');
+		var contactsExpression = '^[a-zA-Z0-9]';
+		var contactsRegex = new RegExp(contactsExpression, "i");
+		var validationError = false;
+		
+		if (keywords.tagsinput('items').length < 5) {
+			addValidationErrorMessage(keywords.prev(), '<spring:message code="companySearch.details.keywords.validation.error" />');
+			validationError = true;
+		} else {
+			removeValidationErrorMessage(keywords.prev());
+		}
+		
+		if (!country.val()) {
+			addValidationErrorMessage(country, '<spring:message code="companySearch.details.country.validation.error" />');
+			validationError = true;
+		} else {
+			removeValidationErrorMessage(country);
+		}
+		
+		if (!contactsRegex.test(contacts.val())) {
+			addValidationErrorMessage(contacts, '<spring:message code="companySearch.details.contacts.validation.error" />');
+			validationError = true;
+		} else {
+			removeValidationErrorMessage(contacts);
+		}
+		
+		if (!validationError) {
+			submitForm();
+		}
+	} 
 	
 	function submitForm() {
 		$.ajax({

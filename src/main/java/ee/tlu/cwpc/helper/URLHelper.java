@@ -1,19 +1,9 @@
 package ee.tlu.cwpc.helper;
 
-import java.net.URISyntaxException;
-import java.util.Iterator;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.http.NameValuePair;
-import org.apache.http.client.utils.URIBuilder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 public class URLHelper {
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(URLHelper.class);
 	
 	public static String clean(String url) {
 		int lastSlash = url.lastIndexOf("/");
@@ -52,24 +42,6 @@ public class URLHelper {
 		word = word.replaceAll("[^\\p{L}]", "");
 		// word = word.replaceAll("(^[^\\p{L}]|[^\\p{L}]$)", "");
 		return word;
-	}
-
-	public static String removeQueryParameter(String url, String parameterName) {
-		try {
-			URIBuilder uriBuilder = new URIBuilder(url);
-			List<NameValuePair> queryParameters = uriBuilder.getQueryParams();
-			for (Iterator<NameValuePair> queryParameterItr = queryParameters.iterator(); queryParameterItr.hasNext();) {
-				NameValuePair queryParameter = queryParameterItr.next();
-				if (queryParameter.getName().equals(parameterName)) {
-					queryParameterItr.remove();
-				}
-			}
-			uriBuilder.setParameters(queryParameters);
-			return uriBuilder.build().toString();
-		} catch (URISyntaxException e) {
-			LOGGER.error("Encountered an error while removing a query parameter from URL: " + e);
-		}
-		return null;
 	}
 
 }
