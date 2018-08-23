@@ -21,6 +21,7 @@
 		<tomcat-dbcp.version>9.0.10</tomcat-dbcp.version>
 		<jsoup.version>1.11.3</jsoup.version>
 		<logback.version>1.2.3</logback.version>
+		<httpclient.version>4.5.6</httpclient.version>
 		<commons-lang3.version>3.7</commons-lang3.version>
 		<commons-collections4.version>4.2</commons-collections4.version>
 		<joda-time.version>2.10</joda-time.version>
@@ -102,7 +103,13 @@
 			<artifactId>logback-classic</artifactId>
 			<version>${logback.version}</version>
 		</dependency>
-		
+
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+			<version>${httpclient.version}</version>
+		</dependency>
+
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>

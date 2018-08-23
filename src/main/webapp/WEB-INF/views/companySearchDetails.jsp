@@ -37,13 +37,37 @@
 							<input class="form-control col-md-9" name="contacts" type="text">
 						</div>
 					</div>
+					
+					<i id="company-search-spinner" class="fas fa-spinner fa-spin fa-5x col-md-11 text-center" style="display:none;"></i>
+					
+					<div id="company-search-result" class="col-md-12" style="display:none;">
+						<table class="table table-striped table-bordered">
+							<thead>
+								<tr>
+									<th scope="col" class="narrow">#</th>
+									<th scope="col"><spring:message code="companySearch.result.website" /></th>
+									<th scope="col"><spring:message code="companySearch.result.similarity" /></th>
+								</tr>
+							</thead>
+							<tbody></tbody>
+						</table>
+					</div>
+					
+					<div id="company-search-result-error" class="col-md-12 text-center" style="display:none;">
+						<h5><spring:message code="companySearch.result.error.api.daily.limit.exceeded" /></h5>
+					</div>
 				</div>
 			</form>
 		</div>
 		<div class="modal-footer">
 			<div class="col-md-12">
-				<button class="btn btn-dark btn-lg float-left" data-dismiss="modal"><spring:message code="common.back" /></button>
-				<button class="btn btn-dark btn-lg float-right" onclick="validateAndSubmit();"><spring:message code="common.search" /></button>
+				<div id="company-search-buttons">
+					<button class="btn btn-dark btn-lg float-left" data-dismiss="modal"><spring:message code="common.back" /></button>
+					<button class="btn btn-dark btn-lg float-right" onclick="validateAndSubmit();"><spring:message code="common.search" /></button>
+				</div>
+				<div id="company-search-result-buttons" style="display:none;">
+					<button class="btn btn-dark btn-lg float-left" data-dismiss="modal"><spring:message code="common.back" /></button>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -64,7 +88,7 @@
 		var contactsRegex = new RegExp(contactsExpression, "i");
 		var validationError = false;
 		
-		if (keywords.tagsinput('items').length < 5) {
+		if (keywords.tagsinput('items').length < 1) {
 			addValidationErrorMessage(keywords.prev(), '<spring:message code="companySearch.details.keywords.validation.error" />');
 			validationError = true;
 		} else {
@@ -91,14 +115,36 @@
 	} 
 	
 	function submitForm() {
+		$('#company-search-details-content').hide();
+		$('#company-search-buttons').hide();
+		$('#company-search-spinner').show();
+		
 		$.ajax({
 			method : 'GET',
 			url : 'company-search/find',
 			data :  $('#find-similar-companies').serialize(),
 			async : true,
-			success : function(data) {
-				alert(data);
-			}
+			success : function(websites) {
+				console.log(websites);
+				$.each(websites, function(i, website) {
+					var tbody = $('#company-search-result tbody');
+					var row = $('<tr></tr>').appendTo(tbody);
+					$('<td></td>').text(i + 1).appendTo(row);
+					$('<td></td>').prepend($('<a></a>').attr({ 'href': website, 'target': '_blank' }).text(website)).appendTo(row);
+					$('<td></td>').appendTo(row);
+				});
+				
+				$('#company-search-spinner').hide();
+				$('#company-search-result').show();
+				$('#company-search-result-buttons').show();
+			},
+			statusCode : {
+				403: function() {
+					$('#company-search-spinner').hide();
+					$('#company-search-result-error').show();
+					$('#company-search-result-buttons').show();
+				}
+			} 
 		});
 	}
 </script>

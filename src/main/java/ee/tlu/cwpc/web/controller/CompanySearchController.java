@@ -1,9 +1,14 @@
 package ee.tlu.cwpc.web.controller;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,10 +18,16 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import ee.tlu.cwpc.helper.Countries;
 import ee.tlu.cwpc.model.Profile;
+import ee.tlu.cwpc.web.google.GoogleCSE;
 
 @Controller
 @RequestMapping("company-search")
 public class CompanySearchController extends BaseController {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(CompanySearchController.class);
+
+	@Autowired
+	private GoogleCSE googleCSE;
 
 	@RequestMapping(value = "", method = RequestMethod.GET)
 	public String openCompanySearch(Model model) {
@@ -39,10 +50,16 @@ public class CompanySearchController extends BaseController {
 
 	@RequestMapping(value = "/find", method = RequestMethod.GET)
 	@ResponseBody
-	public List<String> findSimilarCompanies(@RequestParam(name = "keywords") List<String> keywords,
-			@RequestParam(name = "country") String country, @RequestParam(name = "contacts") List<String> contacts) {
-		List<String> data = new ArrayList<>();
-		return data;
+	public ResponseEntity<List<String>> findSimilarCompanies(@RequestParam(name = "keywords") List<String> keywords,
+			@RequestParam(name = "country") String countryCode, @RequestParam(name = "contacts") List<String> contacts) {
+		List<String> links = googleCSE.requestLinksFromCSE(StringUtils.join(keywords, "+"), countryCode, 5);
+
+		if (links.isEmpty()) {
+			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+		}
+		
+		LOGGER.debug("Received links from Google: " + Arrays.toString(links.toArray()));
+		return new ResponseEntity<>(links, HttpStatus.OK);
 	}
 
 }

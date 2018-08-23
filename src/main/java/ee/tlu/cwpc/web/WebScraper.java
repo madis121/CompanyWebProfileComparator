@@ -79,7 +79,7 @@ public class WebScraper {
 
 			pagesVisited.add(url);
 		} catch (IOException e) {
-			LOGGER.error("Encountered an error while collecting links: ", e.getMessage());
+			LOGGER.error("Encountered an error while collecting links: ", e);
 		}
 
 		return links;
@@ -106,7 +106,7 @@ public class WebScraper {
 				}
 			}
 		} catch (IOException e) {
-			LOGGER.error("Encountered an error while collecting data: ", e.getMessage());
+			LOGGER.error("Encountered an error while collecting data: ", e);
 		}
 	}
 
