@@ -2,9 +2,7 @@ package ee.tlu.cwpc.service;
 
 import java.util.List;
 
-import ee.tlu.cwpc.model.Keyword;
 import ee.tlu.cwpc.model.Profile;
-import ee.tlu.cwpc.model.Url;
 
 public interface ProfileService {
 
@@ -12,12 +10,14 @@ public interface ProfileService {
 	
 	List<Profile> getProfiles();
 	
-	void createProfile(String name, List<Url> urls, List<Keyword> keywords);
+	void createProfile(String name, List<String> urls, List<String> keywords);
 	
-	void updateProfile(long id, String name, List<Keyword> keywords);
+	void updateProfile(long id, String name, List<String> keywords);
 	
 	void deleteProfile(long id);
 	
 	List<String> getProfileKeywords(long id);
+	
+	List<String> getProfileURLs(long id);
 	
 }

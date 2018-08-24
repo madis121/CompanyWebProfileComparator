@@ -25,6 +25,9 @@ public class HibernateConfiguration {
 
 	@Value("${postgresql.database.password}")
 	private String password;
+	
+	@Value("${postgresql.database.schema}")
+	private String schema;
 
 	@Bean
 	public PlatformTransactionManager transactionManager() {
@@ -56,7 +59,7 @@ public class HibernateConfiguration {
 		Properties properties = new Properties();
 		properties.setProperty("hibernate.hbm2ddl.auto", "update");
 		properties.setProperty("hibernate.dialect", "org.hibernate.dialect.PostgreSQL82Dialect");
-		properties.setProperty("hibernate.default_schema", "cwpc");
+		properties.setProperty("hibernate.default_schema", schema);
 		//properties.setProperty("hibernate.show_sql", "true");
 		properties.setProperty("jadira.usertype.autoRegisterUserTypes", "true");
 		return properties;

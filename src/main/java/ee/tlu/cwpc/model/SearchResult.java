@@ -18,7 +18,7 @@ import org.joda.time.DateTime;
 
 @Entity
 @Table
-public class Profile {
+public class SearchResult {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,19 +26,25 @@ public class Profile {
 
 	private String name;
 
-	@OneToMany(mappedBy = "profile", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+	private String countryCode;
+
+	@OneToMany(mappedBy = "searchResult", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
 	@Fetch(value = FetchMode.SUBSELECT)
 	private List<Url> urls = new ArrayList<>();
 
-	@OneToMany(mappedBy = "profile", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+	@OneToMany(mappedBy = "searchResult", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
 	@Fetch(value = FetchMode.SUBSELECT)
 	private List<Keyword> keywords = new ArrayList<>();
+
+	@OneToMany(mappedBy = "searchResult", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+	@Fetch(value = FetchMode.SUBSELECT)
+	private List<Contact> contacts = new ArrayList<>();
 
 	private DateTime created;
 
 	private DateTime updated;
 
-	public Profile() {
+	public SearchResult() {
 
 	}
 
@@ -58,6 +64,14 @@ public class Profile {
 		this.name = name;
 	}
 
+	public String getCountryCode() {
+		return countryCode;
+	}
+
+	public void setCountryCode(String countryCode) {
+		this.countryCode = countryCode;
+	}
+
 	public List<Url> getUrls() {
 		return urls;
 	}
@@ -68,12 +82,12 @@ public class Profile {
 
 	public void addUrl(Url url) {
 		urls.add(url);
-		url.setProfile(this);
+		url.setSearchResult(this);
 	}
 
 	public void removeUrl(Url url) {
 		urls.remove(url);
-		url.setProfile(null);
+		url.setSearchResult(null);
 	}
 
 	public List<Keyword> getKeywords() {
@@ -86,12 +100,30 @@ public class Profile {
 
 	public void addKeyword(Keyword keyword) {
 		keywords.add(keyword);
-		keyword.setProfile(this);
+		keyword.setSearchResult(this);
 	}
 
 	public void removeKeyword(Keyword keyword) {
 		keywords.remove(keyword);
-		keyword.setProfile(null);
+		keyword.setSearchResult(null);
+	}
+
+	public List<Contact> getContacts() {
+		return contacts;
+	}
+
+	public void setContacts(List<Contact> contacts) {
+		this.contacts = contacts;
+	}
+	
+	public void addContact(Contact contact) {
+		contacts.add(contact);
+		contact.setSearchResult(this);
+	}
+
+	public void removeContact(Contact contact) {
+		contacts.remove(contact);
+		contact.setSearchResult(null);
 	}
 
 	public DateTime getCreated() {
@@ -108,12 +140,6 @@ public class Profile {
 
 	public void setUpdated(DateTime updated) {
 		this.updated = updated;
-	}
-
-	@Override
-	public String toString() {
-		return "Profile [id=" + id + ", name=" + name + ", urls=" + urls + ", keywords=" + keywords + ", created="
-				+ created + ", updated=" + updated + "]";
 	}
 
 }

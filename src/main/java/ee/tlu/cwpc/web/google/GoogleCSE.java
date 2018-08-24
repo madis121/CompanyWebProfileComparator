@@ -60,7 +60,7 @@ public class GoogleCSE {
 					}
 					
 					LOGGER.debug("Received an error while using CSE");
-					return Collections.emptyList();
+					return null;
 				}
 
 				StringBuffer result = getResult(response);
@@ -78,7 +78,7 @@ public class GoogleCSE {
 		} catch (Exception e) {
 			LOGGER.error("Encountered an unexpected error while using CSE: ", e);
 		}
-
+		
 		return items;
 	}
 

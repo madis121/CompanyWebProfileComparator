@@ -10,9 +10,10 @@
 			</button>
 		</div>
 		<div class="modal-body">
-			<form id="find-similar-companies" action="company-search/find" method="get">
-				<div class="row">
-					<div id="company-search-details-content" class="col-md-12">
+			<div class="row">
+				<div id="company-search-details-content" class="col-md-12">
+					<form id="find-similar-companies" action="company-search/find" method="get">
+						<input name="urls" type="hidden" value="${commaSeperatedURLs}">
 						<div class="form-group row col-md-12">
 							<label class="col-form-label col-md-3"><spring:message code="companySearch.details.profile.name" /></label>
 							<input class="form-control col-md-9" name="name" type="text" value="${profile.name}" disabled>
@@ -36,28 +37,28 @@
 							</label>
 							<input class="form-control col-md-9" name="contacts" type="text">
 						</div>
-					</div>
-					
-					<i id="company-search-spinner" class="fas fa-spinner fa-spin fa-5x col-md-11 text-center" style="display:none;"></i>
-					
-					<div id="company-search-result" class="col-md-12" style="display:none;">
-						<table class="table table-striped table-bordered">
-							<thead>
-								<tr>
-									<th scope="col" class="narrow">#</th>
-									<th scope="col"><spring:message code="companySearch.result.website" /></th>
-									<th scope="col"><spring:message code="companySearch.result.similarity" /></th>
-								</tr>
-							</thead>
-							<tbody></tbody>
-						</table>
-					</div>
-					
-					<div id="company-search-result-error" class="col-md-12 text-center" style="display:none;">
-						<h5><spring:message code="companySearch.result.error.api.daily.limit.exceeded" /></h5>
-					</div>
+					</form>
 				</div>
-			</form>
+				
+				<i id="company-search-spinner" class="fas fa-spinner fa-spin fa-5x col-md-11 text-center" style="display:none;"></i>
+				
+				<div id="company-search-result" class="col-md-12" style="display:none;">
+					<table class="table table-striped table-bordered">
+						<thead>
+							<tr>
+								<th scope="col" class="narrow">#</th>
+								<th scope="col"><spring:message code="companySearch.result.website" /></th>
+								<th scope="col"><spring:message code="companySearch.result.similarity" /></th>
+							</tr>
+						</thead>
+						<tbody></tbody>
+					</table>
+				</div>
+				
+				<div id="company-search-result-error" class="col-md-12 text-center" style="display:none;">
+					<h5><spring:message code="companySearch.result.error.api.daily.limit.exceeded" /></h5>
+				</div>
+			</div>
 		</div>
 		<div class="modal-footer">
 			<div class="col-md-12">

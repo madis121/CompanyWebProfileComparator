@@ -41,8 +41,10 @@ public class CompanySearchController extends BaseController {
 	public String openCompanySearchDetails(@RequestParam(name = "profileId") long profileId, Model model) {
 		Profile profile = profileService.getProfile(profileId);
 		List<String> keywords = profileService.getProfileKeywords(profileId);
+		List<String> urls = profileService.getProfileURLs(profileId);
 		model.addAttribute("profile", profile);
 		model.addAttribute("commaSeperatedKeywords", StringUtils.join(keywords, ","));
+		model.addAttribute("commaSeperatedURLs", StringUtils.join(urls, ","));
 		model.addAttribute("countries", Countries.listAll());
 		addPageAttributesToModel(model);
 		return "companySearchDetails";
@@ -51,13 +53,16 @@ public class CompanySearchController extends BaseController {
 	@RequestMapping(value = "/find", method = RequestMethod.GET)
 	@ResponseBody
 	public ResponseEntity<List<String>> findSimilarCompanies(@RequestParam(name = "keywords") List<String> keywords,
-			@RequestParam(name = "country") String countryCode, @RequestParam(name = "contacts") List<String> contacts) {
-		List<String> links = googleCSE.requestLinksFromCSE(StringUtils.join(keywords, "+"), countryCode, 5);
+			@RequestParam(name = "urls") List<String> urls, @RequestParam(name = "country") String countryCode,
+			@RequestParam(name = "contacts") List<String> contacts) {
+		List<String> links = googleCSE.requestLinksFromCSE(StringUtils.join(keywords, "+"), countryCode, 2);
 
-		if (links.isEmpty()) {
+		if (links == null) {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		} else if (links.isEmpty()) {
 			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 		}
-		
+
 		LOGGER.debug("Received links from Google: " + Arrays.toString(links.toArray()));
 		return new ResponseEntity<>(links, HttpStatus.OK);
 	}

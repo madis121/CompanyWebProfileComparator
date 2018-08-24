@@ -14,8 +14,8 @@
 	<div class="row">
 		<div class="col-md-12">
 			<div class="form row">
-				<label class="col-form-label col-md-2"><spring:message code="companySearch.company" /></label>
-				<select class="form-control col-md-6" id="select-profile">
+				<label class="col-form-label col-md-1"><spring:message code="companySearch.profile" /></label>
+				<select class="form-control col-md-7" id="select-profile">
 					<option value="" disabled selected hidden><spring:message code="companySearch.select.placeholder" /></option>
 					<c:forEach items="${profiles}" var="profile">
 						<option value="${profile.id}"><c:out value="${profile.name}" /></option>

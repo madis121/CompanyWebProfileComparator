@@ -18,9 +18,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import ee.tlu.cwpc.dto.WebsiteData;
 import ee.tlu.cwpc.dto.WebsiteKeyword;
-import ee.tlu.cwpc.model.Keyword;
 import ee.tlu.cwpc.model.Profile;
-import ee.tlu.cwpc.model.Url;
 import ee.tlu.cwpc.web.WebScraper;
 
 @Controller
@@ -60,8 +58,8 @@ public class DashboardController extends BaseController {
 	}
 
 	@RequestMapping(value = "/create-profile", method = RequestMethod.POST)
-	public String createProfile(@RequestParam(name = "name") String name, @RequestParam(name = "urls") List<Url> urls,
-			@RequestParam(name = "keywords") List<Keyword> keywords) {
+	public String createProfile(@RequestParam(name = "name") String name, @RequestParam(name = "urls") List<String> urls,
+			@RequestParam(name = "keywords") List<String> keywords) {
 		profileService.createProfile(name, urls, keywords);
 		return "redirect:/?action=profileSaved";
 	}
@@ -77,7 +75,7 @@ public class DashboardController extends BaseController {
 
 	@RequestMapping(value = "/update-profile", method = RequestMethod.POST)
 	public String updateProfile(@RequestParam(name = "id") long id, @RequestParam(name = "name") String name,
-			@RequestParam(name = "keywords") List<Keyword> keywords) {
+			@RequestParam(name = "keywords") List<String> keywords) {
 		profileService.updateProfile(id, name, keywords);
 		return "redirect:/?action=profileUpdated";
 	}

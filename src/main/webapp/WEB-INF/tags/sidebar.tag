@@ -13,6 +13,9 @@
 		<li class="sidebar-item">
 			<a href="${pageContext.request.contextPath}/company-search"><i class="fas fa-search"></i>&nbsp;<span><spring:message code="sidebar.search" /></span></a>
 		</li>
+		<li class="sidebar-item">
+			<a href="${pageContext.request.contextPath}/search-results"><i class="fas fa-vials"></i>&nbsp;<span><spring:message code="sidebar.results" /></span></a>
+		</li>
 	</ul>
 	
 	<a href="javascript:void(0)" id="sidebar-collapse">

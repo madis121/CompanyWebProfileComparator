@@ -21,6 +21,7 @@
 #sidebar {
 	min-width: 250px;
 	max-width: 250px;
+	min-height: 100vh;
 	background: #343a40;
     color: #fff;
     /*transition: all 0.3s;*/
@@ -101,6 +102,10 @@ ul ul a {
 
 .sidebar-item.active {
 	text-align: center;
+}
+
+.sidebar-item svg {
+	margin-right: 5px;
 }
 
 div.heading {

@@ -20,19 +20,28 @@ public class Url {
 
 	private String url;
 
-	private DateTime visited;
+	private int similarity;
 
 	@ManyToOne
-	@JoinColumn(name = "profile_id", nullable = false)
+	@JoinColumn(name = "profile_id")
 	private Profile profile;
+
+	@ManyToOne
+	@JoinColumn(name = "search_result_id")
+	private SearchResult searchResult;
+
+	private DateTime created;
+
+	private DateTime updated;
 
 	public Url() {
 
 	}
 
-	public Url(String url) {
+	public Url(String url, DateTime created, DateTime updated) {
 		this.url = url;
-		this.visited = DateTime.now();
+		this.created = created;
+		this.updated = updated;
 	}
 
 	public long getId() {
@@ -51,12 +60,12 @@ public class Url {
 		this.url = url;
 	}
 
-	public DateTime getVisited() {
-		return visited;
+	public int getSimilarity() {
+		return similarity;
 	}
 
-	public void setVisited(DateTime visited) {
-		this.visited = visited;
+	public void setSimilarity(int similarity) {
+		this.similarity = similarity;
 	}
 
 	public Profile getProfile() {
@@ -67,9 +76,33 @@ public class Url {
 		this.profile = profile;
 	}
 
+	public SearchResult getSearchResult() {
+		return searchResult;
+	}
+
+	public void setSearchResult(SearchResult searchResult) {
+		this.searchResult = searchResult;
+	}
+
+	public DateTime getCreated() {
+		return created;
+	}
+
+	public void setCreated(DateTime created) {
+		this.created = created;
+	}
+
+	public DateTime getUpdated() {
+		return updated;
+	}
+
+	public void setUpdated(DateTime updated) {
+		this.updated = updated;
+	}
+
 	@Override
 	public String toString() {
-		return "Url [id=" + id + ", url=" + url + ", visited=" + visited + "]";
+		return "Url [id=" + id + ", url=" + url + ", created=" + created + ", updated=" + updated + "]";
 	}
 
 }

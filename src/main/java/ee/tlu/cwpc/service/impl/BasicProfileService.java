@@ -41,18 +41,21 @@ public class BasicProfileService implements ProfileService {
 
 	@Override
 	@Transactional
-	public void createProfile(String name, List<Url> urls, List<Keyword> keywords) {
+	public void createProfile(String name, List<String> urls, List<String> keywords) {
+		DateTime date = DateTime.now();
 		Profile profile = new Profile();
 		profile.setName(name);
 		
-		for (Url url : urls) {
+		for (String urlString : urls) {
+			Url url = new Url(urlString, date, date);
 			profile.addUrl(url);
 		}
-		for (Keyword keyword : keywords) {
+		
+		for (String keywordString : keywords) {
+			Keyword keyword = new Keyword(keywordString, date, date);
 			profile.addKeyword(keyword);
 		}
 		
-		DateTime date = DateTime.now();
 		profile.setCreated(date);
 		profile.setUpdated(date);
 		profileDAO.save(profile);
@@ -60,16 +63,18 @@ public class BasicProfileService implements ProfileService {
 
 	@Override
 	@Transactional
-	public void updateProfile(long id, String name, List<Keyword> keywords) {
+	public void updateProfile(long id, String name, List<String> keywords) {
+		DateTime date = DateTime.now();
 		Profile profile = profileDAO.findOne(id);
 		profile.setName(name);
 		profile.getKeywords().clear();
 		
-		for (Keyword keyword : keywords) {
+		for (String keywordString : keywords) {
+			Keyword keyword = new Keyword(keywordString, date, date);
 			profile.addKeyword(keyword);
 		}
 		
-		profile.setUpdated(DateTime.now());
+		profile.setUpdated(date);
 		profileDAO.update(profile);
 	}
 
@@ -81,14 +86,26 @@ public class BasicProfileService implements ProfileService {
 
 	@Override
 	@Transactional
-	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@SuppressWarnings("unchecked")
 	public List<String> getProfileKeywords(long id) {
 		Session session = sessionFactory.getCurrentSession();
-		String sql = "SELECT word FROM cwpc.keyword WHERE profile_id = :profileId ORDER BY id ASC";
-		NativeQuery query = session.createSQLQuery(sql);
+		String sql = "SELECT keyword FROM cwpc.keyword WHERE profile_id = :profileId ORDER BY id ASC";
+		NativeQuery<String> query = session.createSQLQuery(sql);
 		query.setParameter("profileId", id);
 		List<String> keywords = query.list();
 		return keywords;
+	}
+	
+	@Override
+	@Transactional
+	@SuppressWarnings("unchecked")
+	public List<String> getProfileURLs(long id) {
+		Session session = sessionFactory.getCurrentSession();
+		String sql = "SELECT url FROM cwpc.url WHERE profile_id = :profileId ORDER BY id ASC";
+		NativeQuery<String> query = session.createSQLQuery(sql);
+		query.setParameter("profileId", id);
+		List<String> urls = query.list();
+		return urls;
 	}
 
 }

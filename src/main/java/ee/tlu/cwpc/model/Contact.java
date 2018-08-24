@@ -12,17 +12,13 @@ import org.joda.time.DateTime;
 
 @Entity
 @Table
-public class Keyword {
+public class Contact {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
 
-	private String keyword;
-
-	@ManyToOne
-	@JoinColumn(name = "profile_id")
-	private Profile profile;
+	private String name;
 
 	@ManyToOne
 	@JoinColumn(name = "search_result_id")
@@ -32,14 +28,8 @@ public class Keyword {
 
 	private DateTime updated;
 
-	public Keyword() {
+	public Contact() {
 
-	}
-
-	public Keyword(String keyword, DateTime created, DateTime updated) {
-		this.keyword = keyword;
-		this.created = created;
-		this.updated = updated;
 	}
 
 	public long getId() {
@@ -50,20 +40,12 @@ public class Keyword {
 		this.id = id;
 	}
 
-	public String getKeyword() {
-		return keyword;
+	public String getName() {
+		return name;
 	}
 
-	public void setKeyword(String keyword) {
-		this.keyword = keyword;
-	}
-
-	public Profile getProfile() {
-		return profile;
-	}
-
-	public void setProfile(Profile profile) {
-		this.profile = profile;
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public SearchResult getSearchResult() {
@@ -92,7 +74,7 @@ public class Keyword {
 
 	@Override
 	public String toString() {
-		return "Keyword [id=" + id + ", word=" + keyword + ", created=" + created + ", updated=" + updated + "]";
+		return "Contact [id=" + id + ", name=" + name + ", created=" + created + ", updated=" + updated + "]";
 	}
 
 }
