@@ -1,24 +1,42 @@
 package ee.tlu.cwpc.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.joda.time.DateTime;
 
 @Entity
-@Table
-public class Contact {
+@Table(name = "company_profile")
+public class CompanyProfile {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
 
 	private String name;
+
+	private String website;
+
+	private String phone;
+
+	private int similarity;
+
+	@OneToMany(mappedBy = "companyProfile", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+	@Fetch(value = FetchMode.SUBSELECT)
+	private List<Subject> subjects = new ArrayList<>();
 
 	@ManyToOne
 	@JoinColumn(name = "search_result_id")
@@ -28,14 +46,8 @@ public class Contact {
 
 	private DateTime updated;
 
-	public Contact() {
+	public CompanyProfile() {
 
-	}
-
-	public Contact(String name, DateTime created, DateTime updated) {
-		this.name = name;
-		this.created = created;
-		this.updated = updated;
 	}
 
 	public long getId() {
@@ -52,6 +64,38 @@ public class Contact {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public String getWebsite() {
+		return website;
+	}
+
+	public void setWebsite(String website) {
+		this.website = website;
+	}
+
+	public String getPhone() {
+		return phone;
+	}
+
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+
+	public int getSimilarity() {
+		return similarity;
+	}
+
+	public void setSimilarity(int similarity) {
+		this.similarity = similarity;
+	}
+
+	public List<Subject> getSubjects() {
+		return subjects;
+	}
+
+	public void setSubjects(List<Subject> subjects) {
+		this.subjects = subjects;
 	}
 
 	public SearchResult getSearchResult() {
@@ -76,11 +120,6 @@ public class Contact {
 
 	public void setUpdated(DateTime updated) {
 		this.updated = updated;
-	}
-
-	@Override
-	public String toString() {
-		return "Contact [id=" + id + ", name=" + name + ", created=" + created + ", updated=" + updated + "]";
 	}
 
 }

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import ee.tlu.cwpc.dao.SearchResultDAO;
+import ee.tlu.cwpc.model.CompanyProfile;
 import ee.tlu.cwpc.model.Contact;
 import ee.tlu.cwpc.model.Keyword;
 import ee.tlu.cwpc.model.SearchResult;
@@ -16,10 +17,10 @@ import ee.tlu.cwpc.service.SearchResultService;
 
 @Service("searchResultService")
 public class BasicSearchResultService implements SearchResultService {
-	
+
 	@Autowired
 	private SearchResultDAO searchResultDAO;
-	
+
 	@Override
 	@Transactional
 	public SearchResult getSearchResult(long id) {
@@ -36,31 +37,32 @@ public class BasicSearchResultService implements SearchResultService {
 
 	@Override
 	@Transactional
-	public void createSearchResult(String name, String countryCode, List<Url> urls, List<Keyword> keywords,
-			List<Contact> contacts) {
+	public void createSearchResult(String name, String countryCode, List<String> urls, List<String> keywords,
+			List<String> contacts, List<CompanyProfile> companyProfiles) {
 		DateTime date = DateTime.now();
 		SearchResult searchResult = new SearchResult();
 		searchResult.setName(name);
 		searchResult.setCountryCode(countryCode);
-		
-		for (Url url : urls) {
-			url.setCreated(date);
-			url.setUpdated(date);
+
+		for (String urlString : urls) {
+			Url url = new Url(urlString, date, date);
 			searchResult.addUrl(url);
 		}
-		
-		for (Keyword keyword : keywords) {
-			keyword.setCreated(date);
-			keyword.setUpdated(date);
+
+		for (String keywordString : keywords) {
+			Keyword keyword = new Keyword(keywordString, date, date);
 			searchResult.addKeyword(keyword);
 		}
-		
-		for (Contact contact : contacts) {
-			contact.setCreated(date);
-			contact.setUpdated(date);
+
+		for (String contactString : contacts) {
+			Contact contact = new Contact(contactString, date, date);
 			searchResult.addContact(contact);
 		}
-		
+
+		for (CompanyProfile companyProfile : companyProfiles) {
+			searchResult.addCompanyProfile(companyProfile);
+		}
+
 		searchResult.setCreated(date);
 		searchResult.setUpdated(date);
 		searchResultDAO.save(searchResult);

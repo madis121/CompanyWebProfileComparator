@@ -43,16 +43,18 @@
 				<i id="company-search-spinner" class="fas fa-spinner fa-spin fa-5x col-md-11 text-center" style="display:none;"></i>
 				
 				<div id="company-search-result" class="col-md-12" style="display:none;">
-					<table class="table table-striped table-bordered">
-						<thead>
-							<tr>
-								<th scope="col" class="narrow">#</th>
-								<th scope="col"><spring:message code="companySearch.result.website" /></th>
-								<th scope="col"><spring:message code="companySearch.result.similarity" /></th>
-							</tr>
-						</thead>
-						<tbody></tbody>
-					</table>
+					<form id="save-company-search-result" action="company-search/save-result" method="post">
+						<table class="table table-striped table-bordered">
+							<thead>
+								<tr>
+									<th scope="col" class="narrow">#</th>
+									<th scope="col"><spring:message code="companySearch.result.website" /></th>
+									<th scope="col"><spring:message code="companySearch.result.similarity" /></th>
+								</tr>
+							</thead>
+							<tbody></tbody>
+						</table>
+					</form>
 				</div>
 				
 				<div id="company-search-result-error" class="col-md-12 text-center" style="display:none;">

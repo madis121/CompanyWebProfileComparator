@@ -67,9 +67,10 @@ public class GoogleCSE {
 				CSEResponse cseResponse = mapper.readValue(result.toString(), CSEResponse.class);
 
 				for (CSEItem item : cseResponse.getItems()) {
-					if (!items.contains(item.getDisplayLink())) {
-						String protocol = item.getLink().startsWith("https://") ? "https://" : "http://";
-						items.add(protocol.concat(item.getDisplayLink()));
+					String protocol = item.getLink().startsWith("https://") ? "https://" : "http://";
+					String link = protocol.concat(item.getDisplayLink());
+					if (!items.contains(link)) {
+						items.add(link);
 					}
 				}
 

@@ -20,8 +20,6 @@ public class Url {
 
 	private String url;
 
-	private int similarity;
-
 	@ManyToOne
 	@JoinColumn(name = "profile_id")
 	private Profile profile;
@@ -58,14 +56,6 @@ public class Url {
 
 	public void setUrl(String url) {
 		this.url = url;
-	}
-
-	public int getSimilarity() {
-		return similarity;
-	}
-
-	public void setSimilarity(int similarity) {
-		this.similarity = similarity;
 	}
 
 	public Profile getProfile() {

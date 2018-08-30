@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -17,7 +18,7 @@ import org.hibernate.annotations.FetchMode;
 import org.joda.time.DateTime;
 
 @Entity
-@Table
+@Table(name = "search_result")
 public class SearchResult {
 
 	@Id
@@ -26,6 +27,7 @@ public class SearchResult {
 
 	private String name;
 
+	@Column(name = "country_code")
 	private String countryCode;
 
 	@OneToMany(mappedBy = "searchResult", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
@@ -39,6 +41,10 @@ public class SearchResult {
 	@OneToMany(mappedBy = "searchResult", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
 	@Fetch(value = FetchMode.SUBSELECT)
 	private List<Contact> contacts = new ArrayList<>();
+
+	@OneToMany(mappedBy = "searchResult", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+	@Fetch(value = FetchMode.SUBSELECT)
+	private List<CompanyProfile> companyProfiles = new ArrayList<>();
 
 	private DateTime created;
 
@@ -115,7 +121,7 @@ public class SearchResult {
 	public void setContacts(List<Contact> contacts) {
 		this.contacts = contacts;
 	}
-	
+
 	public void addContact(Contact contact) {
 		contacts.add(contact);
 		contact.setSearchResult(this);
@@ -126,6 +132,24 @@ public class SearchResult {
 		contact.setSearchResult(null);
 	}
 
+	public List<CompanyProfile> getCompanyProfiles() {
+		return companyProfiles;
+	}
+
+	public void setCompanyProfiles(List<CompanyProfile> companyProfiles) {
+		this.companyProfiles = companyProfiles;
+	}
+
+	public void addCompanyProfile(CompanyProfile companyProfile) {
+		companyProfiles.add(companyProfile);
+		companyProfile.setSearchResult(this);
+	}
+
+	public void removeCompanyProfile(CompanyProfile companyProfile) {
+		companyProfiles.remove(companyProfile);
+		companyProfile.setSearchResult(null);
+	}
+	
 	public DateTime getCreated() {
 		return created;
 	}
