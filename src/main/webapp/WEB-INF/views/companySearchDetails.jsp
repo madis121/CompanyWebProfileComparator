@@ -16,7 +16,7 @@
 						<input name="urls" type="hidden" value="${commaSeperatedURLs}">
 						<div class="form-group row col-md-12">
 							<label class="col-form-label col-md-3"><spring:message code="companySearch.details.profile.name" /></label>
-							<input class="form-control col-md-9" name="name" type="text" value="${profile.name}" disabled>
+							<input class="form-control col-md-9" name="name" type="text" value="${profile.name}" readonly>
 						</div>
 						<div class="form-group row col-md-12">
 							<label class="col-form-label col-md-3"><spring:message code="companySearch.details.keywords" /></label>
@@ -70,6 +70,7 @@
 				</div>
 				<div id="company-search-result-buttons" style="display:none;">
 					<button class="btn btn-dark btn-lg float-left" data-dismiss="modal"><spring:message code="common.back" /></button>
+					<button class="btn btn-dark btn-lg float-right" onclick="saveSearchResult();"><spring:message code="common.save" /></button>
 				</div>
 			</div>
 		</div>
@@ -149,5 +150,18 @@
 				}
 			} 
 		});
+	}
+	
+	function saveSearchResult() {
+		$.each($('#find-similar-companies input, #find-similar-companies select'), function(i, obj) {
+			if ($(this).is('input')) {
+				$(this).clone().attr('type', 'hidden').appendTo($('#save-company-search-result'));
+			} else {
+				var input = '<input type="hidden" name="' + $(this).prop('name') + '" value="' + $(this).val() + '">';
+				$('#save-company-search-result').append(input);
+			}
+		});
+		
+		$('#save-company-search-result').submit();
 	}
 </script>

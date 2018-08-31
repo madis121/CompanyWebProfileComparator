@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -60,7 +61,7 @@ public class CompanySearchController extends BaseController {
 		return "companySearchDetails";
 	}
 
-	@RequestMapping(value = "/find", method = RequestMethod.GET)
+	@RequestMapping(value = "/find", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	public ResponseEntity<List<String>> findSimilarCompanies(@RequestParam(name = "keywords") List<String> keywords,
 			@RequestParam(name = "urls") List<String> urls, @RequestParam(name = "country") String countryCode,
@@ -87,7 +88,6 @@ public class CompanySearchController extends BaseController {
 	}
 
 	@RequestMapping(value = "/save-result", method = RequestMethod.POST)
-	@SuppressWarnings("unchecked")
 	public String saveSearchResult(@RequestParam(name = "name") String name,
 			@RequestParam(name = "keywords") List<String> keywords, @RequestParam(name = "urls") List<String> urls,
 			@RequestParam(name = "country") String countryCode, @RequestParam(name = "contacts") List<String> contacts,
