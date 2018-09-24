@@ -17,32 +17,4 @@
 			<a href="${pageContext.request.contextPath}/search-results"><i class="fas fa-vials"></i>&nbsp;<span><spring:message code="sidebar.results" /></span></a>
 		</li>
 	</ul>
-	
-	<a href="javascript:void(0)" id="sidebar-collapse">
-		<i class="fas fa-arrow-left fa-2x"></i>
-	</a>
 </div>
-
-<script>
-	$(document).ready(function() {
-		$('#sidebar-collapse').click(function() {
-			if (!$('#sidebar').hasClass('active')) {
-				$('#sidebar').addClass('active');
-				$('#sidebar-collapse').addClass('active');
-				$('#header').addClass('active');
-				
-				$.each($('#sidebar .sidebar-item'), function(i, obj) {
-					$(this).addClass('active');
-				});
-			} else {
-				$('#sidebar').removeClass('active');
-				$('#sidebar-collapse').removeClass('active');
-				$('#header').removeClass('active');
-				
-				$.each($('#sidebar .sidebar-item'), function(i, obj) {
-					$(this).removeClass('active');
-				});
-			}
-		});
-	});
-</script>

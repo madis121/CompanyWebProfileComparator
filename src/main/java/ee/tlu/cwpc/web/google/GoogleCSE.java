@@ -1,12 +1,13 @@
 package ee.tlu.cwpc.web.google;
 
 import java.io.BufferedReader;
-
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -14,14 +15,19 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.MessageSource;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import ee.tlu.cwpc.dto.CSEObject;
+
 /**
- * Custom Search Engine - https://cse.google.com/cse/setup/basic?cx=009007231010836904126%3Ac2zzkw4lqci
- * CSE JSON API - https://developers.google.com/custom-search/json-api/v1/reference/cse/list#try-it
+ * https://cse.google.com/cse/setup/basic?cx=009007231010836904126%3Ac2zzkw4lqci
+ * https://developers.google.com/custom-search/json-api/v1/reference/cse/list#try-it
  */
 @Service
 public class GoogleCSE {
@@ -37,30 +43,36 @@ public class GoogleCSE {
 	@Value("${google.custom.search.engine.api.key}")
 	private String apiKey;
 
+	@Autowired
+	private MessageSource messageSource;
+
 	private static final HttpClient CLIENT = HttpClientBuilder.create().build();
 
 	private static ObjectMapper mapper = new ObjectMapper();
 
-	public List<String> requestLinksFromCSE(String query, String countryCode, int pages) {
+	public CSEObject requestLinksFromCSE(String query, String countryCode, int pages, Locale locale) {
 		List<String> items = new ArrayList<>();
 		int numOfResults = pages * 10 + 1;
 
 		try {
 			for (int i = 1; i <= numOfResults; i = i + 10) {
-				String url = apiUrl.concat("?q=").concat(query).concat("&cr=country").concat(countryCode).concat("&start=")
-						.concat(String.valueOf(i)).concat("&key=").concat(apiKey).concat("&cx=").concat(apiId);
+				String url = apiUrl.concat("?q=").concat(URLEncoder.encode(query, StandardCharsets.UTF_8.name()))
+						.concat("&cr=country").concat(countryCode).concat("&start=").concat(String.valueOf(i)).concat("&key=")
+						.concat(apiKey).concat("&cx=").concat(apiId);
 				HttpGet request = new HttpGet(url);
 				HttpResponse response = CLIENT.execute(request);
 				int statusCode = response.getStatusLine().getStatusCode();
 
 				if (statusCode != 200) {
 					if (statusCode == 403) {
-						LOGGER.warn("API daily limit has exceeded (100 queries per day).");
-						return Collections.emptyList();
+						LOGGER.warn("API daily limit has exceeded.");
+						return new CSEObject(HttpStatus.FORBIDDEN,
+								messageSource.getMessage("companySearch.result.error.403", null, locale));
 					}
-					
-					LOGGER.debug("Received an error while using CSE");
-					return null;
+
+					LOGGER.error("Received an error while using CSE");
+					return new CSEObject(HttpStatus.BAD_REQUEST,
+							messageSource.getMessage("companySearch.result.error.400", null, locale));
 				}
 
 				StringBuffer result = getResult(response);
@@ -79,8 +91,8 @@ public class GoogleCSE {
 		} catch (Exception e) {
 			LOGGER.error("Encountered an unexpected error while using CSE: ", e);
 		}
-		
-		return items;
+
+		return new CSEObject(HttpStatus.OK, items);
 	}
 
 	private StringBuffer getResult(HttpResponse response) {

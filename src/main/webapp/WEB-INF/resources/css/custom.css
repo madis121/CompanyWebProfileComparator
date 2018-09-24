@@ -10,10 +10,6 @@
 	right: 0;
 }
 
-#header.active {
-	left: 125px;
-}
-
 #language-list {
 	margin-right: 10rem;
 }
@@ -44,11 +40,6 @@ a, a:hover, a:focus {
     color: inherit;
     text-decoration: none;
     /*transition: all 0.3s;*/
-}
-
-#sidebar.active {
-    min-width: 125px;
-    max-width: 125px;
 }
 
 #sidebar .sidebar-header {
@@ -90,18 +81,6 @@ ul ul a {
 	position: fixed;
 	bottom: 100px;
 	left: 100px;
-}
-
-#sidebar-collapse.active {
-	left: 50px;
-}
-
-.sidebar-item.active span {
-	display: none;
-}
-
-.sidebar-item.active {
-	text-align: center;
 }
 
 .sidebar-item svg {
@@ -159,4 +138,23 @@ th.narrow {
 
 button.inline {
 	margin-left: 1rem;
+}
+
+@media only screen and (max-width: 768px) {
+	#header {
+		left: 125px;
+	}
+	
+	#sidebar {
+	    min-width: 125px;
+	    max-width: 125px;
+	}
+	
+	.sidebar-item span {
+		display: none;
+	}
+	
+	.sidebar-item {
+		text-align: center;
+	}
 }

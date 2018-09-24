@@ -10,7 +10,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -20,6 +19,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import ee.tlu.cwpc.dto.CSEObject;
+import ee.tlu.cwpc.helper.CSEHelper;
 import ee.tlu.cwpc.helper.Countries;
 import ee.tlu.cwpc.model.CompanyProfile;
 import ee.tlu.cwpc.model.Profile;
@@ -63,30 +64,30 @@ public class CompanySearchController extends BaseController {
 
 	@RequestMapping(value = "/find", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	public ResponseEntity<List<String>> findSimilarCompanies(@RequestParam(name = "keywords") List<String> keywords,
+	public ResponseEntity<CSEObject> findSimilarCompanies(@RequestParam(name = "keywords") List<String> keywords,
 			@RequestParam(name = "urls") List<String> urls, @RequestParam(name = "country") String countryCode,
 			@RequestParam(name = "contacts") List<String> contacts, HttpSession session) {
 		List<CompanyProfile> companyProfiles = new ArrayList<>();
-		List<String> links = googleCSE.requestLinksFromCSE(StringUtils.join(keywords, "+"), countryCode, 2);
+		CSEObject response = googleCSE.requestLinksFromCSE(CSEHelper.constructQuery(keywords, urls), countryCode, 1, getLocale());
 
-		if (links == null) {
-			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-		} else if (links.isEmpty()) {
-			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+		if (response.getLinks() != null) {
+			LOGGER.debug("Received links from Google: " + Arrays.toString(response.getLinks().toArray()));
+
+			for (String link : response.getLinks()) {
+				CompanyProfile companyProfile = new CompanyProfile();
+				companyProfile.setWebsite(link);
+				companyProfiles.add(companyProfile);
+			}
+
+			session.setAttribute(SEARCH_RESULT, companyProfiles);
+		} else {
+			session.removeAttribute(SEARCH_RESULT);
 		}
 
-		LOGGER.debug("Received links from Google: " + Arrays.toString(links.toArray()));
-
-		for (String link : links) {
-			CompanyProfile companyProfile = new CompanyProfile();
-			companyProfile.setWebsite(link);
-			companyProfiles.add(companyProfile);
-		}
-
-		session.setAttribute(SEARCH_RESULT, companyProfiles);
-		return new ResponseEntity<>(links, HttpStatus.OK);
+		return new ResponseEntity<>(response, response.getStatusCode());
 	}
 
+	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/save-result", method = RequestMethod.POST)
 	public String saveSearchResult(@RequestParam(name = "name") String name,
 			@RequestParam(name = "keywords") List<String> keywords, @RequestParam(name = "urls") List<String> urls,

@@ -5,7 +5,9 @@
 <div class="modal-dialog modal-lg" role="document">
 	<div class="modal-content">
 		<div class="modal-header">
-			<h3 class="modal-title col-11 text-center" id="search-result-details-label"><c:out value="${searchResult.name}" /> (<joda:format value="${searchResult.created}" pattern="dd-MM-yyyy HH:mm:ss" />)</h3>
+			<h3 class="modal-title col-11 text-center" id="search-result-details-label">
+				<c:out value="${searchResult.name}" /> (<joda:format value="${searchResult.created}" pattern="dd-MM-yyyy HH:mm:ss" />)
+			</h3>
 			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 				<span aria-hidden="true"><i class="fas fa-times fa-1x"></i></span>
 			</button>
@@ -29,7 +31,7 @@
 								<tr>
 									<td scope="col">${status.index + 1}</td>
 									<td><c:out value="${companyProfile.name}" /></td>
-									<td><c:out value="${companyProfile.website}" /></td>
+									<td><a href="${companyProfile.website}" target="_blank"><c:out value="${companyProfile.website}" /></a></td>
 									<td><c:out value="${companyProfile.phone}" /></td>
 									<td><c:out value="${companyProfile.similarity}" /></td>
 									<td></td>

@@ -44,6 +44,10 @@
 				
 				<div id="company-search-result" class="col-md-12" style="display:none;">
 					<form id="save-company-search-result" action="company-search/save-result" method="post">
+						<div class="form-group row col-md-12">
+							<label class="col-form-label col-md-3"><spring:message code="companySearch.result.name" /></label>
+							<input class="form-control col-md-9" name="name" type="text" value="${profile.name}">
+						</div>
 						<table class="table table-striped table-bordered">
 							<thead>
 								<tr>
@@ -57,9 +61,7 @@
 					</form>
 				</div>
 				
-				<div id="company-search-result-error" class="col-md-12 text-center" style="display:none;">
-					<h5><spring:message code="companySearch.result.error.api.daily.limit.exceeded" /></h5>
-				</div>
+				<div id="company-search-result-error" class="col-md-12 text-center" style="display:none;"></div>
 			</div>
 		</div>
 		<div class="modal-footer">
@@ -70,7 +72,7 @@
 				</div>
 				<div id="company-search-result-buttons" style="display:none;">
 					<button class="btn btn-dark btn-lg float-left" data-dismiss="modal"><spring:message code="common.back" /></button>
-					<button class="btn btn-dark btn-lg float-right" onclick="saveSearchResult();"><spring:message code="common.save" /></button>
+					<button class="btn btn-dark btn-lg float-right save-button" onclick="saveSearchResult();"><spring:message code="common.save" /></button>
 				</div>
 			</div>
 		</div>
@@ -128,9 +130,8 @@
 			url : 'company-search/find',
 			data :  $('#find-similar-companies').serialize(),
 			async : true,
-			success : function(websites) {
-				console.log(websites);
-				$.each(websites, function(i, website) {
+			success : function(response) {
+				$.each(response.links, function(i, website) {
 					var tbody = $('#company-search-result tbody');
 					var row = $('<tr></tr>').appendTo(tbody);
 					$('<td></td>').text(i + 1).appendTo(row);
@@ -140,22 +141,26 @@
 				
 				$('#company-search-spinner').hide();
 				$('#company-search-result').show();
+				$('#company-search-result-buttons .save-button').show();
 				$('#company-search-result-buttons').show();
 			},
-			statusCode : {
-				403: function() {
-					$('#company-search-spinner').hide();
-					$('#company-search-result-error').show();
-					$('#company-search-result-buttons').show();
-				}
-			} 
+			error : function(request, status, error) {
+				$('#company-search-result-error').html('');
+				$('#company-search-result-error').append('<h5>' + request.responseJSON.statusText + '</h5>');
+				$('#company-search-spinner').hide();
+				$('#company-search-result-error').show();
+				$('#company-search-result-buttons .save-button').hide();
+				$('#company-search-result-buttons').show();
+			}
 		});
 	}
 	
 	function saveSearchResult() {
 		$.each($('#find-similar-companies input, #find-similar-companies select'), function(i, obj) {
 			if ($(this).is('input')) {
-				$(this).clone().attr('type', 'hidden').appendTo($('#save-company-search-result'));
+				if ($(this).prop('name') != 'name') {
+					$(this).clone().attr('type', 'hidden').appendTo($('#save-company-search-result'));
+				}
 			} else {
 				var input = '<input type="hidden" name="' + $(this).prop('name') + '" value="' + $(this).val() + '">';
 				$('#save-company-search-result').append(input);
