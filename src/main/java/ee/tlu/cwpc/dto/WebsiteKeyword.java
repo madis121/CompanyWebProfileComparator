@@ -33,7 +33,7 @@ public class WebsiteKeyword implements Comparable<WebsiteKeyword> {
 
 	@Override
 	public String toString() {
-		return "WebsiteKeyword [word=" + word + ", count=" + count + "]";
+		return "WebsiteKeyword [word=" + word + ", count=" + count +"]";
 	}
 
 	@Override

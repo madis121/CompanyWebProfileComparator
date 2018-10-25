@@ -53,29 +53,60 @@
 			</div>
 			<div class="modal-body">
 				<div class="row">
-					<div id="new-profile-content" class="col-md-12">
-						<form id="websites" autocomplete="on">
-							<div class="form-group">
-								<input type="text" name="website" class="form-control col-md-10 margin-10" index="0"><a href="javascript:void(0)" onclick="appendInput();"><i class="fas fa-plus fa-2x"></i></a>
-							</div>
-						</form>
-						<button id="collect-data" class="btn btn-dark btn-block col-md-10 margin-10" onclick="validateAndSubmit();"><spring:message code="new.profile.modal.create" /></button>
+					<div class="col-md-4 offset-md-2 mb-5 profile-option">
+						<label class="radio-inline" data-toggle="tooltip" title="<spring:message code="new.profile.modal.radio.1.tooltip" />">
+							<input type="radio" name="profile-option" value="1" checked> <spring:message code="new.profile.modal.radio.1" /> <i class="fas fa-question-circle"></i>
+						</label>
+					</div>
+					<div class="col-md-4 mb-5 profile-option">
+						<label class="radio-inline" data-toggle="tooltip" title="<spring:message code="new.profile.modal.radio.2.tooltip" />">
+							<input type="radio" name="profile-option" value="2"> <spring:message code="new.profile.modal.radio.2" /> <i class="fas fa-question-circle"></i>
+						</label>
+					</div> 
+					
+					<div id="profile-creation-1" class="col-md-12">
+						<div id="new-profile-content" class="col-md-12">
+							<form id="websites" autocomplete="on">
+								<div class="form-group">
+									<input type="text" name="website" class="form-control col-md-10 margin-10" index="0"><a href="javascript:void(0)" onclick="appendInput();"><i class="fas fa-plus fa-2x"></i></a>
+								</div>
+							</form>
+							<button id="collect-data" class="btn btn-dark btn-block col-md-10 margin-10" onclick="validateAndSubmit();"><spring:message code="new.profile.modal.create" /></button>
+						</div>
+						
+						<div id="new-profile-spinner" class="col-md-11 text-center" style="display:none;">
+							<i class="fas fa-spinner fa-spin fa-5x"></i>
+						</div>
+						
+						<div id="new-profile-result" class="col-md-12" style="display:none;">
+							<form id="create-profile" action="create-profile" method="post">
+								<input name="urls" type="hidden">
+								<div class="form-group row col-md-12">
+									<label class="col-form-label col-md-2"><spring:message code="new.profile.modal.name" /></label>
+									<input class="form-control col-md-10" name="name" type="text">
+								</div>
+								<div class="form-group row col-md-12">
+									<label class="col-form-label col-md-2"><spring:message code="new.profile.modal.keywords" /></label>
+									<input class="form control col-md-10" name="keywords" data-role="tagsinput">
+								</div>
+							</form>
+						</div>
 					</div>
 					
-					<i id="new-profile-spinner" class="fas fa-spinner fa-spin fa-5x col-md-11 text-center" style="display:none;"></i>
-					
-					<div id="new-profile-result" class="col-md-12" style="display:none;">
-						<form id="create-profile" action="create-profile" method="post">
-							<input name="urls" type="hidden">
-							<div class="form-group row col-md-12">
-								<label class="col-form-label col-md-2"><spring:message code="new.profile.modal.name" /></label>
-								<input class="form-control col-md-10" name="name" type="text">
-							</div>
-							<div class="form-group row col-md-12">
-								<label class="col-form-label col-md-2"><spring:message code="new.profile.modal.keywords" /></label>
-								<input class="form control col-md-10" name="keywords" data-role="tagsinput">
-							</div>
-						</form>
+					<div id="profile-creation-2" class="col-md-12" style="display:none;">
+						<div id="new-profile-clean" class="col-md-12"> 
+							<form id="create-profile-clean" action="create-profile" method="post">
+								<input name="urls" type="hidden">
+								<div class="form-group row col-md-12">
+									<label class="col-form-label col-md-2"><spring:message code="new.profile.modal.name" /></label>
+									<input class="form-control col-md-10" name="name" type="text">
+								</div>
+								<div class="form-group row col-md-12">
+									<label class="col-form-label col-md-2"><spring:message code="new.profile.modal.keywords" /></label>
+									<input class="form control col-md-10" name="keywords" data-role="tagsinput">
+								</div>
+							</form>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -102,7 +133,10 @@
 	var PROFILE_DELETED = "profileDeleted";
 
 	$(document).ready(function() {
+		initializeTooltips();
 		displayNotifications();
+		chooseProfileCreation();
+		$('.bootstrap-tagsinput').addClass('col-md-10');
 	});
 	
 	function displayNotifications() {
@@ -123,12 +157,30 @@
 	function openNewProfileModal() {
 		$('#new-profile-modal').modal('show');
 	}
+	
+	function chooseProfileCreation() {
+		$('[name="profile-option"]').click(function() {
+			if ($(this).val() == 1) {
+				$('#profile-creation-2').hide();
+				$('#profile-creation-1').show();
+				if ($('#new-profile-result').is(':visible')) {
+					$('#new-profile-buttons').show();
+				} else {
+					$('#new-profile-buttons').hide();
+				}
+			} else {
+				$('#profile-creation-1').hide();
+				$('#profile-creation-2').show();
+				$('#new-profile-buttons').show();
+			}
+		});
+	}
 
 	function appendInput() {
 		var length = $('[index]').length;
 		var html = '<input type="text" name="website" class="form-control col-md-10 margin-10" index="' + length + '">' +
 			'<a href="javascript:void(0)" onclick="removeInput(' + length + ');"><i class="fas fa-minus fa-2x"></i></a>';
-		$('#collect-data').before(html);
+		$(html).appendTo('#websites');
 	}
 	
 	function removeInput(index) {
@@ -156,6 +208,7 @@
 	} 
 	
 	function submitForm() {
+		$('.profile-option').hide();
 		$('#new-profile-content').hide();
     	$('#new-profile-spinner').show();
     	
@@ -164,23 +217,18 @@
 			url : 'collect-data',
 			data :  $('#websites').serialize(),
 			async : true,
-			success : function(websites) {
-				console.log(websites);
-				var urls = [];
-
-				$.each(websites, function(i, website) {
-					urls.push(website.url);
-					
-					$.each(website.keywords, function(j, object) {
-			    		$('#create-profile [name="keywords"]').tagsinput('add', object.word);
-					});
+			success : function(data) {
+				console.log(data);
+				
+				$.each(data.keywords, function(i, keyword) {
+					$('#create-profile [name="keywords"]').tagsinput('add', keyword.word);
 				});
 				
-				$('#create-profile [name="urls"]').val(urls.toString());
-				$('.bootstrap-tagsinput').addClass('col-md-10');;
+				$('#create-profile [name="urls"]').val(data.websites.toString());
 	    		$('#new-profile-spinner').hide();
 				$('#new-profile-buttons').show();
 	    		$('#new-profile-result').show();
+	    		$('.profile-option').show();
 			}
 		});
 	}
@@ -190,25 +238,33 @@
 	}
 	
 	function clearProfile() {
-		$('#create-profile [name="name"]').val('');
-		$('#create-profile [name="keywords"]').tagsinput('removeAll');
-		$('#create-profile [name="urls"]').val('');
-		$('#new-profile-buttons').hide();
-		$('#new-profile-result').hide();
-		$('#new-profile-content').show();
-		
-		$.each($('[name="website"]'), function(i, obj) {
-			if ($(this).attr('index') != "0") {
-				$(this).next().remove();
-				$(this).remove();
-			} else {
-				$(this).val('');
-			}
-		});
+		if ($('[name="profile-option"]:checked').val() == 1) {
+			$.each($('[name="website"]'), function(i, obj) {
+				if ($(this).attr('index') != '0') {
+					$(this).next().remove();
+					$(this).remove();
+				} else {
+					$(this).val('');
+				}
+			});
+			$('#create-profile [name="name"]').val('');
+			$('#create-profile [name="keywords"]').tagsinput('removeAll');
+			$('#create-profile [name="urls"]').val('');
+			$('#new-profile-result').hide();
+			$('#new-profile-buttons').hide();
+			$('#new-profile-content').show();
+		} else {
+			$('#create-profile-clean [name="name"]').val('');
+			$('#create-profile-clean [name="keywords"]').tagsinput('removeAll');
+		}
 	}
 	
-	function saveProfile() {	
-		$('#create-profile').submit();
+	function saveProfile() {
+		if ($('[name="profile-option"]:checked').val() == 1) {
+			$('#create-profile').submit();
+		} else {
+			$('#create-profile-clean').submit();
+		}
 	}
 	
 	function openProfileModal(profileId) {

@@ -19,6 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import ee.tlu.cwpc.dto.WebsiteKeyword;
+import ee.tlu.cwpc.helper.StringHelper;
 import ee.tlu.cwpc.helper.URLHelper;
 
 /**
@@ -27,34 +28,53 @@ import ee.tlu.cwpc.helper.URLHelper;
 public class WebScraper {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(WebScraper.class);
-	
+
+	private List<String> websites;
+
 	private Integer maxPagesToSearch;
-	
+
 	private Integer ignoreWordsWithLength;
 
 	private Set<String> pagesVisited = new HashSet<>();
 
 	private Map<String, WebsiteKeyword> keywords = new HashMap<>();
 
-	public WebScraper(Integer maxPagesToSearch, Integer ignoreWordsWithLength) {
+	private int timesScraped;
+
+	private Set<String> redundantWords;
+
+	public WebScraper(List<String> websites, Integer maxPagesToSearch, Integer ignoreWordsWithLength,
+			Set<String> redundantWords) {
+		this.websites = websites;
 		this.maxPagesToSearch = maxPagesToSearch;
 		this.ignoreWordsWithLength = ignoreWordsWithLength == null ? 0 : ignoreWordsWithLength;
+		this.redundantWords = redundantWords;
+	}
+
+	public void collectData() {
+		for (String website : websites) {
+			timesScraped = 0;
+			search(website);
+			LOGGER.debug(String.format("Finished scraping data from %s (scraped %d times)", website, timesScraped));
+		}
 	}
 
 	public void search(String url) {
+		timesScraped++;
 		List<String> links = new ArrayList<>();
 		url = URLHelper.clean(url);
 		url = URLHelper.removeParameters(url);
-		
+
 		if (!pagesVisited.contains(url) && !URLHelper.containsHashtag(url)) {
 			links = getLinksFoundAtUrl(url);
-			LOGGER.debug("Found " + links.size() + " links at " + url);
+			LOGGER.trace("Found " + links.size() + " links at " + url);
 			getDataFoundAtUrl(url);
 		}
-		
-		//maxPagesToSearch = maxPagesToSearch != null ? maxPagesToSearch : links.size();
 
 		for (String link : links) {
+			if (maxPagesToSearch != null && maxPagesToSearch <= timesScraped) {
+				return;
+			}
 			if (!pagesVisited.contains(link) && !URLHelper.containsHashtag(link)) {
 				search(link);
 			}
@@ -90,14 +110,16 @@ public class WebScraper {
 			Connection connection = Jsoup.connect(url);
 			Document htmlDocument = connection.get();
 
-			for (Element element : htmlDocument.getAllElements()) {
-				if (element.children().isEmpty() && element.hasText() && !ignoredElement(element.tagName())) {
-					String[] wordsInElement = element.text().split(" ");
+			for (Element element : htmlDocument.body().getAllElements()) {
+				String elementText = element.ownText().toLowerCase();
+				String[] words = elementText.split(" ");
 
-					for (String word : wordsInElement) {
-						word = URLHelper.removeNonWordCharacters(word).toLowerCase();
+				for (String word : words) {
+					if (StringUtils.isNotBlank(word) && !word.contains("@")) {
+						word = StringHelper.removeNonWordCharacters(word);
 
-						if (!StringUtils.isBlank(word) && word.length() > ignoreWordsWithLength) {
+						if (StringUtils.isNotBlank(word) && !redundantWords.contains(word) && word.length() > ignoreWordsWithLength
+								&& word.matches(".*[a-zA-Z]{2,}.*")) {
 							WebsiteKeyword keyword = keywords.getOrDefault(word, new WebsiteKeyword(word, 0));
 							keyword.setCount(keyword.getCount() + 1);
 							keywords.put(word, keyword);

@@ -1,8 +1,10 @@
 package ee.tlu.cwpc.web.controller;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -16,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import ee.tlu.cwpc.dto.WebsiteData;
+import ee.tlu.cwpc.dto.CollectedData;
 import ee.tlu.cwpc.dto.WebsiteKeyword;
 import ee.tlu.cwpc.model.Profile;
 import ee.tlu.cwpc.web.WebScraper;
@@ -26,8 +28,11 @@ public class DashboardController extends BaseController {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(DashboardController.class);
 
-	@Value("${max.pages.to.search:#{null}}")
+	@Value("${webscraper.max.pages.to.search:#{null}}")
 	private Integer maxPagesToSearch;
+
+	@Value("#{'${webscraper.redundant.words}'.split(',')}")
+	private Set<String> redundantWords;
 
 	@RequestMapping(value = "", method = RequestMethod.GET)
 	public String openDashboard(@RequestParam(name = "action", required = false, defaultValue = "") String action,
@@ -42,19 +47,14 @@ public class DashboardController extends BaseController {
 
 	@RequestMapping(value = "/collect-data", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	public List<WebsiteData> collectDataFromWebsites(@RequestParam(name = "website") List<String> websites) {
-		List<WebsiteData> data = new ArrayList<>();
-
-		for (String website : websites) {
-			WebScraper webScraper = new WebScraper(null, 2);
-			webScraper.search(website);
-			List<WebsiteKeyword> keywords = new ArrayList<>(webScraper.getKeywords().values());
-			Collections.sort(keywords);
-			data.add(new WebsiteData(website, keywords.subList(0, 50)));
-			LOGGER.debug("Finished scraping data from " + website);
-		}
-
-		return data;
+	public CollectedData collectDataFromWebsites(@RequestParam(name = "website") List<String> websites) {
+		LOGGER.info(String.format("Scraping data from %s", Arrays.toString(websites.toArray())));
+		WebScraper webScraper = new WebScraper(websites, maxPagesToSearch, 2, redundantWords);
+		webScraper.collectData();
+		List<WebsiteKeyword> keywords = new ArrayList<>(webScraper.getKeywords().values());
+		Collections.sort(keywords);
+		LOGGER.info("Data scraping done");
+		return new CollectedData(websites, keywords);
 	}
 
 	@RequestMapping(value = "/create-profile", method = RequestMethod.POST)
