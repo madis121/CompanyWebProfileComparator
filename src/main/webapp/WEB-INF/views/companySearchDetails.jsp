@@ -83,22 +83,23 @@
 	$(document).ready(function() {
 		initializeTooltips();
 		initializeInputTags();
-		$('.bootstrap-tagsinput').addClass('col-md-9');
+		$('.bootstrap-tagsinput').addClass('col-md-9 keywords');
 	});
 	
 	function validateAndSubmit() {
-		var keywords = $('#find-similar-companies [name="keywords"]');
+		var keywords = $('#find-similar-companies [name="keywords"]').val().split(",");
 		var country = $('#find-similar-companies [name="country"]');
 		var contacts = $('#find-similar-companies [name="contacts"]');
 		var contactsExpression = '^[a-zA-Z0-9]';
 		var contactsRegex = new RegExp(contactsExpression, "i");
 		var validationError = false;
 		
-		if (keywords.tagsinput('items').length < 1) {
-			addValidationErrorMessage(keywords.prev(), '<spring:message code="companySearch.details.keywords.validation.error" />');
+		
+		if (keywords.length < 5) {
+			addValidationErrorMessage($('#find-similar-companies .keywords'), '<spring:message code="companySearch.details.keywords.validation.error" />');
 			validationError = true;
 		} else {
-			removeValidationErrorMessage(keywords.prev());
+			removeValidationErrorMessage($('#find-similar-companies .keywords'));
 		}
 		
 		if (!country.val()) {

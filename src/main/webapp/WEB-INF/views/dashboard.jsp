@@ -136,7 +136,7 @@
 		initializeTooltips();
 		displayNotifications();
 		chooseProfileCreation();
-		$('.bootstrap-tagsinput').addClass('col-md-10');
+		$('.bootstrap-tagsinput').addClass('col-md-10 keywords');
 	});
 	
 	function displayNotifications() {
@@ -261,8 +261,22 @@
 	
 	function saveProfile() {
 		if ($('[name="profile-option"]:checked').val() == 1) {
+			var keywords = $('#create-profile [name="keywords"]').val().split(",");
+			if (keywords.length < 5) {
+				addValidationErrorMessage($('#create-profile .keywords'), '<spring:message code="new.profile.modal.error.must.contain.keywords" />');
+				return;
+			} else {
+				removeValidationErrorMessage($('#create-profile .keywords'));
+			}
 			$('#create-profile').submit();
 		} else {
+			var keywords = $('#create-profile-clean [name="keywords"]').val().split(",");
+			if (keywords.length < 5) {
+				addValidationErrorMessage($('#create-profile-clean .keywords'), '<spring:message code="new.profile.modal.error.must.contain.keywords" />');
+				return;
+			} else {
+				removeValidationErrorMessage($('#create-profile-clean .keywords'));
+			}
 			$('#create-profile-clean').submit();
 		}
 	}
@@ -274,6 +288,13 @@
 	}
 	
 	function saveProfileChanges() {
+		var keywords = $('#profile-edit-content [name="keywords"]').val().split(",");
+		if (keywords.length < 5) {
+			addValidationErrorMessage($('#profile-edit-content .keywords'), '<spring:message code="new.profile.modal.error.must.contain.keywords" />');
+			return;
+		} else {
+			removeValidationErrorMessage($('#profile-edit-content .keywords'));
+		}
 		$('#update-profile').submit();
 	}
 	
