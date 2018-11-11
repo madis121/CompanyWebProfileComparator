@@ -35,4 +35,18 @@ public class SearchResultsController extends BaseController {
 		return "searchResultDetails";
 	}
 	
+	@RequestMapping(value = "/delete-alert", method = RequestMethod.GET)
+	public String deleteSearchResultAlert(@RequestParam(name = "id") long id, Model model) {
+		SearchResult searchResult = searchResultService.getSearchResult(id);
+		model.addAttribute("searchResult", searchResult);
+		addPageAttributesToModel(model);
+		return "deleteSearchResultAlert";
+	}
+
+	@RequestMapping(value = "/delete", method = RequestMethod.POST)
+	public String deleteSearchResult(@RequestParam(name = "id") long id) {
+		searchResultService.deleteSearchResult(id);
+		return "redirect:/search-results";
+	}
+	
 }

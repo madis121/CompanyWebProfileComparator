@@ -1,15 +1,12 @@
 package ee.tlu.cwpc.web.controller;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import ee.tlu.cwpc.configuration.WebScraperConfiguration;
 import ee.tlu.cwpc.dto.CollectedData;
 import ee.tlu.cwpc.dto.WebsiteKeyword;
 import ee.tlu.cwpc.model.Profile;
@@ -28,11 +26,8 @@ public class DashboardController extends BaseController {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(DashboardController.class);
 
-	@Value("${webscraper.max.pages.to.search:#{null}}")
-	private Integer maxPagesToSearch;
-
-	@Value("#{'${webscraper.redundant.words}'.split(',')}")
-	private Set<String> redundantWords;
+	@Autowired
+	private WebScraperConfiguration webScraperConfiguration;
 
 	@RequestMapping(value = "", method = RequestMethod.GET)
 	public String openDashboard(@RequestParam(name = "action", required = false, defaultValue = "") String action,
@@ -49,10 +44,11 @@ public class DashboardController extends BaseController {
 	@ResponseBody
 	public CollectedData collectDataFromWebsites(@RequestParam(name = "website") List<String> websites) {
 		LOGGER.info(String.format("Scraping data from %s", Arrays.toString(websites.toArray())));
-		WebScraper webScraper = new WebScraper(websites, maxPagesToSearch, 2, redundantWords);
+		WebScraper webScraper = new WebScraper(websites, webScraperConfiguration.getMaxPagesToSearch(),
+				webScraperConfiguration.getIgnoreWordsWithLength(), webScraperConfiguration.getIgnoredHtmlElements(),
+				webScraperConfiguration.getRedundantWords());
 		webScraper.collectData();
-		List<WebsiteKeyword> keywords = new ArrayList<>(webScraper.getKeywords().values());
-		Collections.sort(keywords);
+		List<WebsiteKeyword> keywords = webScraper.getCommonKeywords();
 		LOGGER.info("Data scraping done");
 		return new CollectedData(websites, keywords);
 	}

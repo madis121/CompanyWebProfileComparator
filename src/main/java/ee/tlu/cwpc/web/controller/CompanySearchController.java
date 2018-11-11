@@ -2,6 +2,8 @@ package ee.tlu.cwpc.web.controller;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
@@ -19,12 +21,15 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import ee.tlu.cwpc.configuration.WebScraperConfiguration;
 import ee.tlu.cwpc.dto.CSEObject;
 import ee.tlu.cwpc.helper.CSEHelper;
 import ee.tlu.cwpc.helper.Countries;
+import ee.tlu.cwpc.helper.StringHelper;
 import ee.tlu.cwpc.model.CompanyProfile;
 import ee.tlu.cwpc.model.Profile;
 import ee.tlu.cwpc.service.SearchResultService;
+import ee.tlu.cwpc.web.WebScraper;
 import ee.tlu.cwpc.web.google.GoogleCSE;
 
 @Controller
@@ -40,6 +45,9 @@ public class CompanySearchController extends BaseController {
 
 	@Autowired
 	private SearchResultService searchResultService;
+
+	@Autowired
+	private WebScraperConfiguration webScraperConfiguration;
 
 	@RequestMapping(value = "", method = RequestMethod.GET)
 	public String openCompanySearch(Model model) {
@@ -64,27 +72,40 @@ public class CompanySearchController extends BaseController {
 
 	@RequestMapping(value = "/find", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	public ResponseEntity<CSEObject> findSimilarCompanies(@RequestParam(name = "keywords") List<String> keywords,
-			@RequestParam(name = "urls") List<String> urls, @RequestParam(name = "country") String countryCode,
-			@RequestParam(name = "contacts") List<String> contacts, HttpSession session) {
+	public ResponseEntity<List<CompanyProfile>> findSimilarCompanies(
+			@RequestParam(name = "keywords") List<String> keywords, @RequestParam(name = "urls") List<String> urls,
+			@RequestParam(name = "country") String countryCode, @RequestParam(name = "contacts") List<String> contacts,
+			HttpSession session) {
 		List<CompanyProfile> companyProfiles = new ArrayList<>();
-		CSEObject response = googleCSE.requestLinksFromCSE(CSEHelper.constructQuery(keywords, urls), countryCode, 1, getLocale());
+		CSEObject response = googleCSE.requestLinksFromCSE(CSEHelper.constructQuery(keywords, urls), countryCode,
+				getLocale());
 
 		if (response.getLinks() != null) {
 			LOGGER.debug("Received links from Google: " + Arrays.toString(response.getLinks().toArray()));
+			LOGGER.debug("Collecting data from websites");
 
-			for (String link : response.getLinks()) {
+			for (String website : response.getLinks()) {
 				CompanyProfile companyProfile = new CompanyProfile();
-				companyProfile.setWebsite(link);
+				companyProfile.setWebsite(website);
 				companyProfiles.add(companyProfile);
+
+				WebScraper webScraper = new WebScraper(website, webScraperConfiguration.getMaxPagesToSearch(),
+						webScraperConfiguration.getIgnoreWordsWithLength(), webScraperConfiguration.getIgnoredHtmlElements(),
+						webScraperConfiguration.getRedundantWords());
+				webScraper.collectData();
+				double result = StringHelper.compareStringSets(new HashSet<String>(keywords),
+						new HashSet<String>(webScraper.getCommonKeywordStrings()));
+				companyProfile.setSimilarity(result);
 			}
 
+			Collections.sort(companyProfiles);
 			session.setAttribute(SEARCH_RESULT, companyProfiles);
 		} else {
 			session.removeAttribute(SEARCH_RESULT);
 		}
 
-		return new ResponseEntity<>(response, response.getStatusCode());
+		LOGGER.debug("Finished searching for similar companies");
+		return new ResponseEntity<>(companyProfiles, response.getStatusCode());
 	}
 
 	@SuppressWarnings("unchecked")

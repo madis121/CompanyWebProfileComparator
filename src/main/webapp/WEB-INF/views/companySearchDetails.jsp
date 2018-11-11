@@ -53,7 +53,7 @@
 								<tr>
 									<th scope="col" class="narrow">#</th>
 									<th scope="col"><spring:message code="companySearch.result.website" /></th>
-									<th scope="col"><spring:message code="companySearch.result.similarity" /></th>
+									<%-- <th scope="col"><spring:message code="companySearch.result.similarity" /></th> --%>
 								</tr>
 							</thead>
 							<tbody></tbody>
@@ -109,12 +109,14 @@
 			removeValidationErrorMessage(country);
 		}
 		
+		/*
 		if (!contactsRegex.test(contacts.val())) {
 			addValidationErrorMessage(contacts, '<spring:message code="companySearch.details.contacts.validation.error" />');
 			validationError = true;
 		} else {
 			removeValidationErrorMessage(contacts);
 		}
+		*/
 		
 		if (!validationError) {
 			submitForm();
@@ -131,13 +133,14 @@
 			url : 'company-search/find',
 			data :  $('#find-similar-companies').serialize(),
 			async : true,
-			success : function(response) {
-				$.each(response.links, function(i, website) {
+			success : function(data) {
+				console.log(data);
+				$.each(data, function(i, website) {
 					var tbody = $('#company-search-result tbody');
 					var row = $('<tr></tr>').appendTo(tbody);
 					$('<td></td>').text(i + 1).appendTo(row);
-					$('<td></td>').prepend($('<a></a>').attr({ 'href': website, 'target': '_blank' }).text(website)).appendTo(row);
-					$('<td></td>').appendTo(row);
+					$('<td></td>').prepend($('<a></a>').attr({ 'href': website.website, 'target': '_blank' }).text(website.website)).appendTo(row);
+					//$('<td></td>').text(website.similarity).appendTo(row);
 				});
 				
 				$('#company-search-spinner').hide();

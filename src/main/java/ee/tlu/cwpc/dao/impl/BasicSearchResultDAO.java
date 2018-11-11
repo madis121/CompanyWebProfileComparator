@@ -16,7 +16,7 @@ public class BasicSearchResultDAO implements SearchResultDAO {
 
 	@Autowired
 	private SessionFactory sessionFactory;
-	
+
 	@Override
 	public SearchResult findOne(long id) {
 		Session session = sessionFactory.getCurrentSession();
@@ -28,7 +28,7 @@ public class BasicSearchResultDAO implements SearchResultDAO {
 	@SuppressWarnings("unchecked")
 	public List<SearchResult> findAll() {
 		Session session = sessionFactory.getCurrentSession();
-		Query<SearchResult> query = session.createQuery("FROM SearchResult ORDER BY id");
+		Query<SearchResult> query = session.createQuery("FROM SearchResult ORDER BY updated DESC");
 		List<SearchResult> searchResults = query.list();
 		return searchResults;
 	}

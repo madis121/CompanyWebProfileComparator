@@ -121,7 +121,7 @@ CREATE TABLE cwpc.company_profile
     created timestamp without time zone,
     name character varying(255) COLLATE pg_catalog."default",
     phone character varying(255) COLLATE pg_catalog."default",
-    similarity integer NOT NULL,
+    similarity double precision NOT NULL,
     updated timestamp without time zone,
     website character varying(255) COLLATE pg_catalog."default",
     search_result_id bigint,

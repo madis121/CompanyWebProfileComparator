@@ -19,21 +19,21 @@
 						<thead>
 							<tr>
 								<th scope="col" class="narrow">#</th>
-								<th scope="col"><spring:message code="searchResult.details.name" /></th>
+								<%-- <th scope="col"><spring:message code="searchResult.details.name" /></th> --%>
 								<th scope="col"><spring:message code="searchResult.details.website" /></th>
-								<th scope="col"><spring:message code="searchResult.details.phone" /></th>
-								<th scope="col"><spring:message code="searchResult.details.similarity" /></th>
-								<th scope="col"><spring:message code="searchResult.details.subjects" /></th>
+								<%-- <th scope="col"><spring:message code="searchResult.details.phone" /></th> --%>
+								<%-- <th scope="col"><spring:message code="searchResult.details.similarity" /></th> --%>
+								<th scope="col"><spring:message code="searchResult.details.contactInformation" /></th>
 							</tr>
 						</thead>
 						<tbody>
 							<c:forEach items="${searchResult.companyProfiles}" var="companyProfile" varStatus="status">
 								<tr>
 									<td scope="col">${status.index + 1}</td>
-									<td><c:out value="${companyProfile.name}" /></td>
+									<%-- <td><c:out value="${companyProfile.name}" /></td> --%>
 									<td><a href="${companyProfile.website}" target="_blank"><c:out value="${companyProfile.website}" /></a></td>
-									<td><c:out value="${companyProfile.phone}" /></td>
-									<td><c:out value="${companyProfile.similarity}" /></td>
+									<%-- <td><c:out value="${companyProfile.phone}" /></td> --%>
+									<%-- <td><c:out value="${companyProfile.similarity}" /></td> --%>
 									<td></td>
 								</tr>
 							</c:forEach>

@@ -42,6 +42,9 @@ public class GoogleCSE {
 
 	@Value("${google.custom.search.engine.api.key}")
 	private String apiKey;
+	
+	@Value("${google.custom.search.engine.api.requests:#{1}}")
+	private Integer requests;
 
 	@Autowired
 	private MessageSource messageSource;
@@ -50,9 +53,9 @@ public class GoogleCSE {
 
 	private static ObjectMapper mapper = new ObjectMapper();
 
-	public CSEObject requestLinksFromCSE(String query, String countryCode, int pages, Locale locale) {
+	public CSEObject requestLinksFromCSE(String query, String countryCode, Locale locale) {
 		List<String> items = new ArrayList<>();
-		int numOfResults = pages * 10 + 1;
+		int numOfResults = requests * 10 + 1;
 
 		try {
 			for (int i = 1; i <= numOfResults; i = i + 10) {

@@ -36,5 +36,12 @@ public class URLHelper {
 		}
 		return false;
 	}
+	
+	public static boolean isMailto(String url) {
+		if (url.toLowerCase().contains("mailto")) {
+			return true;
+		}
+		return false;
+	}
 
 }

@@ -20,7 +20,8 @@
 						<th scope="col" class="narrow">#</th>
 						<th scope="col"><spring:message code="searchResults.name" /></th>
 						<th scope="col"><spring:message code="searchResults.created" /></th>
-						<th scope="col" class="narrow"></th>
+						<th scope="col" class="narrow">&nbsp;</th>
+						<th scope="col" class="narrow">&nbsp;</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -30,6 +31,7 @@
 							<td>${searchResult.name}</td>
 							<td><joda:format value="${searchResult.created}" pattern="dd-MM-yyyy HH:mm:ss" /></td>
 							<td><a href="javascript:void(0)" onclick="openSearchResultDetails('${searchResult.id}');"><i class="fas fa-info"></i></a></td>
+							<td><a href="javascript:void(0)" onclick="deleteSearchResultAlert('${searchResult.id}');"><i class="fas fa-trash"></i></a>
 						</tr>
 					</c:forEach>
 				</tbody>
@@ -38,13 +40,29 @@
 	</div>
 </div>
 
+<form id="delete-search-result" action="search-results/delete" method="post">
+	<input name="id" type="hidden">
+</form>
+
 <div class="modal fade" id="search-result-details-modal" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="search-result-details-label" aria-hidden="true"></div>
+<div class="modal fade" id="search-result-delete-modal" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="search-result-details-label" aria-hidden="true"></div>
 
 <script>
 	function openSearchResultDetails(id) {
 	    $('#search-result-details-modal').empty();
 	    $('#search-result-details-modal').load('${pageContext.request.contextPath}/search-results/details?id=' + id);
 	    $('#search-result-details-modal').modal('show');
+	}
+	
+	function deleteSearchResultAlert(id) {
+	    $('#search-result-details-modal').empty();
+	    $('#search-result-details-modal').load('${pageContext.request.contextPath}/search-results/delete-alert?id=' + id);
+	    $('#search-result-details-modal').modal('show');
+	}
+	
+	function deleteSearchResult(id) {
+		$('#delete-search-result [name="id"]').val(id);
+		$('#delete-search-result').submit();
 	}
 </script>
 

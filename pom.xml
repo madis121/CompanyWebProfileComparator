@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
@@ -24,6 +25,7 @@
 		<httpclient.version>4.5.6</httpclient.version>
 		<commons-lang3.version>3.7</commons-lang3.version>
 		<commons-collections4.version>4.2</commons-collections4.version>
+		<commons-text.version>1.6</commons-text.version>
 		<joda-time.version>2.10</joda-time.version>
 		<joda-time-jsptags.version>1.1.1</joda-time-jsptags.version>
 		<usertype.version>7.0.0.CR1</usertype.version>
@@ -119,6 +121,11 @@
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-collections4</artifactId>
 			<version>${commons-collections4.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-text</artifactId>
+			<version>${commons-text.version}</version>
 		</dependency>
 
 		<dependency>

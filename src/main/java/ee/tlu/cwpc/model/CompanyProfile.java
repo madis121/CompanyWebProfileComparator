@@ -20,7 +20,7 @@ import org.joda.time.DateTime;
 
 @Entity
 @Table(name = "company_profile")
-public class CompanyProfile {
+public class CompanyProfile implements Comparable<CompanyProfile> {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,7 +32,7 @@ public class CompanyProfile {
 
 	private String phone;
 
-	private int similarity;
+	private double similarity;
 
 	@OneToMany(mappedBy = "companyProfile", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
 	@Fetch(value = FetchMode.SUBSELECT)
@@ -82,11 +82,11 @@ public class CompanyProfile {
 		this.phone = phone;
 	}
 
-	public int getSimilarity() {
+	public double getSimilarity() {
 		return similarity;
 	}
 
-	public void setSimilarity(int similarity) {
+	public void setSimilarity(double similarity) {
 		this.similarity = similarity;
 	}
 
@@ -120,6 +120,11 @@ public class CompanyProfile {
 
 	public void setUpdated(DateTime updated) {
 		this.updated = updated;
+	}
+
+	@Override
+	public int compareTo(CompanyProfile comparable) {
+		return Double.compare(comparable.getSimilarity(), this.similarity);
 	}
 
 }
