@@ -2,6 +2,7 @@ package ee.tlu.cwpc.web.controller;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -15,19 +16,21 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import ee.tlu.cwpc.configuration.WebScraperConfiguration;
 import ee.tlu.cwpc.dto.CollectedData;
 import ee.tlu.cwpc.dto.WebsiteKeyword;
+import ee.tlu.cwpc.helper.StringHelper;
 import ee.tlu.cwpc.model.Profile;
+import ee.tlu.cwpc.model.Settings;
+import ee.tlu.cwpc.service.SettingsService;
 import ee.tlu.cwpc.web.WebScraper;
 
 @Controller
 public class DashboardController extends BaseController {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(DashboardController.class);
-
+	
 	@Autowired
-	private WebScraperConfiguration webScraperConfiguration;
+	private SettingsService settingsService;
 
 	@RequestMapping(value = "", method = RequestMethod.GET)
 	public String openDashboard(@RequestParam(name = "action", required = false, defaultValue = "") String action,
@@ -43,10 +46,13 @@ public class DashboardController extends BaseController {
 	@RequestMapping(value = "/collect-data", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	public CollectedData collectDataFromWebsites(@RequestParam(name = "website") List<String> websites) {
+		Settings settings = settingsService.getSettings();
+		Set<String> ignoredHTMLElements = StringHelper.splitStringToSet(settings.getWebScraperIgnoredHTMLElements(), ",");
+		Set<String> ignoredKeywords = StringHelper.splitStringToSet(settings.getWebScraperIgnoredKeywords(), ",");
+		
 		LOGGER.info(String.format("Scraping data from %s", Arrays.toString(websites.toArray())));
-		WebScraper webScraper = new WebScraper(websites, webScraperConfiguration.getMaxPagesToSearch(),
-				webScraperConfiguration.getIgnoreWordsWithLength(), webScraperConfiguration.getIgnoredHtmlElements(),
-				webScraperConfiguration.getRedundantWords());
+		WebScraper webScraper = new WebScraper(websites, settings.getWebScraperMaxPagesToSearch(),
+				settings.getWebScraperMinKeywordLength(), ignoredHTMLElements, ignoredKeywords);
 		webScraper.collectData();
 		List<WebsiteKeyword> keywords = webScraper.getCommonKeywords();
 		LOGGER.info("Data scraping done");
@@ -57,7 +63,8 @@ public class DashboardController extends BaseController {
 	public String createProfile(@RequestParam(name = "name") String name, @RequestParam(name = "urls") List<String> urls,
 			@RequestParam(name = "keywords") List<String> keywords) {
 		profileService.createProfile(name, urls, keywords);
-		return "redirect:/?action=profileSaved";
+		//return "redirect:/?action=profileSaved";
+		return "redirect:/";
 	}
 
 	@RequestMapping(value = "/open-profile", method = RequestMethod.GET)
@@ -73,7 +80,8 @@ public class DashboardController extends BaseController {
 	public String updateProfile(@RequestParam(name = "id") long id, @RequestParam(name = "name") String name,
 			@RequestParam(name = "keywords") List<String> keywords) {
 		profileService.updateProfile(id, name, keywords);
-		return "redirect:/?action=profileUpdated";
+		//return "redirect:/?action=profileUpdated";
+		return "redirect:/";
 	}
 
 	@RequestMapping(value = "/delete-profile-alert", method = RequestMethod.GET)
@@ -86,7 +94,8 @@ public class DashboardController extends BaseController {
 	@RequestMapping(value = "/delete-profile", method = RequestMethod.POST)
 	public String deleteProfile(@RequestParam(name = "id") long id) {
 		profileService.deleteProfile(id);
-		return "redirect:/?action=profileDeleted";
+		//return "redirect:/?action=profileDeleted";
+		return "redirect:/";
 	}
 
 }

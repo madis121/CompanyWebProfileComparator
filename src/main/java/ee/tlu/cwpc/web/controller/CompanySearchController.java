@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.servlet.http.HttpSession;
 
@@ -21,14 +22,15 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import ee.tlu.cwpc.configuration.WebScraperConfiguration;
 import ee.tlu.cwpc.dto.CSEObject;
 import ee.tlu.cwpc.helper.CSEHelper;
 import ee.tlu.cwpc.helper.Countries;
 import ee.tlu.cwpc.helper.StringHelper;
 import ee.tlu.cwpc.model.CompanyProfile;
 import ee.tlu.cwpc.model.Profile;
+import ee.tlu.cwpc.model.Settings;
 import ee.tlu.cwpc.service.SearchResultService;
+import ee.tlu.cwpc.service.SettingsService;
 import ee.tlu.cwpc.web.WebScraper;
 import ee.tlu.cwpc.web.google.GoogleCSE;
 
@@ -47,7 +49,7 @@ public class CompanySearchController extends BaseController {
 	private SearchResultService searchResultService;
 
 	@Autowired
-	private WebScraperConfiguration webScraperConfiguration;
+	private SettingsService settingsService;
 
 	@RequestMapping(value = "", method = RequestMethod.GET)
 	public String openCompanySearch(Model model) {
@@ -83,18 +85,23 @@ public class CompanySearchController extends BaseController {
 		if (response.getLinks() != null) {
 			LOGGER.debug("Received links from Google: " + Arrays.toString(response.getLinks().toArray()));
 			LOGGER.debug("Collecting data from websites");
+			
+			Settings settings = settingsService.getSettings();
+			Set<String> ignoredHTMLElements = StringHelper.splitStringToSet(settings.getWebScraperIgnoredHTMLElements(), ",");
+			Set<String> ignoredKeywords = StringHelper.splitStringToSet(settings.getWebScraperIgnoredKeywords(), ",");
 
 			for (String website : response.getLinks()) {
 				CompanyProfile companyProfile = new CompanyProfile();
 				companyProfile.setWebsite(website);
 				companyProfiles.add(companyProfile);
 
-				WebScraper webScraper = new WebScraper(website, webScraperConfiguration.getMaxPagesToSearch(),
-						webScraperConfiguration.getIgnoreWordsWithLength(), webScraperConfiguration.getIgnoredHtmlElements(),
-						webScraperConfiguration.getRedundantWords());
+				WebScraper webScraper = new WebScraper(website, settings.getWebScraperMaxPagesToSearch(),
+						settings.getWebScraperMinKeywordLength(), ignoredHTMLElements, ignoredKeywords);
 				webScraper.collectData();
+				List<String> websiteKeywords = webScraper.getCommonKeywordStrings();
+				
 				double result = StringHelper.compareStringSets(new HashSet<String>(keywords),
-						new HashSet<String>(webScraper.getCommonKeywordStrings()));
+						new HashSet<String>(websiteKeywords));
 				companyProfile.setSimilarity(result);
 			}
 

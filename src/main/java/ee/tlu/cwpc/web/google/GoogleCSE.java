@@ -34,16 +34,16 @@ public class GoogleCSE {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(GoogleCSE.class);
 
-	@Value("${google.custom.search.engine.api.id}")
-	private String apiId;
+	@Value("${google.cse.id}")
+	private String engineId;
 
-	@Value("${google.custom.search.engine.api.url}")
-	private String apiUrl;
+	@Value("${google.cse.api.request.url}")
+	private String requestUrl;
 
-	@Value("${google.custom.search.engine.api.key}")
-	private String apiKey;
+	@Value("${google.cse.api.key}")
+	private String key;
 	
-	@Value("${google.custom.search.engine.api.requests:#{1}}")
+	@Value("${google.cse.api.requests:#{1}}")
 	private Integer requests;
 
 	@Autowired
@@ -59,9 +59,9 @@ public class GoogleCSE {
 
 		try {
 			for (int i = 1; i <= numOfResults; i = i + 10) {
-				String url = apiUrl.concat("?q=").concat(URLEncoder.encode(query, StandardCharsets.UTF_8.name()))
+				String url = requestUrl.concat("?q=").concat(URLEncoder.encode(query, StandardCharsets.UTF_8.name()))
 						.concat("&cr=country").concat(countryCode).concat("&start=").concat(String.valueOf(i)).concat("&key=")
-						.concat(apiKey).concat("&cx=").concat(apiId);
+						.concat(key).concat("&cx=").concat(engineId);
 				HttpGet request = new HttpGet(url);
 				HttpResponse response = CLIENT.execute(request);
 				int statusCode = response.getStatusLine().getStatusCode();

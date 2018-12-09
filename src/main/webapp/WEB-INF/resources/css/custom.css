@@ -14,6 +14,10 @@
 	margin-right: 10rem;
 }
 
+.navbar-list li {
+	display: inline;
+}
+
 #sidebar {
 	min-width: 250px;
 	max-width: 250px;
@@ -77,6 +81,10 @@ ul ul a {
 	background: #343a40;
 }
 
+ul.header-list ul a {
+	background: #f8f9fa;
+}
+
 #sidebar-collapse {
 	position: fixed;
 	bottom: 100px;
@@ -89,6 +97,10 @@ ul ul a {
 
 div.heading {
 	margin-bottom: 5rem;
+}
+
+div.sub-heading {
+	margin-bottom: 3rem;
 }
 
 #new-profile-content input, #new-profile-content a, #new-profile-content button  {
@@ -140,7 +152,7 @@ button.inline {
 	margin-left: 1rem;
 }
 
-@media only screen and (max-width: 768px) {
+@media only screen and (max-width: 1024px) { 
 	#header {
 		left: 125px;
 	}
