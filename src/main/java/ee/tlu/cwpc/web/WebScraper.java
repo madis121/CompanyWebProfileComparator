@@ -1,5 +1,6 @@
 package ee.tlu.cwpc.web;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -23,9 +24,6 @@ import ee.tlu.cwpc.dto.WebsiteKeyword;
 import ee.tlu.cwpc.helper.StringHelper;
 import ee.tlu.cwpc.helper.URLHelper;
 
-/**
- * http://www.netinstructions.com/how-to-make-a-simple-web-crawler-in-java/
- */
 public class WebScraper {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(WebScraper.class);
@@ -34,39 +32,39 @@ public class WebScraper {
 
 	private List<String> websites;
 
-	private Integer maxPagesToSearch;
+	private int maxPagesToSearch;
 
-	private Integer ignoreWordsWithLength;
+	private int minKeywordLength;
 
-	private Set<String> ignoredHtmlElements;
+	private Set<String> ignoredHTMLElements;
 
-	private Set<String> redundantWords;
-
-	private Set<String> pagesVisited = new HashSet<>();
-
-	private Map<String, WebsiteKeyword> keywords = new HashMap<>();
+	private Set<String> ignoredKeywords;
 
 	private int timesScraped;
 
-	public WebScraper(String website, Integer maxPagesToSearch, Integer ignoreWordsWithLength,
-			Set<String> ignoredHtmlElements, Set<String> redundantWords) {
+	private Set<String> visitedWebPages = new HashSet<>();
+
+	private Map<String, WebsiteKeyword> keywords = new HashMap<>();
+
+	public WebScraper(String website, int maxPagesToSearch, int minKeywordLength, Set<String> ignoredHTMLElements,
+			Set<String> ignoredKeywords) {
 		this.website = website;
-		this.maxPagesToSearch = maxPagesToSearch;
-		this.ignoreWordsWithLength = ignoreWordsWithLength == null ? 0 : ignoreWordsWithLength;
-		this.ignoredHtmlElements = ignoredHtmlElements;
-		this.redundantWords = redundantWords;
+		this.maxPagesToSearch = maxPagesToSearch < 10 ? 10 : maxPagesToSearch;
+		this.minKeywordLength = minKeywordLength;
+		this.ignoredHTMLElements = ignoredHTMLElements == null ? new HashSet<>() : ignoredHTMLElements;
+		this.ignoredKeywords = ignoredKeywords == null ? new HashSet<>() : ignoredKeywords;
 	}
 
-	public WebScraper(List<String> websites, Integer maxPagesToSearch, Integer ignoreWordsWithLength,
-			Set<String> ignoredHtmlElements, Set<String> redundantWords) {
+	public WebScraper(List<String> websites, int maxPagesToSearch, int minKeywordLength, Set<String> ignoredHTMLElements,
+			Set<String> ignoredKeywords) {
 		this.websites = websites;
-		this.maxPagesToSearch = maxPagesToSearch;
-		this.ignoreWordsWithLength = ignoreWordsWithLength == null ? 0 : ignoreWordsWithLength;
-		this.ignoredHtmlElements = ignoredHtmlElements;
-		this.redundantWords = redundantWords;
+		this.maxPagesToSearch = maxPagesToSearch < 10 ? 10 : maxPagesToSearch;
+		this.minKeywordLength = minKeywordLength;
+		this.ignoredHTMLElements = ignoredHTMLElements == null ? new HashSet<>() : ignoredHTMLElements;
+		this.ignoredKeywords = ignoredKeywords == null ? new HashSet<>() : ignoredKeywords;
 	}
 
-	public void collectData() {
+	public void scrape() {
 		if (website != null) {
 			timesScraped = 0;
 			search(website);
@@ -84,58 +82,77 @@ public class WebScraper {
 
 	private void search(String url) {
 		timesScraped++;
-		List<String> links = new ArrayList<>();
+		List<String> links = null;
 		url = URLHelper.clean(url);
 		url = URLHelper.removeParameters(url);
 
-		if (!pagesVisited.contains(url) && !URLHelper.containsHashtag(url)) {
-			links = getLinksFoundAtUrl(url);
-			LOGGER.trace("Found " + links.size() + " links at " + url);
-			getDataFoundAtUrl(url);
+		if (!url.substring(url.length() - 1).equals("/")) {
+			url = url.concat("/");
 		}
 
-		for (String link : links) {
-			if (maxPagesToSearch != null && maxPagesToSearch <= timesScraped) {
-				return;
-			}
-			if (!pagesVisited.contains(link) && !URLHelper.containsHashtag(link) && !URLHelper.isMailto(link)) {
-				search(link);
+		if (!visitedWebPages.contains(url)) {
+			visitedWebPages.add(url);
+			Document html = getHTMLDocument(url);
+			links = getLinks(url, html);
+			collectData(url, html);
+		}
+
+		if (links != null) {
+			for (String link : links) {
+				if (maxPagesToSearch <= timesScraped) {
+					return;
+				}
+
+				if (!visitedWebPages.contains(link)) {
+					search(link);
+				}
 			}
 		}
 	}
 
-	private List<String> getLinksFoundAtUrl(String url) {
-		List<String> links = new ArrayList<>();
-
+	private Document getHTMLDocument(String url) {
 		try {
 			Connection connection = Jsoup.connect(url);
-			Document htmlDocument = connection.get();
-			Elements linksOnPage = htmlDocument.select("a[href]");
+			Document html = connection.get();
+			return html;
+		} catch (IOException e) {
+			LOGGER.error(
+					String.format("Encountered an error while accessing website %s: %s", url, ExceptionUtils.getMessage(e)));
+		}
 
-			for (Element link : linksOnPage) {
-				String absUrl = link.absUrl("href");
+		return null;
+	}
 
-				if (absUrl.contains(url) && !URLHelper.containsHashtag(absUrl) && !URLHelper.isMailto(absUrl)) {
-					links.add(absUrl);
+	private List<String> getLinks(String url, Document html) {
+		List<String> unvisitedLinks = new ArrayList<>();
+
+		if (html != null) {
+			Elements linkElements = html.select("a[href]");
+
+			for (Element linkElement : linkElements) {
+				String linkURL = linkElement.absUrl("href");
+				linkURL = URLHelper.clean(linkURL);
+				linkURL = URLHelper.removeParameters(linkURL);
+
+				if (!visitedWebPages.contains(linkURL) && linkURL.contains(url) && !URLHelper.isMailto(linkURL)) {
+					unvisitedLinks.add(linkURL);
 				}
 			}
 
-			pagesVisited.add(url);
-		} catch (Exception e) {
-			LOGGER.error("Encountered an error while collecting links from " + url + ": " + ExceptionUtils.getMessage(e));
+			LOGGER.trace(String.format("Found %d new links at %s", unvisitedLinks.size(), url));
+			LOGGER.trace(String.format("Links: %s", Arrays.toString(unvisitedLinks.toArray())));
 		}
 
-		LOGGER.debug(Arrays.toString(links.toArray()));
-		return links;
+		return unvisitedLinks;
 	}
 
-	private void getDataFoundAtUrl(String url) {
-		try {
-			Connection connection = Jsoup.connect(url);
-			Document htmlDocument = connection.get();
-
-			for (Element element : htmlDocument.body().getAllElements()) {
-				if (element.hasText() && !ignoredHtmlElements.contains(element.tagName())) {
+	private void collectData(String url, Document html) {
+		if (html != null) {
+			Elements elements = html.body().getAllElements();
+			//Elements elements = html.body().getElementsByTag("p");
+			
+			for (Element element : elements) {
+				if (!ignoredHTMLElements.contains(element.tagName()) && element.hasText()) {
 					String elementText = element.ownText().toLowerCase();
 					String[] words = elementText.split(" ");
 
@@ -143,8 +160,8 @@ public class WebScraper {
 						if (StringUtils.isNotBlank(word) && !word.contains("@")) {
 							word = StringHelper.removeNonWordCharacters(word);
 
-							if (StringUtils.isNotBlank(word) && !redundantWords.contains(word)
-									&& word.length() > ignoreWordsWithLength && word.matches(".*[a-zA-Z]{2,}.*")) {
+							if (StringUtils.isNotBlank(word) && word.matches(".*[a-zA-Z]{2,}.*") && word.length() >= minKeywordLength
+									&& !ignoredKeywords.contains(word)) {
 								WebsiteKeyword keyword = keywords.getOrDefault(word, new WebsiteKeyword(word, 0));
 								keyword.setCount(keyword.getCount() + 1);
 								keywords.put(word, keyword);
@@ -153,8 +170,6 @@ public class WebScraper {
 					}
 				}
 			}
-		} catch (Exception e) {
-			LOGGER.error("Encountered an error while collecting data from " + url + ": " + ExceptionUtils.getMessage(e));
 		}
 	}
 
@@ -165,18 +180,22 @@ public class WebScraper {
 	public List<WebsiteKeyword> getCommonKeywords() {
 		List<WebsiteKeyword> keywordList = new ArrayList<>(keywords.values());
 		Collections.sort(keywordList);
-		if (keywordList.size() > 50) {
-			return keywordList.subList(0, 50);
+
+		if (keywordList.size() > 25) {
+			return keywordList.subList(0, 25);
 		}
+
 		return keywordList;
 	}
 
 	public List<String> getCommonKeywordStrings() {
-		List<String> keywordStrings = new ArrayList<String>();
+		List<String> keywordStringList = new ArrayList<String>();
+
 		for (WebsiteKeyword keyword : getCommonKeywords()) {
-			keywordStrings.add(keyword.getWord());
+			keywordStringList.add(keyword.getWord());
 		}
-		return keywordStrings;
+
+		return keywordStringList;
 	}
 
 }

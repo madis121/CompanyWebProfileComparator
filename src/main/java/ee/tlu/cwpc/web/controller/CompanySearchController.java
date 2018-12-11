@@ -97,7 +97,7 @@ public class CompanySearchController extends BaseController {
 
 				WebScraper webScraper = new WebScraper(website, settings.getWebScraperMaxPagesToSearch(),
 						settings.getWebScraperMinKeywordLength(), ignoredHTMLElements, ignoredKeywords);
-				webScraper.collectData();
+				webScraper.scrape();
 				List<String> websiteKeywords = webScraper.getCommonKeywordStrings();
 				
 				double result = StringHelper.compareStringSets(new HashSet<String>(keywords),

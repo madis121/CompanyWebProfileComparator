@@ -19,31 +19,30 @@ public class BasicSettingsService implements SettingsService {
 	@Transactional
 	public Settings getSettings() {
 		Settings settings = settingsDAO.findOne(1);
-		if (settings == null) {
-			return new Settings(25, 3, "button,iframe,script", "kui,ning,mis", DateTime.now(), DateTime.now());
-		}
 		return settings;
 	}
 
 	@Override
 	@Transactional
 	public void saveSettings(Settings settings) {
-		if (settings.getId() == 0L) {
-			settingsDAO.save(settings);
-		} else {
-			if (settings.getWebScraperIgnoredHTMLElements().contains(" ")) {
-				String cleaned = settings.getWebScraperIgnoredHTMLElements().replaceAll(" ", "");
-				settings.setWebScraperIgnoredHTMLElements(cleaned);
-			}
+		settingsDAO.save(settings);
+	}
 
-			if (settings.getWebScraperIgnoredKeywords().contains(" ")) {
-				String cleaned = settings.getWebScraperIgnoredKeywords().replaceAll(" ", "");
-				settings.setWebScraperIgnoredKeywords(cleaned);
-			}
-
-			settings.setUpdated(DateTime.now());
-			settingsDAO.update(settings);
+	@Override
+	@Transactional
+	public void updateSettings(Settings settings) {
+		if (settings.getWebScraperIgnoredHTMLElements().contains(" ")) {
+			String cleaned = settings.getWebScraperIgnoredHTMLElements().replaceAll(" ", "");
+			settings.setWebScraperIgnoredHTMLElements(cleaned);
 		}
+
+		if (settings.getWebScraperIgnoredKeywords().contains(" ")) {
+			String cleaned = settings.getWebScraperIgnoredKeywords().replaceAll(" ", "");
+			settings.setWebScraperIgnoredKeywords(cleaned);
+		}
+
+		settings.setUpdated(DateTime.now());
+		settingsDAO.update(settings);
 	}
 
 }

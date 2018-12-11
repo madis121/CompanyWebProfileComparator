@@ -20,6 +20,10 @@ public class StringHelper {
 	}
 	
 	public static Set<String> splitStringToSet(String string, String separator) {
+		if (string == null) {
+			return new HashSet<String>();
+		}
+		
 		Set<String> items = new HashSet<String>(Arrays.asList(string.split(",")));
 		return items;
 	}

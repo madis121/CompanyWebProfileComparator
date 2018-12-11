@@ -53,7 +53,7 @@ public class DashboardController extends BaseController {
 		LOGGER.info(String.format("Scraping data from %s", Arrays.toString(websites.toArray())));
 		WebScraper webScraper = new WebScraper(websites, settings.getWebScraperMaxPagesToSearch(),
 				settings.getWebScraperMinKeywordLength(), ignoredHTMLElements, ignoredKeywords);
-		webScraper.collectData();
+		webScraper.scrape();
 		List<WebsiteKeyword> keywords = webScraper.getCommonKeywords();
 		LOGGER.info("Data scraping done");
 		return new CollectedData(websites, keywords);

@@ -19,17 +19,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import ee.tlu.cwpc.dto.CSEObject;
 
-/**
- * https://cse.google.com/cse/setup/basic?cx=009007231010836904126%3Ac2zzkw4lqci
- * https://developers.google.com/custom-search/json-api/v1/reference/cse/list#try-it
- */
-@Service
+@Component
 public class GoogleCSE {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(GoogleCSE.class);
@@ -84,6 +80,7 @@ public class GoogleCSE {
 				for (CSEItem item : cseResponse.getItems()) {
 					String protocol = item.getLink().startsWith("https://") ? "https://" : "http://";
 					String link = protocol.concat(item.getDisplayLink());
+					
 					if (!items.contains(link)) {
 						items.add(link);
 					}

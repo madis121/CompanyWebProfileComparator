@@ -7,5 +7,7 @@ public interface SettingsService {
 	Settings getSettings();
 	
 	void saveSettings(Settings settings);
+
+	void updateSettings(Settings settings);
 	
 }

@@ -31,8 +31,8 @@ public class SettingsController extends BaseController {
 		if (result.hasErrors()) {
 			return "redirect:/error";
 		}
-		
-		settingsService.saveSettings(settings);
+
+		settingsService.updateSettings(settings);
 		return "redirect:/settings";
 	}
 

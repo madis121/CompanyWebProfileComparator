@@ -27,6 +27,7 @@ public class URLHelper {
 		if (url.contains("?")) {
 			url = url.substring(0, url.indexOf("?"));
 		}
+		
 		return url;
 	}
 
@@ -34,6 +35,7 @@ public class URLHelper {
 		if (url.contains("#")) {
 			return true;
 		}
+		
 		return false;
 	}
 	
@@ -41,6 +43,7 @@ public class URLHelper {
 		if (url.toLowerCase().contains("mailto")) {
 			return true;
 		}
+		
 		return false;
 	}
 
