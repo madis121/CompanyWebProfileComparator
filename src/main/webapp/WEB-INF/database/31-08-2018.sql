@@ -56,6 +56,17 @@ ALTER SEQUENCE cwpc.search_result_id_seq
 
 
 
+
+-- SEQUENCE: cwpc.settings_id_seq
+-- DROP SEQUENCE cwpc.settings_id_seq;
+CREATE SEQUENCE cwpc.settings_id_seq;
+ALTER SEQUENCE cwpc.settings_id_seq
+    OWNER TO postgres;
+
+
+
+
+
 -- SEQUENCE: cwpc.subject_id_seq
 -- DROP SEQUENCE cwpc.subject_id_seq;
 CREATE SEQUENCE cwpc.subject_id_seq;
@@ -109,6 +120,29 @@ WITH (
 TABLESPACE pg_default;
 
 ALTER TABLE cwpc.search_result
+    OWNER to postgres;
+
+
+
+-- Table: cwpc.settings
+-- DROP TABLE cwpc.settings;
+CREATE TABLE cwpc.settings
+(
+    id bigint NOT NULL DEFAULT nextval('cwpc.settings_id_seq'::regclass),
+    created timestamp without time zone,
+    updated timestamp without time zone,
+    web_scraper_ignored_html_elements character varying(255) COLLATE pg_catalog."default",
+    web_scraper_ignored_keywords character varying(255) COLLATE pg_catalog."default",
+    web_scraper_max_pages_to_search integer,
+    web_scraper_min_keyword_length integer,
+    CONSTRAINT settings_pkey PRIMARY KEY (id)
+)
+WITH (
+    OIDS = FALSE
+)
+TABLESPACE pg_default;
+
+ALTER TABLE cwpc.settings
     OWNER to postgres;
 
 
