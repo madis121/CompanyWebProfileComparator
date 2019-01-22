@@ -12,13 +12,12 @@
 		<java.version>1.8</java.version>
 		<spring-webmvc.version>5.0.8.RELEASE</spring-webmvc.version>
 		<spring-orm.version>5.0.8.RELEASE</spring-orm.version>
-		<jackson-mapper.version>1.9.13</jackson-mapper.version>
-		<jackson.version>2.9.6</jackson.version>
+		<jackson.version>2.9.8</jackson.version>
 		<servlet-api.version>2.5</servlet-api.version>
 		<jsp-api.version>2.3.1</jsp-api.version>
 		<jstl.version>1.2</jstl.version>
 		<hibernate.version>5.3.4.Final</hibernate.version>
-		<postgresql.version>9.4.1212</postgresql.version>
+		<postgresql.version>42.2.5</postgresql.version>
 		<tomcat-dbcp.version>9.0.10</tomcat-dbcp.version>
 		<jsoup.version>1.11.3</jsoup.version>
 		<logback.version>1.2.3</logback.version>
@@ -41,11 +40,6 @@
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-orm</artifactId>
 			<version>${spring-orm.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.codehaus.jackson</groupId>
-			<artifactId>jackson-mapper-asl</artifactId>
-			<version>${jackson-mapper.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
