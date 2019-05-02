@@ -103,7 +103,12 @@ div.sub-heading {
 	margin-bottom: 3rem;
 }
 
-#new-profile-content input, #new-profile-content a, #new-profile-content button  {
+ul.website-list {
+	list-style: none;
+	padding-inline-start: 0;
+}
+
+#newProfileContent input, #newProfileContent a, #newProfileContent button  {
 	margin: 10px;
 }
 

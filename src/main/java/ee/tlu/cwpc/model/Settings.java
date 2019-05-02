@@ -11,7 +11,7 @@ import org.joda.time.DateTime;
 
 @Entity
 @Table
-public class Settings {
+public class Settings implements CommonEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

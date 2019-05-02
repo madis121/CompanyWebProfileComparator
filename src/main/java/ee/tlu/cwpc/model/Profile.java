@@ -18,7 +18,7 @@ import org.joda.time.DateTime;
 
 @Entity
 @Table
-public class Profile {
+public class Profile implements CommonEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

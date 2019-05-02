@@ -12,7 +12,7 @@ import org.joda.time.DateTime;
 
 @Entity
 @Table
-public class Contact {
+public class Contact implements CommonEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

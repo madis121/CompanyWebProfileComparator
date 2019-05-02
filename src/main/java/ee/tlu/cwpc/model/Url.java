@@ -12,7 +12,7 @@ import org.joda.time.DateTime;
 
 @Entity
 @Table
-public class Url {
+public class Url implements CommonEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

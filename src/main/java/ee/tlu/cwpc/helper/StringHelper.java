@@ -3,7 +3,7 @@ package ee.tlu.cwpc.helper;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
-
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.similarity.JaroWinklerDistance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,12 +20,10 @@ public class StringHelper {
 	}
 	
 	public static Set<String> splitStringToSet(String string, String separator) {
-		if (string == null) {
+		if (StringUtils.isBlank(string)) {
 			return new HashSet<String>();
 		}
-		
-		Set<String> items = new HashSet<String>(Arrays.asList(string.split(",")));
-		return items;
+		return new HashSet<String>(Arrays.asList(string.split(",")));
 	}
 
 	public static double compareStringSets(Set<String> setA, Set<String> setB) {

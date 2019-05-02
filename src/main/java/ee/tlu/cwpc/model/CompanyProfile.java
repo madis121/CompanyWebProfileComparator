@@ -20,7 +20,7 @@ import org.joda.time.DateTime;
 
 @Entity
 @Table(name = "company_profile")
-public class CompanyProfile implements Comparable<CompanyProfile> {
+public class CompanyProfile implements CommonEntity, Comparable<CompanyProfile> {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -20,7 +20,7 @@ import org.joda.time.DateTime;
 
 @Entity
 @Table(name = "search_result")
-public class SearchResult {
+public class SearchResult implements CommonEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
