@@ -1,9 +1,14 @@
 var module = angular.module('cwpc.controllers', []);
 
-module.controller('DashboardController', ['$scope', 'CONSTANTS', 'DashboardService', function($scope, CONSTANTS, DashboardService) {
+module.controller('DashboardController', ['$scope', 'CONSTANTS', 'DashboardService', 'MessageService', function($scope, CONSTANTS, DashboardService, MessageService) {
+	$scope.translationMessages = {};
 	$scope.profiles = [];
 	$scope.websiteIndex = 0;
 	$scope.websites = [{i: $scope.websiteIndex, url: ''}];
+	$scope.urlRegex = '^(?!mailto:)(?:(?:http|https|ftp)://)(?:\\S+(?::\\S*)?@)?(?:(?:(?:[1-9]\\d?|1\\d\\d|2[01]\\d|22[0-3])' +
+			'(?:\\.(?:1?\\d{1,2}|2[0-4]\\d|25[0-5])){2}(?:\\.(?:[0-9]\\d?|1\\d\\d|2[0-4]\\d|25[0-4]))|(?:(?:[a-z\\u00a1-\\uffff0-9]+-?)*' + 
+			'[a-z\\u00a1-\\uffff0-9]+)(?:\\.(?:[a-z\\u00a1-\\uffff0-9]+-?)*[a-z\\u00a1-\\uffff0-9]+)*(?:\\.(?:[a-z\\u00a1-\\uffff]{2,})))|localhost)' + 
+			'(?::\\d{2,5})?(?:(/|\\?|#)[^\\s]*)?$';
 	
 	$scope.profileOption = 1;
 	
@@ -28,9 +33,27 @@ module.controller('DashboardController', ['$scope', 'CONSTANTS', 'DashboardServi
 		newProfileButtons: {isShow: false}
 	};
 	
-	DashboardService.getProfiles().then(function(response) {
-		$scope.profiles = response.data.profiles;
+	$scope.$watch('$viewContentLoaded', function() {
+		MessageService.getTranslations().then(function(response) {
+			$scope.translationMessages = response.data;
+		});
+		
+		DashboardService.getProfiles().then(function(response) {
+			$scope.profiles = response.data.profiles;
+		});
 	});
+	
+//	$scope.getTranslations = function() {
+//		MessageService.getTranslations().then(function(response) {
+//			$scope.translationMessages = response.data;
+//		});
+//	}
+//	
+//	var deferredTranslations = $scope.getTranslations();
+//	
+//	DashboardService.getProfiles().then(function(response) {
+//		$scope.profiles = response.data.profiles;
+//	});
 	
 	// TODO: replace jQuery?
 	$scope.openProfileModal = function(profileId) {
@@ -64,7 +87,6 @@ module.controller('DashboardController', ['$scope', 'CONSTANTS', 'DashboardServi
 	$scope.appendInput = function() {
 		$scope.websiteIndex++;
 		$scope.websites.push({i: $scope.websiteIndex, url: ''});
-		$scope.dom.newProfileSpinner = true;
 	}
 	
 	$scope.removeInput = function(index) {
@@ -75,28 +97,25 @@ module.controller('DashboardController', ['$scope', 'CONSTANTS', 'DashboardServi
 		});
 	}
 	
-	$scope.collectData = function() {
-		var expression = '^(?!mailto:)(?:(?:http|https|ftp)://)(?:\\S+(?::\\S*)?@)?(?:(?:(?:[1-9]\\d?|1\\d\\d|2[01]\\d|22[0-3])(?:\\.(?:1?\\d{1,2}|2[0-4]\\d|25[0-5])){2}(?:\\.(?:[0-9]\\d?|1\\d\\d|2[0-4]\\d|25[0-4]))|(?:(?:[a-z\\u00a1-\\uffff0-9]+-?)*[a-z\\u00a1-\\uffff0-9]+)(?:\\.(?:[a-z\\u00a1-\\uffff0-9]+-?)*[a-z\\u00a1-\\uffff0-9]+)*(?:\\.(?:[a-z\\u00a1-\\uffff]{2,})))|localhost)(?::\\d{2,5})?(?:(/|\\?|#)[^\\s]*)?$';
-		var regex = new RegExp(expression, "i");
-		var validationError = false;
+	$scope.isValidWebsite = function(website) {
+		var isValidWebsite = website.url !== undefined && website.url.length !== 0;
+		var element = document.querySelector('[name="website"][data-index="' + website.i + '"]');
+		// FIXME: should learn a better way how to manipulate elements with Angular
+		validateInput(isValidWebsite, element, $scope.translationMessages['new.profile.modal.url.validation.error']);
+		return isValidWebsite ? '' : 'contains-errors';
+	}
+	
+	$scope.collectData = function(isValid) {
 		var params = {params: {website: []}};
 		
-		angular.forEach($scope.websites, function(website, i) {
-			params.params.website.push(website.url);
-			if (!regex.test(website.url)) {
-				//addValidationErrorMessage($(this), '<spring:message code="new.profile.modal.url.validation.error" />');
-				console.log('validation error');
-				validationError = true;
-				return false;
-			} else {
-				removeValidationErrorMessage($(this));
-			}
-		});
-		
-		if (!validationError) {
+		if (isValid) {
 			$scope.dom.profileOptions.isShow = false;
 			$scope.dom.newProfileContent.isShow = false;
 			$scope.dom.newProfileSpinner.isShow = true;
+			
+			angular.forEach($scope.websites, function(website, i) {
+				params.params.website.push(website.url);
+			});
 			
 			DashboardService.collectData(params).then(function(response) {
 				var collectedData = response.data.collectedData;
@@ -137,5 +156,16 @@ module.controller('DashboardController', ['$scope', 'CONSTANTS', 'DashboardServi
 			$('#createProfileClean [name="keywords"]').tagsinput('removeAll');
 		}
 		console.log($scope.dom);
+	}
+	
+	// TODO: replace vanilla JS?
+	function validateInput(isValid, element, text) {
+		if (!isValid) {
+			element.setAttribute('data-toggle', 'tooltip');
+			element.setAttribute('title', text);
+		} else {
+			element.removeAttribute('data-toggle');
+			element.removeAttribute('title');
+		}
 	}
 }]);

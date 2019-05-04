@@ -65,6 +65,8 @@
 		</div>
 	</div>
 	-->
+	
+	<jsp:include page="newProfileModal.jsp" />
 </div>
 
 <button class="btn btn-dark btn-lg fixed-bottom-right" onclick="openNewProfileModal();"><spring:message code="new.profile.modal.create" /></button>
@@ -72,8 +74,6 @@
 <form id="delete-profile" action="delete-profile" method="post">
 	<input name="id" type="hidden">
 </form>
-
-<jsp:include page="newProfileModal.jsp" />
 
 <div class="modal fade" id="profileEditModal" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="profile-edit-label" aria-hidden="true"></div>
 <div class="modal fade" id="profileDeleteModal" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="profile-delete-label" aria-hidden="true"></div>

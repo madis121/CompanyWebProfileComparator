@@ -1,4 +1,5 @@
-angular.module('cwpc.services', []).factory('DashboardService', ['$http', 'CONSTANTS', function($http, CONSTANTS) {
+angular.module('cwpc.services', [])
+.factory('DashboardService', ['$http', 'CONSTANTS', function($http, CONSTANTS) {
 	var service = {};
 	
 	service.getProfiles = function() {
@@ -9,5 +10,14 @@ angular.module('cwpc.services', []).factory('DashboardService', ['$http', 'CONST
 		return $http.get('/ROOT/dashboard/collectData', data);
 	}
 		
+	return service;
+}])
+.factory('MessageService', ['$http', 'CONSTANTS', function($http, CONSTANTS) {
+	var service = {};
+	
+	service.getTranslations = function() {
+		return $http.get('/ROOT/messageBundle');
+	}
+	
 	return service;
 }]);
