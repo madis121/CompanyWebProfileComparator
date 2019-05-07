@@ -2,11 +2,13 @@ package ee.tlu.cwpc.web.rest;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
+import static org.springframework.web.bind.annotation.RequestMethod.POST;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,8 +40,49 @@ public class ProfileController {
   @ResponseBody
   public Map<String, Object> getProfiles() {
     Map<String, Object> map = new HashMap<>();
-    List<ProfileDTO> profiles = profileService.getProfiles2();
+    List<ProfileDTO> profiles = profileService.getProfiles();
     map.put("profiles", profiles);
+    return map;
+  }
+
+  @RequestMapping(value = "/getProfile", method = GET, produces = APPLICATION_JSON_VALUE)
+  @ResponseBody
+  public Map<String, Object> getProfile(@RequestParam(name = "id") long id) {
+    Map<String, Object> map = new HashMap<>();
+    ProfileDTO profile = profileService.getProfile(id);
+    profile.setKeywords(StringUtils.join(profileService.getKeywordsByProfileId(id), ","));
+    map.put("profile", profile);
+    return map;
+  }
+
+  @RequestMapping(value = "/createProfile", method = POST, produces = APPLICATION_JSON_VALUE)
+  @ResponseBody
+  public Map<String, Object> createProfile(@RequestParam(name = "name") String name,
+      @RequestParam(name = "urls") List<String> urls,
+      @RequestParam(name = "keywords") List<String> keywords) {
+    Map<String, Object> map = new HashMap<>();
+    profileService.createProfile(name, urls, keywords);
+    map.put("response", "OK");
+    return map;
+  }
+
+  @RequestMapping(value = "/updateProfile", method = POST, produces = APPLICATION_JSON_VALUE)
+  @ResponseBody
+  public Map<String, Object> updateProfile(@RequestParam(name = "id") long id,
+      @RequestParam(name = "name") String name,
+      @RequestParam(name = "keywords") List<String> keywords) {
+    Map<String, Object> map = new HashMap<>();
+    profileService.updateProfile(id, name, keywords);
+    map.put("response", "OK");
+    return map;
+  }
+
+  @RequestMapping(value = "/deleteProfile", method = POST, produces = APPLICATION_JSON_VALUE)
+  @ResponseBody
+  public Map<String, Object> deleteProfile(@RequestParam(name = "id") long id) {
+    Map<String, Object> map = new HashMap<>();
+    profileService.deleteProfile(id);
+    map.put("response", "OK");
     return map;
   }
 

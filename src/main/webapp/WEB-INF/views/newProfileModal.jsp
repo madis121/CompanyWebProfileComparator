@@ -1,7 +1,8 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 
-<div class="modal fade" id="newProfileModal" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-hidden="true" ng-cloak>
+<div class="modal fade" id="newProfileModal" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-hidden="true">
 	<div class="modal-dialog modal-lg" role="document">
 		<div class="modal-content">
 			<div class="modal-header">
@@ -31,7 +32,7 @@
 								<div class="form-group">
 									<ul class="website-list">
 										<li ng-repeat="website in websites">
-											<input type="text" name="website" class="form-control col-md-10 margin-10" data-index="{{website.i}}" ng-model="website.url" ng-required="{{true}}" ng-pattern="urlRegex" ng-class="isValidWebsite(website)" tooltip="testing">
+											<input type="text" name="website" class="form-control col-md-10 margin-10" data-index="{{website.i}}" ng-model="website.url" ng-required="{{true}}" ng-pattern="urlRegex" ng-class="isValidWebsite(website)">
 											<a href="javascript:void(0)" ng-if="$index == 0" ng-click="appendInput()"><i class="fas fa-plus fa-2x"></i></a>
 											<a href="javascript:void(0)" ng-if="$index != 0" ng-click="removeInput(website.i)"><i class="fas fa-minus fa-2x"></i></a>
 										</li>
@@ -46,29 +47,27 @@
 						</div>
 						
 						<div id="newProfileResult" class="col-md-12" ng-show="dom.newProfileResult.isShow">
-							<form id="createProfile" action="create-profile" method="post">
-								<input name="urls" type="hidden">
+							<form name="createProfile">
 								<div class="form-group row col-md-12">
 									<label class="col-form-label col-md-2"><spring:message code="new.profile.modal.name" /></label>
-									<input class="form-control col-md-10" name="name" type="text">
+									<input class="form-control col-md-10" name="name" type="text" ng-model="generatedProfile.name">
 								</div>
 								<div class="form-group row col-md-12">
 									<label class="col-form-label col-md-2"><spring:message code="new.profile.modal.keywords" /></label>
-									<input class="form control col-md-10" name="keywords" data-role="tagsinput">
+									<input class="form control col-md-10" name="keywords" data-role="tagsinput" ng-model="generatedProfile.keywords">
 								</div>
 							</form>
 						</div>
 						
 						<div id="newProfileClean" class="col-md-12" ng-show="dom.newProfileClean.isShow">
-							<form id="createProfileClean" action="create-profile" method="post">
-								<input name="urls" type="hidden">
+							<form name="createProfileClean">
 								<div class="form-group row col-md-12">
 									<label class="col-form-label col-md-2"><spring:message code="new.profile.modal.name" /></label>
-									<input class="form-control col-md-10" name="name" type="text">
+									<input class="form-control col-md-10" name="name" type="text" ng-model="cleanProfile.name">
 								</div>
 								<div class="form-group row col-md-12">
 									<label class="col-form-label col-md-2"><spring:message code="new.profile.modal.keywords" /></label>
-									<input class="form control col-md-10" name="keywords" data-role="tagsinput">
+									<input class="form control col-md-10" name="keywords" data-role="tagsinput" ng-model="cleanProfile.keywords">
 								</div>
 							</form>
 						</div>
@@ -78,7 +77,7 @@
 			<div class="modal-footer">
 				<div id="newProfileButtons" class="col-md-12" ng-show="dom.newProfileButtons.isShow">
 					<button class="btn btn-dark btn-lg float-left" ng-click="clearProfile()"><spring:message code="new.profile.modal.clear" /></button>
-					<button class="btn btn-dark btn-lg float-right" onclick="saveProfile();"><spring:message code="new.profile.modal.save" /></button>
+					<button class="btn btn-dark btn-lg float-right" ng-click="saveProfile()"><spring:message code="new.profile.modal.save" /></button>
 				</div>
 			</div>
 		</div>

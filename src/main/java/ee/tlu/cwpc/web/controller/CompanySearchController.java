@@ -23,11 +23,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import ee.tlu.cwpc.dto.CSEObject;
+import ee.tlu.cwpc.dto.ProfileDTO;
 import ee.tlu.cwpc.helper.CSEHelper;
 import ee.tlu.cwpc.helper.Countries;
 import ee.tlu.cwpc.helper.StringHelper;
 import ee.tlu.cwpc.model.CompanyProfile;
-import ee.tlu.cwpc.model.Profile;
 import ee.tlu.cwpc.model.Settings;
 import ee.tlu.cwpc.service.SearchResultService;
 import ee.tlu.cwpc.service.SettingsService;
@@ -53,7 +53,7 @@ public class CompanySearchController extends BaseController {
 
 	@RequestMapping(value = "", method = RequestMethod.GET)
 	public String openCompanySearch(Model model) {
-		List<Profile> profiles = profileService.getProfiles();
+		List<ProfileDTO> profiles = profileService.getProfiles();
 		model.addAttribute("profiles", profiles);
 		addPageAttributesToModel(model);
 		return "companySearch";
@@ -61,9 +61,9 @@ public class CompanySearchController extends BaseController {
 
 	@RequestMapping(value = "/details", method = RequestMethod.GET)
 	public String openCompanySearchDetails(@RequestParam(name = "profileId") long profileId, Model model) {
-		Profile profile = profileService.getProfile(profileId);
-		List<String> keywords = profileService.getProfileKeywords(profileId);
-		List<String> urls = profileService.getProfileURLs(profileId);
+		ProfileDTO profile = profileService.getProfile(profileId);
+		List<String> keywords = profileService.getKeywordsByProfileId(profileId);
+		List<String> urls = profileService.getUrlsByProfileId(profileId);
 		model.addAttribute("profile", profile);
 		model.addAttribute("commaSeperatedKeywords", StringUtils.join(keywords, ","));
 		model.addAttribute("commaSeperatedURLs", StringUtils.join(urls, ","));

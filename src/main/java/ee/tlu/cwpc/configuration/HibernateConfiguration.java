@@ -67,7 +67,7 @@ public class HibernateConfiguration {
     properties.setProperty("hibernate.hbm2ddl.auto", "update");
     properties.setProperty("hibernate.dialect", "org.hibernate.dialect.PostgreSQL82Dialect");
     properties.setProperty("hibernate.default_schema", schema);
-    // properties.setProperty("hibernate.show_sql", "true");
+    //properties.setProperty("hibernate.show_sql", "true");
     properties.setProperty("jadira.usertype.autoRegisterUserTypes", "true");
     return properties;
   }

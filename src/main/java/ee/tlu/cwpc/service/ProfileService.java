@@ -2,15 +2,12 @@ package ee.tlu.cwpc.service;
 
 import java.util.List;
 import ee.tlu.cwpc.dto.ProfileDTO;
-import ee.tlu.cwpc.model.Profile;
 
 public interface ProfileService {
 
-  Profile getProfile(long id);
+  ProfileDTO getProfile(long id);
 
-  List<Profile> getProfiles();
-  
-  List<ProfileDTO> getProfiles2();
+  List<ProfileDTO> getProfiles();
 
   void createProfile(String name, List<String> urls, List<String> keywords);
 
@@ -18,8 +15,8 @@ public interface ProfileService {
 
   void deleteProfile(long id);
 
-  List<String> getProfileKeywords(long id);
+  List<String> getKeywordsByProfileId(long profileId);
 
-  List<String> getProfileURLs(long id);
+  List<String> getUrlsByProfileId(long id);
 
 }

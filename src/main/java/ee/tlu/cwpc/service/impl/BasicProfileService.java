@@ -1,18 +1,15 @@
 package ee.tlu.cwpc.service.impl;
 
 import java.util.List;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Projections;
-import org.hibernate.query.NativeQuery;
+import org.hibernate.criterion.Restrictions;
 import org.hibernate.transform.AliasToBeanConstructorResultTransformer;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ee.tlu.cwpc.dao.Crud;
-import ee.tlu.cwpc.dao.ProfileDAO;
 import ee.tlu.cwpc.dto.ProfileDTO;
 import ee.tlu.cwpc.model.Keyword;
 import ee.tlu.cwpc.model.Profile;
@@ -23,31 +20,25 @@ import ee.tlu.cwpc.service.ProfileService;
 public class BasicProfileService implements ProfileService {
 
   @Autowired
-  private SessionFactory sessionFactory;
-
-  @Autowired
-  private ProfileDAO profileDAO;
-
-  @Autowired
   private Crud crud;
 
   @Override
   @Transactional
-  public Profile getProfile(long id) {
-    Profile profile = profileDAO.findOne(id);
-    return profile;
+  public ProfileDTO getProfile(long id) {
+    DetachedCriteria criteria =
+        DetachedCriteria.forClass(Profile.class).add(Restrictions.eq("id", id))
+            .setProjection(Projections.projectionList().add(Projections.property("id"))
+                .add(Projections.property("name")).add(Projections.property("created"))
+                .add(Projections.property("updated")));
+    criteria.setResultTransformer(
+        new AliasToBeanConstructorResultTransformer(ProfileDTO.class.getConstructors()[0]));
+    List<ProfileDTO> profile = crud.find(criteria);
+    return profile.get(0);
   }
 
   @Override
   @Transactional
-  public List<Profile> getProfiles() {
-    List<Profile> profiles = profileDAO.findAll();
-    return profiles;
-  }
-
-  @Override
-  @Transactional
-  public List<ProfileDTO> getProfiles2() {
+  public List<ProfileDTO> getProfiles() {
     DetachedCriteria criteria = DetachedCriteria.forClass(Profile.class)
         .setProjection(Projections.projectionList().add(Projections.property("id"))
             .add(Projections.property("name")).add(Projections.property("created"))
@@ -63,67 +54,44 @@ public class BasicProfileService implements ProfileService {
     DateTime date = DateTime.now();
     Profile profile = new Profile();
     profile.setName(name);
-
-    for (String urlString : urls) {
-      Url url = new Url(urlString, date, date);
-      profile.addUrl(url);
-    }
-
-    for (String keywordString : keywords) {
-      Keyword keyword = new Keyword(keywordString, date, date);
-      profile.addKeyword(keyword);
-    }
-
-    profile.setCreated(date);
-    profile.setUpdated(date);
-    profileDAO.save(profile);
+    urls.stream().forEach(url -> profile.addUrl(new Url(url, date, date)));
+    keywords.stream().forEach(keyword -> profile.addKeyword(new Keyword(keyword, date, date)));
+    crud.save(profile);
   }
 
   @Override
   @Transactional
   public void updateProfile(long id, String name, List<String> keywords) {
     DateTime date = DateTime.now();
-    Profile profile = profileDAO.findOne(id);
+    Profile profile = crud.get(id, Profile.class);
     profile.setName(name);
     profile.getKeywords().clear();
-
-    for (String keywordString : keywords) {
-      Keyword keyword = new Keyword(keywordString, date, date);
-      profile.addKeyword(keyword);
-    }
-
-    profile.setUpdated(date);
-    profileDAO.update(profile);
+    keywords.stream().forEach(keyword -> profile.addKeyword(new Keyword(keyword, date, date)));
+    crud.save(profile);
   }
 
   @Override
   @Transactional
   public void deleteProfile(long id) {
-    profileDAO.delete(id);
+    crud.delete(id, Profile.class);
   }
 
   @Override
   @Transactional
-  @SuppressWarnings("unchecked")
-  public List<String> getProfileKeywords(long id) {
-    Session session = sessionFactory.getCurrentSession();
-    String sql = "SELECT keyword FROM cwpc.keyword WHERE profile_id = :profileId ORDER BY id ASC";
-    NativeQuery<String> query = session.createSQLQuery(sql);
-    query.setParameter("profileId", id);
-    List<String> keywords = query.list();
-    return keywords;
+  public List<String> getKeywordsByProfileId(long profileId) {
+    DetachedCriteria criteria = DetachedCriteria.forClass(Keyword.class, "k")
+        .createAlias("k.profile", "profile").add(Restrictions.eq("profile.id", profileId))
+        .setProjection(Projections.property("keyword"));
+    return crud.find(criteria);
   }
 
   @Override
   @Transactional
-  @SuppressWarnings("unchecked")
-  public List<String> getProfileURLs(long id) {
-    Session session = sessionFactory.getCurrentSession();
-    String sql = "SELECT url FROM cwpc.url WHERE profile_id = :profileId ORDER BY id ASC";
-    NativeQuery<String> query = session.createSQLQuery(sql);
-    query.setParameter("profileId", id);
-    List<String> urls = query.list();
-    return urls;
+  public List<String> getUrlsByProfileId(long profileId) {
+    DetachedCriteria criteria = DetachedCriteria.forClass(Url.class, "u")
+        .createAlias("u.profile", "profile").add(Restrictions.eq("profile.id", profileId))
+        .setProjection(Projections.property("url"));
+    return crud.find(criteria);
   }
 
 }
