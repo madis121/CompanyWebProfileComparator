@@ -27,7 +27,7 @@
 					</div>
 					
 					<div class="col-md-12">
-						<div id="newProfileContent" class="col-md-12" ng-show="dom.newProfileContent.isShow">
+						<div class="col-md-12" ng-show="dom.newProfileContent.isShow">
 							<form id="websites" name="websitesForm" novalidate>
 								<div class="form-group">
 									<ul class="website-list">
@@ -46,28 +46,28 @@
 							<i class="fas fa-spinner fa-spin fa-5x"></i>
 						</div>
 						
-						<div id="newProfileResult" class="col-md-12" ng-show="dom.newProfileResult.isShow">
-							<form name="createProfile">
+						<div class="col-md-12" ng-show="dom.newProfileResult.isShow">
+							<form name="createProfile" novalidate>
 								<div class="form-group row col-md-12">
 									<label class="col-form-label col-md-2"><spring:message code="new.profile.modal.name" /></label>
 									<input class="form-control col-md-10" name="name" type="text" ng-model="generatedProfile.name">
 								</div>
 								<div class="form-group row col-md-12">
 									<label class="col-form-label col-md-2"><spring:message code="new.profile.modal.keywords" /></label>
-									<input class="form control col-md-10" name="keywords" data-role="tagsinput" ng-model="generatedProfile.keywords">
+									<input class="form control col-md-10" name="keywords" data-role="tagsinput" ng-model="generatedProfile.keywords" ng-required="{{true}}" ng-change="isGeneratedProfileKeywordsValid()">
 								</div>
 							</form>
 						</div>
 						
-						<div id="newProfileClean" class="col-md-12" ng-show="dom.newProfileClean.isShow">
-							<form name="createProfileClean">
+						<div class="col-md-12" ng-show="dom.newProfileClean.isShow">
+							<form name="createProfileClean" novalidate>
 								<div class="form-group row col-md-12">
 									<label class="col-form-label col-md-2"><spring:message code="new.profile.modal.name" /></label>
 									<input class="form-control col-md-10" name="name" type="text" ng-model="cleanProfile.name">
 								</div>
 								<div class="form-group row col-md-12">
 									<label class="col-form-label col-md-2"><spring:message code="new.profile.modal.keywords" /></label>
-									<input class="form control col-md-10" name="keywords" data-role="tagsinput" ng-model="cleanProfile.keywords">
+									<input class="form control col-md-10" name="keywords" data-role="tagsinput" ng-model="cleanProfile.keywords" ng-required="{{true}}" ng-change="isCleanProfileKeywordsValid()">
 								</div>
 							</form>
 						</div>
@@ -75,7 +75,7 @@
 				</div>
 			</div>
 			<div class="modal-footer">
-				<div id="newProfileButtons" class="col-md-12" ng-show="dom.newProfileButtons.isShow">
+				<div class="col-md-12" ng-show="dom.newProfileButtons.isShow">
 					<button class="btn btn-dark btn-lg float-left" ng-click="clearProfile()"><spring:message code="new.profile.modal.clear" /></button>
 					<button class="btn btn-dark btn-lg float-right" ng-click="saveProfile()"><spring:message code="new.profile.modal.save" /></button>
 				</div>

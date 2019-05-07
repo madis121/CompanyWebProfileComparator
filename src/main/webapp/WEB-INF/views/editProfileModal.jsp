@@ -20,7 +20,7 @@
 							</div>
 							<div class="form-group row col-md-12">
 								<label class="col-form-label col-md-2"><spring:message code="profile.edit.modal.keywords" /></label>
-								<input class="form control col-md-10" name="keywords" data-role="tagsinput" ng-model="editProfile.keywords" ng-required="{{true}}" ng-change="isProfileKeywordsValid(editProfile.keywords)">
+								<input class="form control col-md-10" name="keywords" data-role="tagsinput" ng-model="editProfile.keywords" ng-required="{{true}}" ng-change="isEditProfileKeywordsValid()">
 							</div>
 						</form>
 					</div>

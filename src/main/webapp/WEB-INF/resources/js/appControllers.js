@@ -59,6 +59,14 @@ module.controller('DashboardController', ['$scope', '$timeout', 'CONSTANTS', 'Da
 		$('#newProfileModal').modal('show');
 	}
  	
+	$scope.isGeneratedProfileKeywordsValid = function() {
+		isProfileKeywordsValid($scope.generatedProfile.keywords, $scope.createProfile, 'createProfile');
+	}
+ 	
+	$scope.isCleanProfileKeywordsValid = function() {
+		isProfileKeywordsValid($scope.cleanProfile.keywords, $scope.createProfileClean, 'createProfileClean');
+	}
+	
  	$scope.saveProfile = function() {
  		var profile;
  		var isValid = false;
@@ -99,16 +107,8 @@ module.controller('DashboardController', ['$scope', '$timeout', 'CONSTANTS', 'Da
 		});
 	}
 	
-	$scope.isProfileKeywordsValid = function(keywords) {
-		if (keywords) {
-			var isProfileKeywordsValid = keywords.split(',').length >= 5;
-			$scope.updateProfileForm.$valid = isProfileKeywordsValid === true ? true : false;
-			var element = document.querySelector('[name="updateProfileForm"] .keywords');
-			// FIXME: should learn a better way how to manipulate elements with Angular
-			validateKeywordsInput(isProfileKeywordsValid, element, $scope.translationMessages['new.profile.modal.error.must.contain.keywords']);
-		} else {
-			$scope.updateProfileForm.$valid = false;
-		}
+	$scope.isEditProfileKeywordsValid = function() {
+		isProfileKeywordsValid($scope.editProfile.keywords, $scope.updateProfileForm, 'updateProfileForm');
 	}
 	
 	$scope.editProfile = function(isValid) {
@@ -238,6 +238,18 @@ module.controller('DashboardController', ['$scope', '$timeout', 'CONSTANTS', 'Da
 		}, function error(response) {
 			console.log(response);
 		});
+	}
+	
+	function isProfileKeywordsValid(keywords, form, formName) {
+		if (keywords) {
+			var isProfileKeywordsValid = keywords.split(',').length >= 5;
+			form.$valid = isProfileKeywordsValid === true ? true : false;
+			var element = document.querySelector('[name="' + formName + '"] .keywords');
+			// FIXME: should learn a better way how to manipulate elements with Angular
+			validateKeywordsInput(isProfileKeywordsValid, element, $scope.translationMessages['new.profile.modal.error.must.contain.keywords']);
+		} else {
+			form.$valid = false;
+		}
 	}
 	
 	// TODO: replace vanilla JS?
