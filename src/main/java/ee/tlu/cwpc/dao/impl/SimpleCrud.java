@@ -64,7 +64,9 @@ public class SimpleCrud implements Crud {
 
   private CommonEntity setCommonEntityProperties(CommonEntity model) {
     if (isNew(model)) {
-      model.setCreated(new DateTime());
+      DateTime dateTime = new DateTime();
+      model.setCreated(dateTime);
+      model.setUpdated(dateTime);
     } else {
       model.setUpdated(new DateTime());
     }

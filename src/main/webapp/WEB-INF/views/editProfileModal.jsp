@@ -29,7 +29,7 @@
 			<div class="modal-footer">
 				<div class="col-md-12">
 					<button class="btn btn-dark btn-lg float-left" data-dismiss="modal"><spring:message code="common.back" /></button>
-					<button class="btn btn-dark btn-lg float-right" ng-click="editProfile(updateProfileForm.$valid)"><spring:message code="common.save" /></button>
+					<button class="btn btn-dark btn-lg float-right" ng-click="updateProfile(updateProfileForm.$valid)"><spring:message code="common.save" /></button>
 				</div>
 			</div>
 		</div>

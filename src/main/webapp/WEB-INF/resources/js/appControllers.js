@@ -111,7 +111,7 @@ module.controller('DashboardController', ['$scope', '$timeout', 'CONSTANTS', 'Da
 		isProfileKeywordsValid($scope.editProfile.keywords, $scope.updateProfileForm, 'updateProfileForm');
 	}
 	
-	$scope.editProfile = function(isValid) {
+	$scope.updateProfile = function(isValid) {
 		if (isValid) {
 			var params = {id: $scope.editProfile.id, name: $scope.editProfile.name, keywords: $scope.editProfile.keywords};
 			DashboardService.updateProfile(params).then(function success(response) {

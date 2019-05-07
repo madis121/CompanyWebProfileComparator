@@ -3,12 +3,12 @@ angular.module('cwpc.services', [])
 	var service = {};
 	
 	service.getProfiles = function() {
-		return $http.get('/ROOT/dashboard/getProfiles');
+		return $http.get('/ROOT/getProfiles');
 	}
 	
 	service.getProfile = function(data) {
 		return $http({
-			url: '/ROOT/dashboard/getProfile',
+			url: '/ROOT/getProfile',
 			method: 'GET',
 			params: data
 		});
@@ -16,7 +16,7 @@ angular.module('cwpc.services', [])
 	
 	service.createProfile = function(data) {
 		return $http({
-			url: '/ROOT/dashboard/createProfile',
+			url: '/ROOT/createProfile',
 			method: 'POST',
 			params: data
 		});
@@ -24,7 +24,7 @@ angular.module('cwpc.services', [])
 	
 	service.updateProfile = function(data) {
 		return $http({
-			url: '/ROOT/dashboard/updateProfile',
+			url: '/ROOT/updateProfile',
 			method: 'POST',
 			params: data
 		});
@@ -32,14 +32,14 @@ angular.module('cwpc.services', [])
 	
 	service.deleteProfile = function(data) {
 		return $http({
-			url: '/ROOT/dashboard/deleteProfile',
+			url: '/ROOT/deleteProfile',
 			method: 'POST',
 			params: data
 		});
 	}
 	
 	service.collectData = function(data) {
-		return $http.get('/ROOT/dashboard/collectData', data);
+		return $http.get('/ROOT/collectData', data);
 	}
 	
 	return service;
