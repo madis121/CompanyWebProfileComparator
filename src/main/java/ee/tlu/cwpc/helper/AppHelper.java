@@ -21,7 +21,7 @@ public class AppHelper {
 
 		WebScraper webScraper = new WebScraper(websites, 25, 3, null, null);
 		webScraper.scrape();
-		List<String> commonKeywords = webScraper.getCommonKeywordStrings();
+		List<String> commonKeywords = webScraper.getMostCommonKeywordAsStrings();
 		System.out.println(Arrays.toString(commonKeywords.toArray()));
 	}
 

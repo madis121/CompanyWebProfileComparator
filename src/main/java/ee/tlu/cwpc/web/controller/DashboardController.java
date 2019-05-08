@@ -108,7 +108,7 @@ public class DashboardController extends BaseController {
         settings.getWebScraperMinKeywordLength(), ignoredHTMLElements, ignoredKeywords);
     webScraper.scrape();
     LOGGER.info("Data scraping done");
-    map.put("collectedData", new CollectedData(websites, webScraper.getCommonKeywords()));
+    map.put("collectedData", new CollectedData(websites, webScraper.getMostCommonKeywords()));
     return map;
   }
 

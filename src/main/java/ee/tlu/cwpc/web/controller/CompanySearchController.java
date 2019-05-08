@@ -1,10 +1,14 @@
 package ee.tlu.cwpc.web.controller;
 
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.http.HttpSession;
@@ -98,7 +102,7 @@ public class CompanySearchController extends BaseController {
 				WebScraper webScraper = new WebScraper(website, settings.getWebScraperMaxPagesToSearch(),
 						settings.getWebScraperMinKeywordLength(), ignoredHTMLElements, ignoredKeywords);
 				webScraper.scrape();
-				List<String> websiteKeywords = webScraper.getCommonKeywordStrings();
+				List<String> websiteKeywords = webScraper.getMostCommonKeywordAsStrings();
 				
 				double result = StringHelper.compareStringSets(new HashSet<String>(keywords),
 						new HashSet<String>(websiteKeywords));

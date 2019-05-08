@@ -1,78 +1,78 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 
-<div class="modal-dialog modal-lg" role="document">
-	<div class="modal-content">
-		<div class="modal-header">
-			<h3 class="modal-title col-11 text-center" id="company-search-details-label"><spring:message code="companySearch.details.title" /></h3>
-			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-				<span aria-hidden="true"><i class="fas fa-times fa-1x"></i></span>
-			</button>
-		</div>
-		<div class="modal-body">
-			<div class="row">
-				<div id="company-search-details-content" class="col-md-12">
-					<form id="find-similar-companies" action="company-search/find" method="get">
-						<input name="urls" type="hidden" value="${commaSeperatedURLs}">
-						<div class="form-group row col-md-12">
-							<label class="col-form-label col-md-3"><spring:message code="companySearch.details.profile.name" /></label>
-							<input class="form-control col-md-9" name="name" type="text" value="${profile.name}" readonly>
-						</div>
-						<div class="form-group row col-md-12">
-							<label class="col-form-label col-md-3"><spring:message code="companySearch.details.keywords" /></label>
-							<input class="form control col-md-9" name="keywords" data-role="tagsinput" value="${commaSeperatedKeywords}">
-						</div>
-						<div class="form-group row col-md-12">
-							<label class="col-form-label col-md-3"><spring:message code="companySearch.details.country" /></label>
-							<select class="form-control col-md-9" name="country">
-								<option value="" disabled selected hidden><spring:message code="companySearch.details.country.placeholder" /></option>
-								<c:forEach items="${countries}" var="country">
-									<option value="${country.code}"><c:out value="${country.name}" /></option>
-								</c:forEach>
-							</select>
-						</div>
-						<div class="form-group row col-md-12">
-							<label class="col-form-label col-md-3" data-toggle="tooltip" title="<spring:message code="companySearch.details.contacts.tooltip" />">
-								<spring:message code="companySearch.details.contacts" /> <i class="fas fa-question-circle"></i>
-							</label>
-							<input class="form-control col-md-9" name="contacts" type="text">
-						</div>
-					</form>
-				</div>
-				
-				<i id="company-search-spinner" class="fas fa-spinner fa-spin fa-5x col-md-11 text-center" style="display:none;"></i>
-				
-				<div id="company-search-result" class="col-md-12" style="display:none;">
-					<form id="save-company-search-result" action="company-search/save-result" method="post">
-						<div class="form-group row col-md-12">
-							<label class="col-form-label col-md-3"><spring:message code="companySearch.result.name" /></label>
-							<input class="form-control col-md-9" name="name" type="text" value="${profile.name}">
-						</div>
-						<table class="table table-striped table-bordered">
-							<thead>
-								<tr>
-									<th scope="col" class="narrow">#</th>
-									<th scope="col"><spring:message code="companySearch.result.website" /></th>
-									<%-- <th scope="col"><spring:message code="companySearch.result.similarity" /></th> --%>
-								</tr>
-							</thead>
-							<tbody></tbody>
-						</table>
-					</form>
-				</div>
-				
-				<div id="company-search-result-error" class="col-md-12 text-center" style="display:none;"></div>
+<div class="modal fade" id="companySearchDetailsModal" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-hidden="true">
+	<div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h3 class="modal-title col-11 text-center"><spring:message code="companySearch.details.title" /></h3>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true"><i class="fas fa-times fa-1x"></i></span>
+				</button>
 			</div>
-		</div>
-		<div class="modal-footer">
-			<div class="col-md-12">
-				<div id="company-search-buttons">
-					<button class="btn btn-dark btn-lg float-left" data-dismiss="modal"><spring:message code="common.back" /></button>
-					<button class="btn btn-dark btn-lg float-right" onclick="validateAndSubmit();"><spring:message code="common.search" /></button>
+			<div class="modal-body">
+				<div class="row">
+					<div id="company-search-details-content" class="col-md-12">
+						<form id="find-similar-companies" action="company-search/find" method="get">
+							<input name="urls" type="hidden" value="${commaSeperatedURLs}">
+							<div class="form-group row col-md-12">
+								<label class="col-form-label col-md-3"><spring:message code="companySearch.details.profile.name" /></label>
+								<input class="form-control col-md-9" name="name" type="text" ng-model="companySearch.profile.name" readonly>
+							</div>
+							<div class="form-group row col-md-12">
+								<label class="col-form-label col-md-3"><spring:message code="companySearch.details.keywords" /></label>
+								<input class="form control col-md-9" name="keywords" data-role="tagsinput" ng-model="companySearch.profile.keywords">
+							</div>
+							<div class="form-group row col-md-12">
+								<label class="col-form-label col-md-3"><spring:message code="companySearch.details.country" /></label>
+								<select class="form-control col-md-9" name="country">
+									<option value="" disabled selected hidden><spring:message code="companySearch.details.country.placeholder" /></option>
+									<option ng-repeat="country in countries" value="{{country.code}}">{{country.name}}</option>
+								</select>
+							</div>
+							<div class="form-group row col-md-12">
+								<label class="col-form-label col-md-3" data-toggle="tooltip" title="<spring:message code="companySearch.details.contacts.tooltip" />">
+									<spring:message code="companySearch.details.contacts" /> <i class="fas fa-question-circle"></i>
+								</label>
+								<input class="form-control col-md-9" name="contacts" type="text">
+							</div>
+						</form>
+					</div>
+					
+					<i id="company-search-spinner" class="fas fa-spinner fa-spin fa-5x col-md-11 text-center" style="display:none;"></i>
+					
+					<div id="company-search-result" class="col-md-12" style="display:none;">
+						<form id="save-company-search-result" action="company-search/save-result" method="post">
+							<div class="form-group row col-md-12">
+								<label class="col-form-label col-md-3"><spring:message code="companySearch.result.name" /></label>
+								<input class="form-control col-md-9" name="name" type="text" value="${profile.name}">
+							</div>
+							<table class="table table-striped table-bordered">
+								<thead>
+									<tr>
+										<th scope="col" class="narrow">#</th>
+										<th scope="col"><spring:message code="companySearch.result.website" /></th>
+										<%-- <th scope="col"><spring:message code="companySearch.result.similarity" /></th> --%>
+									</tr>
+								</thead>
+								<tbody></tbody>
+							</table>
+						</form>
+					</div>
+					
+					<div id="company-search-result-error" class="col-md-12 text-center" style="display:none;"></div>
 				</div>
-				<div id="company-search-result-buttons" style="display:none;">
-					<button class="btn btn-dark btn-lg float-left" data-dismiss="modal"><spring:message code="common.back" /></button>
-					<button class="btn btn-dark btn-lg float-right save-button" onclick="saveSearchResult();"><spring:message code="common.save" /></button>
+			</div>
+			<div class="modal-footer">
+				<div class="col-md-12">
+					<div id="company-search-buttons">
+						<button class="btn btn-dark btn-lg float-left" data-dismiss="modal"><spring:message code="common.back" /></button>
+						<button class="btn btn-dark btn-lg float-right" onclick="validateAndSubmit();"><spring:message code="common.search" /></button>
+					</div>
+					<div id="company-search-result-buttons" style="display:none;">
+						<button class="btn btn-dark btn-lg float-left" data-dismiss="modal"><spring:message code="common.back" /></button>
+						<button class="btn btn-dark btn-lg float-right save-button" onclick="saveSearchResult();"><spring:message code="common.save" /></button>
+					</div>
 				</div>
 			</div>
 		</div>

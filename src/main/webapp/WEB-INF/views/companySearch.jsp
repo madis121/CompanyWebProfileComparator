@@ -4,7 +4,7 @@
 
 <custom:html>
 
-<div class="container">
+<div class="container" ng-controller="CompanySearchController" ng-cloak>
 	<div class="row">
 		<div class="heading col-md-12">
 			<h3><spring:message code="companySearch.title" /></h3>
@@ -15,42 +15,40 @@
 		<div class="col-md-12">
 			<div class="form row">
 				<label class="col-form-label col-md-1"><spring:message code="companySearch.profile" /></label>
-				<select class="form-control col-md-7" id="select-profile">
+				<select class="form-control col-md-7" id="select-profile" ng-model="selectedProfileId" required>
 					<option value="" disabled selected hidden><spring:message code="companySearch.select.placeholder" /></option>
-					<c:forEach items="${profiles}" var="profile">
-						<option value="${profile.id}"><c:out value="${profile.name}" /></option>
-					</c:forEach>
+					<option ng-repeat="profile in profiles" value="{{profile.id}}">{{profile.name}}</option>
 				</select>
-				<button class="btn btn-primary inline" id="open-search-details" onclick="openCompanySearchDetailsModal();" disabled><spring:message code="companySearch.select.open" /></button>
+				<button class="btn btn-primary inline" id="open-search-details" ng-disabled="!!!selectedProfileId" ng-click="openCompanySearchDetailsModal()"><spring:message code="companySearch.select.open" /></button>
 			</div>
 		</div>
 	</div>
+	
+	<jsp:include page="companySearchDetails.jsp" />
 </div>
 
-<div class="modal fade" id="company-search-details-modal" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="company-search-details-label" aria-hidden="true"></div>
-
 <script>
-	$(document).ready(function() {
-		$('#select-profile').on('change', function() {
-			isOptionSelected();
-		});
-	});
+// 	$(document).ready(function() {
+// 		$('#select-profile').on('change', function() {
+// 			isOptionSelected();
+// 		});
+// 	});
 
-	function isOptionSelected() {
-		if ($('#select-profile').val()) {
-			$('#open-search-details').removeAttr('disabled');
-		} else {
-			if (!$('#open-search-details').attr('disabled')) {
-				$('#open-search-details').attr('disabled', 'disabled');
-			}
-		}
-	}
+// 	function isOptionSelected() {
+// 		if ($('#select-profile').val()) {
+// 			$('#open-search-details').removeAttr('disabled');
+// 		} else {
+// 			if (!$('#open-search-details').attr('disabled')) {
+// 				$('#open-search-details').attr('disabled', 'disabled');
+// 			}
+// 		}
+// 	}
 	
-	function openCompanySearchDetailsModal() {
-	    $('#company-search-details-modal').empty();
-	    $('#company-search-details-modal').load('${pageContext.request.contextPath}/company-search/details?profileId=' + $('#select-profile').val());
-	    $('#company-search-details-modal').modal('show');
-	}
+// 	function openCompanySearchDetailsModal() {
+// 	    $('#company-search-details-modal').empty();
+// 	    $('#company-search-details-modal').load('${pageContext.request.contextPath}/company-search/details?profileId=' + $('#select-profile').val());
+// 	    $('#company-search-details-modal').modal('show');
+// 	}
 </script>
 
 </custom:html>

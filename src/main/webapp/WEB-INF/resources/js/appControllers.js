@@ -1,6 +1,6 @@
 var module = angular.module('cwpc.controllers', []);
 
-module.controller('DashboardController', ['$scope', '$timeout', 'CONSTANTS', 'DashboardService', 'MessageService', function($scope, $timeout, CONSTANTS, DashboardService, MessageService) {
+module.controller('DashboardController', ['$scope', 'CONSTANTS', 'DashboardService', 'MessageService', function($scope, CONSTANTS, DashboardService, MessageService) {
 	$scope.dom = {
 		profileOptions: {isShow: true},
 		newProfileContent: {isShow: true},
@@ -41,7 +41,7 @@ module.controller('DashboardController', ['$scope', '$timeout', 'CONSTANTS', 'Da
 		MessageService.getTranslations().then(function success(response) {
 			$scope.translationMessages = response.data;
 		}, function error(response) {
-			console.log(response);
+			showErrorNotification($scope.translationMessages['notification.common.error']);
 		});
 	}
 	
@@ -50,7 +50,7 @@ module.controller('DashboardController', ['$scope', '$timeout', 'CONSTANTS', 'Da
 			$scope.profiles = response.data.profiles;
 		}, function error(response) {
 			$scope.profiles = [];
-			console.log(response);
+			showErrorNotification($scope.translationMessages['notification.common.error']);
 		});
 	}
 	
@@ -60,10 +60,12 @@ module.controller('DashboardController', ['$scope', '$timeout', 'CONSTANTS', 'Da
 	}
  	
 	$scope.isGeneratedProfileKeywordsValid = function() {
+		console.log('isGeneratedProfileKeywordsValid');
 		isProfileKeywordsValid($scope.generatedProfile.keywords, $scope.createProfile, 'createProfile');
 	}
  	
 	$scope.isCleanProfileKeywordsValid = function() {
+		console.log('isCleanProfileKeywordsValid');
 		isProfileKeywordsValid($scope.cleanProfile.keywords, $scope.createProfileClean, 'createProfileClean');
 	}
 	
@@ -85,7 +87,7 @@ module.controller('DashboardController', ['$scope', '$timeout', 'CONSTANTS', 'Da
  				getProfiles();
  				$('#newProfileModal').modal('hide');
  			}, function error(response) {
- 				console.log(response);
+ 				showErrorNotification($scope.translationMessages['notification.common.error']);
  			});
  		}
  	}
@@ -108,7 +110,8 @@ module.controller('DashboardController', ['$scope', '$timeout', 'CONSTANTS', 'Da
 	}
 	
 	$scope.isEditProfileKeywordsValid = function() {
-		isProfileKeywordsValid($scope.editProfile.keywords, $scope.updateProfileForm, 'updateProfileForm');
+		var isValid = isProfileKeywordsValid($scope.editProfile.keywords, $scope.updateProfileForm, 'updateProfileForm');
+		return isValid === true ? '' : 'contains-errors';
 	}
 	
 	$scope.updateProfile = function(isValid) {
@@ -118,7 +121,7 @@ module.controller('DashboardController', ['$scope', '$timeout', 'CONSTANTS', 'Da
 				// TODO: replace jQuery?
 				$('#profileEditModal').modal('hide');
 			}, function error(response) {
-				console.log(response);
+				showErrorNotification($scope.translationMessages['notification.common.error']);
 			});
 		}
 	}
@@ -185,9 +188,10 @@ module.controller('DashboardController', ['$scope', '$timeout', 'CONSTANTS', 'Da
 			
 			DashboardService.collectData(params).then(function success(response) {
 				var collectedData = response.data.collectedData;
+				console.log(collectedData);
 				angular.forEach(collectedData.keywords, function(keyword, i) {
 					// TODO: replace jQuery?
-					$('[name="createProfile"] [name="keywords"]').tagsinput('add', keyword.word);
+					$('[name="createProfile"] [name="keywords"]').tagsinput('add', keyword.value);
 				});
 				$scope.generatedProfile.urls = collectedData.websites.toString();
 				$scope.dom.newProfileSpinner.isShow = false;
@@ -195,7 +199,7 @@ module.controller('DashboardController', ['$scope', '$timeout', 'CONSTANTS', 'Da
 				$scope.dom.newProfileResult.isShow = true;
 				$scope.dom.newProfileButtons.isShow = true;
 			}, function error(response) {
-				console.log(response);
+				showErrorNotification($scope.translationMessages['notification.common.error']);
 			});
 		}
 	}
@@ -236,7 +240,7 @@ module.controller('DashboardController', ['$scope', '$timeout', 'CONSTANTS', 'Da
 			$scope.deleteProfileId = undefined;
 			$('#profileDeleteModal').modal('hide');
 		}, function error(response) {
-			console.log(response);
+			showErrorNotification($scope.translationMessages['notification.common.error']);
 		});
 	}
 	
@@ -247,8 +251,10 @@ module.controller('DashboardController', ['$scope', '$timeout', 'CONSTANTS', 'Da
 			var element = document.querySelector('[name="' + formName + '"] .keywords');
 			// FIXME: should learn a better way how to manipulate elements with Angular
 			validateKeywordsInput(isProfileKeywordsValid, element, $scope.translationMessages['new.profile.modal.error.must.contain.keywords']);
+			return isProfileKeywordsValid;
 		} else {
 			form.$valid = false;
+			return false;
 		}
 	}
 	
@@ -301,5 +307,51 @@ module.controller('DashboardController', ['$scope', '$timeout', 'CONSTANTS', 'Da
 //		if ('${action}' == PROFILE_DELETED && '${not hasErrors}') {
 //			$.notify('<i class="fas fa-check"></i> <spring:message code="notification.profile.deleted" />');
 //		}
+	}
+}]);
+
+module.controller('CompanySearchController', ['$scope', 'CONSTANTS', 'CompanySearchService', 'DashboardService', 'MessageService', function($scope, CONSTANTS, CompanySearchService, DashboardService, MessageService) {
+	$scope.dom = {};
+	
+	$scope.translationMessages = {};
+	
+	$scope.profiles = [];
+	$scope.selectedProfileId;
+	$scope.companySearch = {};
+	$scope.countries = [];
+	
+	getTranslations();
+	getProfiles();
+	
+	function getTranslations() {
+		MessageService.getTranslations().then(function success(response) {
+			$scope.translationMessages = response.data;
+		}, function error(response) {
+			showErrorNotification($scope.translationMessages['notification.common.error']);
+		});
+	}
+	
+	function getProfiles() {
+		DashboardService.getProfiles().then(function success(response) {
+			$scope.profiles = response.data.profiles;
+		}, function error(response) {
+			$scope.profiles = [];
+			showErrorNotification($scope.translationMessages['notification.common.error']);
+		});
+	}
+	
+	$scope.openCompanySearchDetailsModal = function() {
+		var params = {id: $scope.selectedProfileId};
+		// TODO: replace jQuery?
+		DashboardService.getProfile(params).then(function success(response) {
+			$scope.companySearch.profile = response.data.profile;
+		}, function error(response) {
+			showErrorNotification($scope.translationMessages['notification.common.error']);
+		});
+	    $('#companySearchDetailsModal').modal('show');
+	}
+	
+	function showErrorNotification(text) {
+		$.notify({ message: '<i class="fas fa-exclamation-triangle"></i>' + text }, { type: 'danger' });
 	}
 }]);

@@ -1,5 +1,20 @@
 angular.module('cwpc.services', [])
+.factory('MessageService', ['$http', 'CONSTANTS', function($http, CONSTANTS) {
+	/**
+	 * MessageService
+	 */
+	var service = {};
+	
+	service.getTranslations = function() {
+		return $http.get('/ROOT/messageBundle');
+	}
+	
+	return service;
+}])
 .factory('DashboardService', ['$http', 'CONSTANTS', function($http, CONSTANTS) {
+	/**
+	 * DashboardService
+	 */
 	var service = {};
 	
 	service.getProfiles = function() {
@@ -44,12 +59,11 @@ angular.module('cwpc.services', [])
 	
 	return service;
 }])
-.factory('MessageService', ['$http', 'CONSTANTS', function($http, CONSTANTS) {
+.factory('CompanySearchService', ['$http', 'CONSTANTS', function($http, CONSTANTS) {
+	/**
+	 * CompanySearchService
+	 */
 	var service = {};
-	
-	service.getTranslations = function() {
-		return $http.get('/ROOT/messageBundle');
-	}
 	
 	return service;
 }]);
