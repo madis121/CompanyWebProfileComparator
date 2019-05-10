@@ -65,5 +65,21 @@ angular.module('cwpc.services', [])
 	 */
 	var service = {};
 	
+	service.getCompanySearchDetails = function(data) {
+		return $http({
+			url: '/ROOT/company-search/getCompanySearchDetails',
+			method: 'GET',
+			params: data
+		});
+	}
+	
+	service.findSimilarCompanies = function(data) {
+		return $http({
+			url: '/ROOT/company-search/find',
+			method: 'GET',
+			params: data
+		});
+	}
+	
 	return service;
 }]);

@@ -12,6 +12,8 @@ public class ProfileDTO {
 
   private String keywords;
 
+  private String urls;
+
   @JsonSerialize(using = CustomDateTimeSerializer.class)
   private DateTime created;
 
@@ -49,6 +51,14 @@ public class ProfileDTO {
     this.keywords = keywords;
   }
 
+  public String getUrls() {
+    return urls;
+  }
+
+  public void setUrls(String urls) {
+    this.urls = urls;
+  }
+
   public DateTime getCreated() {
     return created;
   }
@@ -67,8 +77,8 @@ public class ProfileDTO {
 
   @Override
   public String toString() {
-    return "ProfileDTO [id=" + id + ", name=" + name + ", keywords=" + keywords + ", created="
-        + created + ", updated=" + updated + "]";
+    return "ProfileDTO [id=" + id + ", name=" + name + ", keywords=" + keywords + ", urls=" + urls
+        + ", created=" + created + ", updated=" + updated + "]";
   }
 
 }

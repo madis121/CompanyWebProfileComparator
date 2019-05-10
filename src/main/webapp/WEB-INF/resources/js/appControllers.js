@@ -311,7 +311,14 @@ module.controller('DashboardController', ['$scope', 'CONSTANTS', 'DashboardServi
 }]);
 
 module.controller('CompanySearchController', ['$scope', 'CONSTANTS', 'CompanySearchService', 'DashboardService', 'MessageService', function($scope, CONSTANTS, CompanySearchService, DashboardService, MessageService) {
-	$scope.dom = {};
+	$scope.dom = {
+		companySearchDetailsContent: {isShow: true},
+		companySearchSpinner: {isShow: false},
+		companySearchResults: {isShow: false},
+		companySearchError: {isShow: false},
+		companySearchButtons: {isShow: true},
+		companySearchResultButtons: {isShow: false}
+	};
 	
 	$scope.translationMessages = {};
 	
@@ -341,14 +348,36 @@ module.controller('CompanySearchController', ['$scope', 'CONSTANTS', 'CompanySea
 	}
 	
 	$scope.openCompanySearchDetailsModal = function() {
-		var params = {id: $scope.selectedProfileId};
-		// TODO: replace jQuery?
-		DashboardService.getProfile(params).then(function success(response) {
-			$scope.companySearch.profile = response.data.profile;
+		var params = {profileId: $scope.selectedProfileId};
+		
+		CompanySearchService.getCompanySearchDetails(params).then(function success(response) {
+			$scope.companySearch = response.data.profile;
+			$scope.countries = response.data.countries;
+			console.log($scope.companySearch);
+			console.log($scope.countries);
+			angular.forEach($scope.companySearch.keywords.split(','), function(keyword, i) {
+				// TODO: replace jQuery?
+				$('[name="findSimilarCompaniesForm"] [name="keywords"]').tagsinput('add', keyword);
+			});
 		}, function error(response) {
 			showErrorNotification($scope.translationMessages['notification.common.error']);
 		});
 	    $('#companySearchDetailsModal').modal('show');
+	}
+	
+	$scope.findSimilarCompanies = function() {
+		var params = {
+			keywords: $scope.companySearch.keywords, 
+			urls: $scope.companySearch.urls, 
+			country: $scope.companySearch.country, 
+			contacts: $scope.companySearch.contacts
+		};
+		
+		console.log(params);
+	}
+	
+	$scope.saveSearchResults = function() {
+		console.log('saveSearchResults');
 	}
 	
 	function showErrorNotification(text) {
