@@ -12,12 +12,11 @@
 			</div>
 			<div class="modal-body">
 				<div class="row">
-					<div id="company-search-details-content" class="col-md-12" ng-show="dom.companySearchDetailsContent.isShow">
-						<form id="find-similar-companies" name="findSimilarCompaniesForm" action="company-search/find" method="get">
-							<input name="urls" type="hidden" value="${commaSeperatedURLs}">
+					<div class="col-md-12" ng-show="dom.companySearchDetailsContent.isShow">
+						<form name="findSimilarCompaniesForm">
 							<div class="form-group row col-md-12">
 								<label class="col-form-label col-md-3"><spring:message code="companySearch.details.profile.name" /></label>
-								<input class="form-control col-md-9" name="name" type="text" ng-model="companySearch.name" readonly>
+								<input class="form-control col-md-9" name="name" type="text" value="{{companySearch.name}}" readonly>
 							</div>
 							<div class="form-group row col-md-12">
 								<label class="col-form-label col-md-3"><spring:message code="companySearch.details.keywords" /></label>
@@ -39,13 +38,15 @@
 						</form>
 					</div>
 					
-					<i id="company-search-spinner" class="fas fa-spinner fa-spin fa-5x col-md-11 text-center" style="display:none;" ng-show="dom.companySearchSpinner.isShow"></i>
+					<div class="col-md-11 text-center" ng-show="dom.companySearchSpinner.isShow">
+						<i class="fas fa-spinner fa-spin fa-5x"></i>
+					</div>
 					
-					<div id="company-search-result" class="col-md-12" style="display:none;" ng-show="dom.companySearchResults.isShow">
-						<form id="save-company-search-result" action="company-search/save-result" method="post">
+					<div class="col-md-12" ng-show="dom.companySearchResults.isShow">
+						<form name="saveCompanySearchResult">
 							<div class="form-group row col-md-12">
 								<label class="col-form-label col-md-3"><spring:message code="companySearch.result.name" /></label>
-								<input class="form-control col-md-9" name="name" type="text" value="${profile.name}">
+								<input class="form-control col-md-9" name="name" type="text" ng-model="companySearchResults.name">
 							</div>
 							<table class="table table-striped table-bordered">
 								<thead>
@@ -55,7 +56,12 @@
 										<%-- <th scope="col"><spring:message code="companySearch.result.similarity" /></th> --%>
 									</tr>
 								</thead>
-								<tbody></tbody>
+								<tbody>
+									<tr ng-repeat="website in companySearchResults">
+										<td>{{$index + 1}}</td>
+										<td><a href="{{website.website}}" target="_blank">{{website.website}}</a></td>
+									</tr>
+								</tbody>
 							</table>
 						</form>
 					</div>
@@ -65,11 +71,11 @@
 			</div>
 			<div class="modal-footer">
 				<div class="col-md-12">
-					<div id="company-search-buttons" ng-show="dom.companySearchButtons.isShow">
+					<div ng-show="dom.companySearchButtons.isShow">
 						<button class="btn btn-dark btn-lg float-left" data-dismiss="modal"><spring:message code="common.back" /></button>
 						<button class="btn btn-dark btn-lg float-right" ng-click="findSimilarCompanies()"><spring:message code="common.search" /></button>
 					</div>
-					<div id="company-search-result-buttons" ng-show="dom.companySearchResultButtons.isShow">
+					<div ng-show="dom.companySearchResultButtons.isShow">
 						<button class="btn btn-dark btn-lg float-left" data-dismiss="modal"><spring:message code="common.back" /></button>
 						<button class="btn btn-dark btn-lg float-right save-button" ng-click="saveSearchResults()"><spring:message code="common.save" /></button>
 					</div>

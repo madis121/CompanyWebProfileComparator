@@ -42,7 +42,7 @@
 							<button class="btn btn-dark btn-block col-md-10 margin-10" ng-click="collectData(websitesForm.$valid)"><spring:message code="new.profile.modal.create" /></button>
 						</div>
 						
-						<div ng-show="dom.newProfileSpinner.isShow" id="newProfileSpinner" class="col-md-11 text-center">
+						<div class="col-md-11 text-center" ng-show="dom.newProfileSpinner.isShow">
 							<i class="fas fa-spinner fa-spin fa-5x"></i>
 						</div>
 						

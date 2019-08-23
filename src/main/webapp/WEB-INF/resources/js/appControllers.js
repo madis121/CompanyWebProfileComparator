@@ -1,5 +1,8 @@
 var module = angular.module('cwpc.controllers', []);
 
+/**
+ * DashboardController
+ */
 module.controller('DashboardController', ['$scope', 'CONSTANTS', 'DashboardService', 'MessageService', function($scope, CONSTANTS, DashboardService, MessageService) {
 	$scope.dom = {
 		profileOptions: {isShow: true},
@@ -56,16 +59,15 @@ module.controller('DashboardController', ['$scope', 'CONSTANTS', 'DashboardServi
 	
 	// TODO: replace jQuery?
  	$scope.openNewProfileModal = function() {
+ 		addClassToInputTags('#profileEditModal', 'col-md-10');
 		$('#newProfileModal').modal('show');
 	}
  	
 	$scope.isGeneratedProfileKeywordsValid = function() {
-		console.log('isGeneratedProfileKeywordsValid');
 		isProfileKeywordsValid($scope.generatedProfile.keywords, $scope.createProfile, 'createProfile');
 	}
  	
 	$scope.isCleanProfileKeywordsValid = function() {
-		console.log('isCleanProfileKeywordsValid');
 		isProfileKeywordsValid($scope.cleanProfile.keywords, $scope.createProfileClean, 'createProfileClean');
 	}
 	
@@ -103,6 +105,7 @@ module.controller('DashboardController', ['$scope', 'CONSTANTS', 'DashboardServi
 				// TODO: replace jQuery?
 				$('[name="updateProfileForm"] [name="keywords"]').tagsinput('add', keyword);
 			});
+			addClassToInputTags('#profileEditModal', 'col-md-10');
 			$('#profileEditModal').modal('show');
 		}, function error(response) {
 			showErrorNotification($scope.translationMessages['notification.common.error']);
@@ -248,7 +251,7 @@ module.controller('DashboardController', ['$scope', 'CONSTANTS', 'DashboardServi
 		if (keywords) {
 			var isProfileKeywordsValid = keywords.split(',').length >= 5;
 			form.$valid = isProfileKeywordsValid === true ? true : false;
-			var element = document.querySelector('[name="' + formName + '"] .keywords');
+			var element = document.querySelector('[name="' + formName + '"] .bootstrap-tagsinput');
 			// FIXME: should learn a better way how to manipulate elements with Angular
 			validateKeywordsInput(isProfileKeywordsValid, element, $scope.translationMessages['new.profile.modal.error.must.contain.keywords']);
 			return isProfileKeywordsValid;
@@ -257,59 +260,11 @@ module.controller('DashboardController', ['$scope', 'CONSTANTS', 'DashboardServi
 			return false;
 		}
 	}
-	
-	// TODO: replace vanilla JS?
-	function validateInput(isValid, element, text) {
-		if (!isValid) {
-			element.setAttribute('data-toggle', 'tooltip');
-			element.setAttribute('data-original-title', text);
-			initializeTooltips();
-		} else {
-			element.removeAttribute('data-toggle');
-			element.removeAttribute('data-original-title');
-		}
-	}
-	
-	function validateKeywordsInput(isValid, element, text) {
-		if (!isValid) {
-			element.setAttribute('data-toggle', 'tooltip');
-			element.setAttribute('data-original-title', text);
-			element.classList.add('contains-errors');
-			initializeTooltips();
-		} else {
-			element.removeAttribute('data-toggle');
-			element.removeAttribute('data-original-title');
-			element.classList.remove('contains-errors');
-		}
-	}
-	
-	// TODO: replace jQuery?
-	function initializeTooltips() {
-		$("[data-toggle=tooltip").tooltip();
-		$('.bootstrap-tagsinput').addClass('col-md-10 keywords');
-	}
-	
-	function initializeInputTags() {
-		$('input[data-role="tagsinput"]').tagsinput('items');
-	}
-	
-	function showErrorNotification(text) {
-		$.notify({ message: '<i class="fas fa-exclamation-triangle"></i>' + text }, { type: 'danger' });
-	}
-	
- 	function displayNotifications() {
-//		if ('${action}' == PROFILE_SAVED && '${not hasErrors}') {
-//			$.notify('<i class="fas fa-check"></i> <spring:message code="notification.profile.saved" />');
-//		}
-//		if ('${action}' == PROFILE_UPDATED && '${not hasErrors}') {
-//			$.notify('<i class="fas fa-check"></i> <spring:message code="notification.profile.updated" />');
-//		}
-//		if ('${action}' == PROFILE_DELETED && '${not hasErrors}') {
-//			$.notify('<i class="fas fa-check"></i> <spring:message code="notification.profile.deleted" />');
-//		}
-	}
 }]);
 
+/**
+ * CompanySearchController
+ */
 module.controller('CompanySearchController', ['$scope', 'CONSTANTS', 'CompanySearchService', 'DashboardService', 'MessageService', function($scope, CONSTANTS, CompanySearchService, DashboardService, MessageService) {
 	$scope.dom = {
 		companySearchDetailsContent: {isShow: true},
@@ -324,11 +279,18 @@ module.controller('CompanySearchController', ['$scope', 'CONSTANTS', 'CompanySea
 	
 	$scope.profiles = [];
 	$scope.selectedProfileId;
-	$scope.companySearch = {};
+	$scope.companySearch = {
+		name: '',
+		keywords: '',
+		country: '',
+		contacts: ''
+	};
 	$scope.countries = [];
+	$scope.companySearchResults = {};
 	
 	getTranslations();
 	getProfiles();
+	initializeTooltips();
 	
 	function getTranslations() {
 		MessageService.getTranslations().then(function success(response) {
@@ -353,34 +315,68 @@ module.controller('CompanySearchController', ['$scope', 'CONSTANTS', 'CompanySea
 		CompanySearchService.getCompanySearchDetails(params).then(function success(response) {
 			$scope.companySearch = response.data.profile;
 			$scope.countries = response.data.countries;
-			console.log($scope.companySearch);
-			console.log($scope.countries);
 			angular.forEach($scope.companySearch.keywords.split(','), function(keyword, i) {
 				// TODO: replace jQuery?
 				$('[name="findSimilarCompaniesForm"] [name="keywords"]').tagsinput('add', keyword);
 			});
+			addClassToInputTags('#companySearchDetailsModal', 'col-md-9');
+			$('#companySearchDetailsModal').modal('show');
 		}, function error(response) {
 			showErrorNotification($scope.translationMessages['notification.common.error']);
 		});
-	    $('#companySearchDetailsModal').modal('show');
 	}
 	
-	$scope.findSimilarCompanies = function() {
-		var params = {
-			keywords: $scope.companySearch.keywords, 
-			urls: $scope.companySearch.urls, 
-			country: $scope.companySearch.country, 
-			contacts: $scope.companySearch.contacts
-		};
-		
-		console.log(params);
+	$scope.findSimilarCompanies = function() {	
+		if (validateCompanySearchForm()) {
+			var params = {
+				keywords: $scope.companySearch.keywords, 
+				urls: $scope.companySearch.urls, 
+				country: $scope.companySearch.country, 
+				contacts: $scope.companySearch.contacts
+			};
+			
+			$scope.dom.companySearchDetailsContent.isShow = false;
+			$scope.dom.companySearchSpinner.isShow = true;
+			$scope.dom.companySearchButtons.isShow = false;
+				
+			CompanySearchService.findSimilarCompanies(params).then(function success(response) {
+				$scope.companySearchResults = response.data;
+				console.log(response);
+				$scope.dom.companySearchSpinner.isShow = false;
+				$scope.dom.companySearchResults.isShow = true;
+				$scope.dom.companySearchResultButtons.isShow = true;
+			}, function error(response) {
+				showErrorNotification($scope.translationMessages['notification.common.error']);
+			});
+		}
 	}
 	
 	$scope.saveSearchResults = function() {
-		console.log('saveSearchResults');
+		
 	}
 	
-	function showErrorNotification(text) {
-		$.notify({ message: '<i class="fas fa-exclamation-triangle"></i>' + text }, { type: 'danger' });
+	function validateCompanySearchForm() {
+		var isKeywordsValid = validateKeywords($scope.companySearch.keywords, 'findSimilarCompaniesForm')
+		var isCountryValid = validateCountry($scope.companySearch.country, 'findSimilarCompaniesForm');
+		return isKeywordsValid && isCountryValid;
+	}
+	
+	function validateKeywords(keywords, formName) {
+		if (keywords) {
+			var isKeywordsValid = keywords.split(',').length >= 5;
+			var element = document.querySelector('[name="' + formName + '"] .bootstrap-tagsinput');
+			// FIXME: should learn a better way how to manipulate elements with Angular
+			validateKeywordsInput(isKeywordsValid, element, $scope.translationMessages['new.profile.modal.error.must.contain.keywords']);
+			return isKeywordsValid;
+		} else {
+			return false;
+		}
+	}
+	
+	function validateCountry(country, formName) {
+		var isCountryValid = country ? true : false;
+		var element = document.querySelector('[name="' + formName + '"] [name="country"]');
+		validateInput(isCountryValid, element, $scope.translationMessages['companySearch.details.country.validation.error'])
+		return isCountryValid;
 	}
 }]);

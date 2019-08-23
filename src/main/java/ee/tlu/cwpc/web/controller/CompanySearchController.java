@@ -93,7 +93,7 @@ public class CompanySearchController extends BaseController {
       @RequestParam(name = "keywords") List<String> keywords,
       @RequestParam(name = "urls") List<String> urls,
       @RequestParam(name = "country") String countryCode,
-      @RequestParam(name = "contacts") List<String> contacts, HttpSession session) {
+      @RequestParam(name = "contacts", required = false) List<String> contacts, HttpSession session) {
     List<CompanyProfile> companyProfiles = new ArrayList<>();
     CSEObject response = googleCSE.requestLinksFromCSE(CSEHelper.constructQuery(keywords, urls),
         countryCode, getLocale());

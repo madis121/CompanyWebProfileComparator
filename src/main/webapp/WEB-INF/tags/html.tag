@@ -19,6 +19,7 @@
 	
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.7.8/angular.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.7.8/angular-route.js"></script>
+	<script src="${pageContext.request.contextPath}/js/common.js"></script>
 	<script src="${pageContext.request.contextPath}/js/appServices.js"></script>
 	<script src="${pageContext.request.contextPath}/js/appControllers.js"></script>
 	<script src="${pageContext.request.contextPath}/js/app.js"></script>
