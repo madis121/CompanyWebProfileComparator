@@ -12,7 +12,7 @@
 		<java.version>1.8</java.version>
 		<spring-webmvc.version>5.0.8.RELEASE</spring-webmvc.version>
 		<spring-orm.version>5.0.8.RELEASE</spring-orm.version>
-		<jackson.version>2.9.8</jackson.version>
+		<jackson.version>2.12.1</jackson.version>
 		<servlet-api.version>2.5</servlet-api.version>
 		<jsp-api.version>2.3.1</jsp-api.version>
 		<jstl.version>1.2</jstl.version>
