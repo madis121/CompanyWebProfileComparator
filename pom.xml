@@ -19,7 +19,7 @@
 		<hibernate.version>5.3.4.Final</hibernate.version>
 		<postgresql.version>42.2.5</postgresql.version>
 		<tomcat-dbcp.version>9.0.10</tomcat-dbcp.version>
-		<jsoup.version>1.11.3</jsoup.version>
+		<jsoup.version>1.15.3</jsoup.version>
 		<logback.version>1.2.3</logback.version>
 		<httpclient.version>4.5.6</httpclient.version>
 		<commons-lang3.version>3.7</commons-lang3.version>
