@@ -16,7 +16,7 @@
 		<servlet-api.version>2.5</servlet-api.version>
 		<jsp-api.version>2.3.1</jsp-api.version>
 		<jstl.version>1.2</jstl.version>
-		<hibernate.version>5.3.4.Final</hibernate.version>
+		<hibernate.version>5.3.20.Final</hibernate.version>
 		<postgresql.version>42.2.5</postgresql.version>
 		<tomcat-dbcp.version>9.0.10</tomcat-dbcp.version>
 		<jsoup.version>1.11.3</jsoup.version>
